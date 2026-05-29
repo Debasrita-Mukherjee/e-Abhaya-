@@ -518,6 +518,7 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
   to { height: 12px; }
 }
 </style>
+<script src="https://accounts.google.com/gsi/client" onload="initGoogleGSI()" async defer></script>
 </head>
 <body>
 
@@ -552,6 +553,17 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
         <input type="tel" id="login-mobile" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210" onkeydown="if(event.key === 'Enter') handleLoginSubmit('citizen')" />
       </div>
       <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:0.75rem;" onclick="handleLoginSubmit('citizen')">Enter Portal Gateway</button>
+      
+      <div style="display: flex; align-items: center; margin: 1rem 0 0.75rem; color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">
+        <div style="flex: 1; height: 0.5px; background: var(--border);"></div>
+        <span style="padding: 0 10px;">OR</span>
+        <div style="flex: 1; height: 0.5px; background: var(--border);"></div>
+      </div>
+      
+      <button class="btn btn-outline" style="width:100%; padding:10px; display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--border); background:var(--surface); color:var(--text); font-weight:500; font-size:13px; border-radius:var(--radius-sm); cursor:pointer;" onclick="triggerGoogleSignIn()">
+        <svg width="16" height="16" viewBox="0 0 18 18" style="flex-shrink:0;"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91c1.71-1.58 2.69-3.9 2.69-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.7H.95v2.3C2.43 15.89 5.5 18 9 18z"/><path fill="#FBBC05" d="M3.96 10.7a5.4 5.4 0 0 1 0-3.4V5H.95a9 9 0 0 0 0 8l3.01-2.3z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.3C13.47.87 11.43 0 9 0 5.5 0 2.43 2.11.95 5.3l3.01 2.3c.71-2.12 2.7-3.7 5.04-3.7z"/></svg>
+        Sign in with Google
+      </button>
     </div>
 
     <!-- Police Form -->
@@ -839,8 +851,26 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
       </div>
       <div class="form-group">
         <label>Pincode of Place of Occurrence</label>
-        <input type="text" id="f-pincode" placeholder="e.g. 700091 (6-digit West Bengal PIN)" maxlength="6" oninput="autoSelectPS(this.value)"/>
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <input type="text" id="f-pincode" placeholder="e.g. 700091 (6-digit PIN)" maxlength="6" oninput="autoSelectPS(this.value)" style="flex:1;"/>
+          <button type="button" class="btn btn-ghost" onclick="detectLocationPS()" id="btn-detect-loc" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">📍 Detect</button>
+        </div>
       </div>
+    </div>
+    <!-- PS Suggestion Preview Box (with map thumbnail) -->
+    <div id="ps-preview-box" style="display:none; background:var(--teal-light); border:0.5px solid var(--teal); border-radius:var(--radius-sm); padding:0; margin-bottom:1rem; overflow:hidden;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 14px;">
+        <span style="font-size:12px; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:.05em;">📍 Mapped Police Station</span>
+        <button onclick="document.getElementById('ps-preview-box').style.display='none'" style="background:none; border:none; color:var(--teal); font-size:16px; cursor:pointer;">×</button>
+      </div>
+      <!-- Inline map thumbnail for the form -->
+      <div style="position:relative; width:100%; height:140px; border-top:0.5px solid rgba(15,110,86,.2); border-bottom:0.5px solid rgba(15,110,86,.2);">
+        <iframe id="ps-form-map-iframe" src="" frameborder="0" style="width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>
+        <div id="ps-form-map-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,110,86,.05);">
+          <span style="font-size:24px;">🗺️</span>
+        </div>
+      </div>
+      <div id="ps-preview-content" style="font-size:13px; color:var(--text); padding:10px 14px;"></div>
     </div>
     <div class="form-group">
       <label>Detailed description</label>
@@ -870,15 +900,39 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
           <option>Kolkata</option>
           <option>South 24 Parganas</option>
           <option>Howrah</option>
+          <option>Hooghly</option>
+          <option>Murshidabad</option>
+          <option>Nadia</option>
+          <option>Burdwan</option>
         </select>
       </div>
       <div class="form-group">
         <label>Police station</label>
         <select id="f-ps">
-          <option>Bidhannagar</option>
-          <option>New Town</option>
-          <option>Lake Town</option>
-          <option>Dum Dum</option>
+          <optgroup label="North 24 Parganas">
+            <option>Bidhannagar</option>
+            <option>New Town</option>
+            <option>Lake Town</option>
+            <option>Dum Dum</option>
+            <option>Barasat</option>
+            <option>Bangaon</option>
+          </optgroup>
+          <optgroup label="Kolkata">
+            <option>Hare Street</option>
+            <option>Park Street</option>
+            <option>Ballygunge</option>
+            <option>Alipore</option>
+            <option>Jadavpur</option>
+          </optgroup>
+          <optgroup label="South 24 Parganas">
+            <option>Diamond Harbour</option>
+            <option>Baruipur</option>
+          </optgroup>
+          <optgroup label="Howrah">
+            <option>Howrah</option>
+            <option>Shibpur</option>
+            <option>Uluberia</option>
+          </optgroup>
         </select>
       </div>
     </div>
@@ -911,7 +965,7 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
     </div>
   </div>
 
-  <div id="track-result" style="display:none;">
+    <div id="track-result" style="display:none;">
     <div class="track-result">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
         <div>
@@ -931,6 +985,64 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
           <span style="font-size:12px; font-weight:600; color:var(--teal); display:flex; align-items:center; gap:6px;">
             🛡️ Soft Copy Dispatched to Police Station Inbox
           </span>
+        </div>
+      </div>
+
+      <!-- LOCATION-WISE POLICE STATION INFO CARD (Google Maps Integrated) -->
+      <div id="tr-ps-info-card" style="display:none; margin-top:1rem; border:0.5px solid var(--teal); border-radius:var(--radius-sm); overflow:hidden; box-shadow:0 4px 16px rgba(15,110,86,0.12);">
+        <!-- Header bar -->
+        <div style="background:linear-gradient(135deg, var(--teal) 0%, #0a5240 100%); padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">🏛️</span>
+            <div>
+              <div style="font-size:12px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:.07em;">Jurisdictional Police Station</div>
+              <div style="font-size:11px; color:rgba(255,255,255,.7); margin-top:1px;">Location tracking via Google Maps</div>
+            </div>
+          </div>
+          <span id="tr-ps-zone" style="font-size:10px; background:rgba(255,255,255,.2); color:white; padding:3px 10px; border-radius:20px; font-weight:500;">-</span>
+        </div>
+
+        <!-- Google Map embed -->
+        <div id="tr-ps-map-container" style="position:relative; width:100%; height:220px; background:#e8f0e8;">
+          <iframe id="tr-ps-map-iframe" src="" frameborder="0" style="width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>
+          <div id="tr-ps-map-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--teal-light);gap:8px;">
+            <div style="font-size:32px;">🗺️</div>
+            <div style="font-size:13px;font-weight:600;color:var(--teal);">Loading map...</div>
+          </div>
+          <!-- Interactive Map canvas (when Google Maps JS API available) -->
+          <div id="tr-ps-gmap" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0;"></div>
+        </div>
+
+        <!-- Details grid -->
+        <div style="padding:14px 16px; background:var(--teal-light); display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;">
+          <div>
+            <div style="font-size:10px; text-transform:uppercase; color:var(--teal); font-weight:700; margin-bottom:3px; letter-spacing:.05em;">Station Name</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text);" id="tr-ps-name">-</div>
+          </div>
+          <div>
+            <div style="font-size:10px; text-transform:uppercase; color:var(--teal); font-weight:700; margin-bottom:3px; letter-spacing:.05em;">District</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text);" id="tr-ps-district">-</div>
+          </div>
+          <div style="grid-column:span 2;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--teal); font-weight:700; margin-bottom:3px; letter-spacing:.05em;">📍 Full Address</div>
+            <div style="font-size:13px; color:var(--text2); line-height:1.5;" id="tr-ps-address">-</div>
+          </div>
+          <div>
+            <div style="font-size:10px; text-transform:uppercase; color:var(--teal); font-weight:700; margin-bottom:3px; letter-spacing:.05em;">📞 Direct Helpline</div>
+            <div style="font-size:14px; color:var(--text); font-weight:600;" id="tr-ps-phone">-</div>
+          </div>
+          <div>
+            <div style="font-size:10px; text-transform:uppercase; color:var(--teal); font-weight:700; margin-bottom:3px; letter-spacing:.05em;">📧 Official Email</div>
+            <div style="font-size:12px; color:var(--text2); word-break:break-all;" id="tr-ps-email">-</div>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="padding:10px 16px; background:var(--surface); display:flex; gap:8px; flex-wrap:wrap; border-top:0.5px solid rgba(15,110,86,.2);">
+          <a id="tr-ps-map-btn" href="#" target="_blank" class="btn btn-teal" style="font-size:12px; padding:7px 14px; text-decoration:none; border-radius:6px; display:flex; align-items:center; gap:5px;">🗺️ Google Maps</a>
+          <a id="tr-ps-directions-btn" href="#" target="_blank" class="btn btn-ghost" style="font-size:12px; padding:7px 14px; text-decoration:none; border-radius:6px; display:flex; align-items:center; gap:5px;">🧭 Get Directions</a>
+          <button onclick="getDirectionsFromCurrentLocation()" class="btn btn-ghost" style="font-size:12px; padding:7px 12px;">📍 Route from My Location</button>
+          <button onclick="copyPSPhone()" class="btn btn-ghost" style="font-size:12px; padding:7px 12px;">📋 Copy Phone</button>
         </div>
       </div>
 
@@ -1302,6 +1414,45 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
   </div>
 </div>
 
+<!-- SIMULATED GOOGLE LOGIN MODAL -->
+<div class="modal-overlay" id="google-simulated-modal">
+  <div class="modal" style="max-width:380px;">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div style="text-align:center; margin-bottom:1.25rem;">
+      <svg width="24" height="24" viewBox="0 0 18 18" style="margin-bottom:6px;"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91c1.71-1.58 2.69-3.9 2.69-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.7H.95v2.3C2.43 15.89 5.5 18 9 18z"/><path fill="#FBBC05" d="M3.96 10.7a5.4 5.4 0 0 1 0-3.4V5H.95a9 9 0 0 0 0 8l3.01-2.3z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.3C13.47.87 11.43 0 9 0 5.5 0 2.43 2.11.95 5.3l3.01 2.3c.71-2.12 2.7-3.7 5.04-3.7z"/></svg>
+      <h3 style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600;">Sign in with Google</h3>
+      <p style="font-size:12px; color:var(--text3); margin-top:2px;">Select an active profile from your Google Account</p>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div onclick="selectSimulatedGoogleUser('Priya Sharma', 'priya.sharma@gmail.com', '👩')" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border:0.5px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; background:var(--surface2); transition:all 0.15s; text-align: left;">
+        <div style="width:36px; height:36px; background:#e6f1fb; color:#185fa5; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;">👩</div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--text);">Priya Sharma</div>
+          <div style="font-size:11px; color:var(--text3);">priya.sharma@gmail.com</div>
+        </div>
+        <span style="font-size:10px; color:var(--teal); background:var(--teal-light); padding:2px 8px; border-radius:10px; font-weight:500;">Signed in</span>
+      </div>
+      
+      <div onclick="selectSimulatedGoogleUser('Debasrita Mukherjee', 'debasrita.m@gmail.com', '👩‍💼')" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border:0.5px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; background:var(--surface2); transition:all 0.15s; text-align: left;">
+        <div style="width:36px; height:36px; background:#fff0f3; color:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;">👩‍💼</div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--text);">Debasrita Mukherjee</div>
+          <div style="font-size:11px; color:var(--text3);">debasrita.m@gmail.com</div>
+        </div>
+      </div>
+      
+      <div onclick="selectSimulatedGoogleUser('Anjali Roy', 'anjali.roy@gmail.com', '👩‍🎓')" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border:0.5px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; background:var(--surface2); transition:all 0.15s; text-align: left;">
+        <div style="width:36px; height:36px; background:#e1f5ee; color:#0f6e56; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;">👩‍🎓</div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--text);">Anjali Roy</div>
+          <div style="font-size:11px; color:var(--text3);">anjali.roy@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Robust Try-Catch browser storage abstraction
 const SafeStorage = {
@@ -1363,6 +1514,89 @@ function selectLoginRole(role) {
 }
 
 let currentUser = null;
+
+// Google Sign-In Integrations
+function initGoogleGSI() {
+  if (typeof google !== 'undefined' && google.accounts) {
+    try {
+      google.accounts.id.initialize({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        callback: handleGoogleLogin
+      });
+    } catch (e) {
+      console.warn('Google Identity initialization failed:', e);
+    }
+  }
+}
+function triggerGoogleSignIn() {
+  if (typeof google !== 'undefined') {
+    try {
+      google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          document.getElementById('google-simulated-modal').classList.add('open');
+        }
+      });
+    } catch (e) {
+      document.getElementById('google-simulated-modal').classList.add('open');
+    }
+  } else {
+    document.getElementById('google-simulated-modal').classList.add('open');
+  }
+}
+
+async function selectSimulatedGoogleUser(name, email, avatar) {
+  closeModal();
+  toast('Connecting Google Account...');
+  
+  try {
+    const res = await fetch('/api/login/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        simulated: true,
+        name: name,
+        email: email,
+        picture: avatar
+      })
+    });
+    
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Simulated Google auth failed.');
+    }
+    
+    const data = await res.json();
+    SafeStorage.setItem('abhaya_session', JSON.stringify(data.user));
+    currentUser = data.user;
+    applyUserSession(currentUser);
+    toast(`Welcome, ${currentUser.name} (Google Account).`);
+  } catch (err) {
+    showLoginError(err.message);
+  }
+}
+
+async function handleGoogleLogin(response) {
+  try {
+    const res = await fetch('/api/login/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential })
+    });
+    
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Google Sign-In failed.');
+    }
+    
+    const data = await res.json();
+    SafeStorage.setItem('abhaya_session', JSON.stringify(data.user));
+    currentUser = data.user;
+    applyUserSession(currentUser);
+    toast(`Successfully signed in as ${currentUser.name}.`);
+  } catch (err) {
+    showLoginError(err.message);
+  }
+}
 
 function checkSession() {
   try {
@@ -1655,6 +1889,12 @@ async function resolveSOSAlert(id) {
 
 // Global page load initializations
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Google Identity Services
+  initGoogleGSI();
+
+  // Load Google Maps config & API key from backend
+  initMapsConfig();
+
   // Set today's date as default in complaint form
   const dateInput = document.getElementById('f-date');
   if (dateInput) {
@@ -1860,27 +2100,463 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function autoSelectPS(pin) {
-  const pinMap = {
-    '700091': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
-    '700106': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
-    '700156': { ps: 'New Town', dist: 'North 24 Parganas' },
-    '700160': { ps: 'New Town', dist: 'North 24 Parganas' },
-    '700089': { ps: 'Lake Town', dist: 'North 24 Parganas' },
-    '700048': { ps: 'Lake Town', dist: 'North 24 Parganas' },
-    '700028': { ps: 'Dum Dum', dist: 'North 24 Parganas' },
-    '700030': { ps: 'Dum Dum', dist: 'North 24 Parganas' }
-  };
-  
-  const mapped = pinMap[pin.trim()];
-  if (mapped) {
-    const distSelect = document.getElementById('f-district');
-    const psSelect = document.getElementById('f-ps');
-    if (distSelect && psSelect) {
-      distSelect.value = mapped.dist;
-      psSelect.value = mapped.ps;
-      toast(`Mapped Pincode ${pin} to ${mapped.ps} Police Station.`);
+// ─── GOOGLE MAPS INTEGRATION ─────────────────────────────────────────────────
+let googleMapsApiKey = '';
+let googleMapsLoaded = false;
+let googleMapsLoading = false;
+let currentPSData = null; // Holds active PS details for route calculation
+
+// Load config (API key) from backend, then bootstrap Maps
+async function initMapsConfig() {
+  try {
+    const res = await fetch('/api/config');
+    const cfg = await res.json();
+    googleMapsApiKey = cfg.googleMapsApiKey || '';
+
+    if (cfg.jsApiEnabled) {
+      // Full Google Maps JS API (interactive map with markers + directions)
+      loadGoogleMapsAPI();
+    } else if (cfg.mapsEnabled) {
+      // Embed-only key (e.g. Maps Embed API key) — use iframe embeds
+      console.info(`Google Maps key type: ${cfg.keyType}. Using embed iframe maps.`);
+    } else {
+      // No valid key — fall back to OpenStreetMap
+      console.info('No Google Maps API key configured. Using OpenStreetMap embeds.');
     }
+  } catch (e) {
+    console.warn('Maps config load failed:', e);
+  }
+}
+
+// Dynamically inject the Google Maps JavaScript API script
+function loadGoogleMapsAPI() {
+  if (googleMapsLoaded || googleMapsLoading || !googleMapsApiKey) return;
+  googleMapsLoading = true;
+
+  window._gmapsCallback = function() {
+    googleMapsLoaded = true;
+    googleMapsLoading = false;
+    console.info('Google Maps JS API loaded successfully.');
+    // Re-render any pending PS card map
+    if (currentPSData) renderPSMapWithGoogleMaps(currentPSData);
+  };
+
+  const script = document.createElement('script');
+  // NOTE: 'directions' is NOT a valid library — DirectionsService is in the core API
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=_gmapsCallback&v=weekly`;
+  script.async = true;
+  script.defer = true;
+
+  // Graceful fallback: if the key is invalid, Maps will fire an error event
+  script.onerror = function() {
+    googleMapsLoading = false;
+    googleMapsLoaded = false;
+    console.warn('Google Maps JS API failed to load. Falling back to OpenStreetMap embeds.');
+    // Render iframe fallback for any pending PS card
+    if (currentPSData) showPSMapIframe(currentPSData);
+  };
+
+  document.head.appendChild(script);
+}
+
+// Build an embed URL for the map iframe (works without JS API)
+// Uses Google Maps Embed API when a proper key is available, OpenStreetMap otherwise
+function buildMapEmbedUrl(lat, lng, stationName, apiKey) {
+  const validKey = apiKey && apiKey.length > 10 && apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY_HERE';
+  if (validKey) {
+    // Google Maps Embed API — shows exact pin for the station by coordinates
+    const query = encodeURIComponent(`${lat},${lng}`);
+    return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}&zoom=16&maptype=roadmap`;
+  }
+  // Fallback: OpenStreetMap with a marker and tighter zoom
+  const pad = 0.008; // ~900m radius bounding box
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${lng-pad},${lat-pad},${lng+pad},${lat+pad}&layer=mapnik&marker=${lat},${lng}`;
+}
+
+// Render interactive Google Maps JS API map in the tracking PS card
+function renderPSMapWithGoogleMaps(psData) {
+  if (!window.google || !window.google.maps) return;
+  
+  const mapPlaceholder = document.getElementById('tr-ps-map-placeholder');
+  const mapIframe = document.getElementById('tr-ps-map-iframe');
+  const gmapDiv = document.getElementById('tr-ps-gmap');
+  
+  if (!gmapDiv) return;
+  
+  // Show interactive map div, hide iframe
+  if (mapIframe) mapIframe.style.display = 'none';
+  if (mapPlaceholder) mapPlaceholder.style.display = 'none';
+  gmapDiv.style.display = 'block';
+  
+  const psLatLng = { lat: psData.lat, lng: psData.lng };
+  
+  const map = new google.maps.Map(gmapDiv, {
+    center: psLatLng,
+    zoom: 15,
+    mapTypeId: 'roadmap',
+    styles: [
+      { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'simplified' }] }
+    ],
+    mapTypeControl: false,
+    streetViewControl: true,
+    fullscreenControl: true,
+    zoomControl: true
+  });
+  
+  // Police station marker (red pin with shield emoji)
+  const psMarker = new google.maps.Marker({
+    position: psLatLng,
+    map: map,
+    title: `${psData.station} Police Station`,
+    icon: {
+      path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+      scale: 8,
+      fillColor: '#c9184a',
+      fillOpacity: 1,
+      strokeColor: '#ffffff',
+      strokeWeight: 2
+    },
+    animation: google.maps.Animation.DROP
+  });
+  
+  // Info window for PS marker
+  const infoWindow = new google.maps.InfoWindow({
+    content: `
+      <div style="font-family:sans-serif; padding:6px 2px; min-width:180px;">
+        <div style="font-weight:700; font-size:14px; color:#0f6e56;">\ud83c\udfdb\ufe0f ${psData.station} Police Station</div>
+        <div style="font-size:12px; color:#555; margin-top:4px;">\ud83d\udccd ${psData.address}</div>
+        <div style="font-size:12px; color:#333; margin-top:4px;">\ud83d\udcde <strong>${psData.phone}</strong></div>
+        <a href="${psData.directionsUrl}" target="_blank" style="display:inline-block;margin-top:8px;font-size:11px;background:#0f6e56;color:white;padding:4px 10px;border-radius:4px;text-decoration:none;">\ud83e\udded Get Directions</a>
+      </div>
+    `
+  });
+  
+  psMarker.addListener('click', () => infoWindow.open(map, psMarker));
+  infoWindow.open(map, psMarker);
+  
+  // Store map reference and marker for route drawing
+  currentPSData._map = map;
+  currentPSData._psMarker = psMarker;
+  currentPSData._psLatLng = psLatLng;
+}
+
+// Show PS map via embed iframe (fallback when no JS API key)
+function showPSMapIframe(psData) {
+  const iframe = document.getElementById('tr-ps-map-iframe');
+  const placeholder = document.getElementById('tr-ps-map-placeholder');
+  if (!iframe) return;
+  
+  const embedUrl = buildMapEmbedUrl(psData.lat, psData.lng, psData.station, googleMapsApiKey);
+  iframe.src = embedUrl;
+  if (placeholder) placeholder.style.display = 'none';
+  iframe.style.display = 'block';
+}
+
+// Show form map thumbnail via iframe
+function showFormMapIframe(psData) {
+  const iframe = document.getElementById('ps-form-map-iframe');
+  const placeholder = document.getElementById('ps-form-map-placeholder');
+  if (!iframe) return;
+  const embedUrl = buildMapEmbedUrl(psData.lat, psData.lng, psData.station, googleMapsApiKey);
+  iframe.src = embedUrl;
+  if (placeholder) placeholder.style.display = 'none';
+}
+
+// Draw route from user's current GPS location to the police station
+function getDirectionsFromCurrentLocation() {
+  if (!currentPSData) { toast('No police station loaded yet.'); return; }
+  
+  if (!navigator.geolocation) {
+    // Open Google Maps directions link as fallback
+    window.open(currentPSData.directionsUrl, '_blank');
+    return;
+  }
+  
+  toast('Getting your location...');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const userLat = pos.coords.latitude;
+      const userLng = pos.coords.longitude;
+      const psLat = currentPSData.lat;
+      const psLng = currentPSData.lng;
+      
+      // Try to use Google Maps JS API for in-page directions
+      if (googleMapsLoaded && currentPSData._map) {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+          map: currentPSData._map,
+          suppressMarkers: false,
+          polylineOptions: { strokeColor: '#c9184a', strokeWeight: 4 }
+        });
+        
+        directionsService.route({
+          origin: new google.maps.LatLng(userLat, userLng),
+          destination: new google.maps.LatLng(psLat, psLng),
+          travelMode: google.maps.TravelMode.DRIVING
+        }, (result, status) => {
+          if (status === 'OK') {
+            directionsRenderer.setDirections(result);
+            const leg = result.routes[0].legs[0];
+            toast(`Route: ${leg.distance.text} · ${leg.duration.text} to ${currentPSData.station} P.S.`);
+            // Re-center map to fit the route
+            currentPSData._map.fitBounds(result.routes[0].bounds);
+          } else {
+            // Fallback: open in new tab
+            window.open(`https://maps.google.com/maps?saddr=${userLat},${userLng}&daddr=${psLat},${psLng}&dirflg=d`, '_blank');
+          }
+        });
+        
+        // Add blue user location marker
+        new google.maps.Marker({
+          position: { lat: userLat, lng: userLng },
+          map: currentPSData._map,
+          title: 'Your Location',
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#4285F4',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 3
+          }
+        });
+      } else {
+        // No JS API — open Google Maps in new tab with route
+        const routeUrl = `https://maps.google.com/maps?saddr=${userLat},${userLng}&daddr=${psLat},${psLng}&dirflg=d`;
+        window.open(routeUrl, '_blank');
+        toast('Opening route in Google Maps...');
+      }
+    },
+    (err) => {
+      // Still open directions without origin
+      window.open(currentPSData.directionsUrl, '_blank');
+      toast('Location access denied. Opening Google Maps directions...');
+    },
+    { timeout: 8000 }
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function autoSelectPS(pin) {
+  if (!pin || pin.length < 6) {
+    const psBox = document.getElementById('ps-preview-box');
+    if (psBox) psBox.style.display = 'none';
+    return;
+  }
+  
+  fetch(`/api/ps-lookup/${pin.trim()}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.found) {
+        const psBox = document.getElementById('ps-preview-box');
+        if (psBox) psBox.style.display = 'none';
+        return;
+      }
+      
+      // Auto-select district and PS dropdowns
+      const distSelect = document.getElementById('f-district');
+      const psSelect = document.getElementById('f-ps');
+      if (distSelect) distSelect.value = data.district;
+      if (psSelect) psSelect.value = data.station;
+      
+      // Show rich PS info preview box + map thumbnail
+      const psBox = document.getElementById('ps-preview-box');
+      const psContent = document.getElementById('ps-preview-content');
+      if (psBox && psContent) {
+        psContent.innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 16px;">
+            <div><strong style="color:var(--teal); font-size:14px;">${data.station} P.S.</strong></div>
+            <div style="font-size:12px; color:var(--text2);">Zone: ${data.zone}</div>
+            <div style="font-size:12px; grid-column:span 2;">\ud83d\udccd ${data.address}</div>
+            <div style="font-size:13px; font-weight:600;">\ud83d\udcde ${data.phone}</div>
+            <div style="font-size:11px; color:var(--text2);">\ud83d\udce7 ${data.email}</div>
+            <div style="grid-column:span 2; display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+              <a href="${data.mapUrl}" target="_blank" style="font-size:11px; color:white; background:var(--teal); text-decoration:none; font-weight:600; padding:4px 10px; border-radius:4px;">\ud83d\uddfa\ufe0f Open in Maps</a>
+              <a href="${data.directionsUrl}" target="_blank" style="font-size:11px; color:var(--teal); text-decoration:none; font-weight:500;">\ud83e\udded Get Directions</a>
+            </div>
+          </div>
+        `;
+        psBox.style.display = 'block';
+        
+        // Show map thumbnail in form
+        showFormMapIframe(data);
+      }
+      
+      toast(`\ud83d\udccd Pincode ${pin} \u2192 ${data.station} Police Station`);
+    })
+    .catch(() => {
+      // Local fallback
+      const fallbackMap = {
+        '700091': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
+        '700106': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
+        '700156': { ps: 'New Town', dist: 'North 24 Parganas' },
+        '700160': { ps: 'New Town', dist: 'North 24 Parganas' },
+        '700089': { ps: 'Lake Town', dist: 'North 24 Parganas' },
+        '700048': { ps: 'Lake Town', dist: 'North 24 Parganas' },
+        '700028': { ps: 'Dum Dum', dist: 'North 24 Parganas' },
+        '700030': { ps: 'Dum Dum', dist: 'North 24 Parganas' }
+      };
+      const mapped = fallbackMap[pin.trim()];
+      if (mapped) {
+        const distSelect = document.getElementById('f-district');
+        const psSelect = document.getElementById('f-ps');
+        if (distSelect) distSelect.value = mapped.dist;
+        if (psSelect) psSelect.value = mapped.ps;
+        toast(`Mapped Pincode ${pin} \u2192 ${mapped.ps} Police Station`);
+      }
+    });
+}
+
+// GPS-based location detection for nearest police station
+function detectLocationPS() {
+  const btn = document.getElementById('btn-detect-loc');
+  if (btn) { btn.textContent = '\u23f3 Detecting...'; btn.disabled = true; }
+  
+  if (!navigator.geolocation) {
+    toast('Geolocation is not supported on this browser.');
+    if (btn) { btn.textContent = '\ud83d\udccd Detect'; btn.disabled = false; }
+    return;
+  }
+  
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      
+      // Use Google Maps Geocoding API if key is available, else Nominatim
+      try {
+        let detectedPin = null;
+        let shortAddr = '';
+        
+        if (googleMapsApiKey && googleMapsApiKey !== 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
+          // Google Geocoding API
+          const gRes = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${googleMapsApiKey}`);
+          const gData = await gRes.json();
+          if (gData.results && gData.results.length > 0) {
+            const result = gData.results[0];
+            shortAddr = result.formatted_address;
+            const postalComp = result.address_components.find(c => c.types.includes('postal_code'));
+            if (postalComp) detectedPin = postalComp.long_name.replace(/\s/g, '').slice(0, 6);
+          }
+        } else {
+          // OpenStreetMap Nominatim (free fallback)
+          const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          const geoData = await geoRes.json();
+          detectedPin = geoData.address && geoData.address.postcode ? geoData.address.postcode.replace(/\s/g, '').slice(0, 6) : null;
+          shortAddr = [geoData.address.road, geoData.address.suburb, geoData.address.city].filter(Boolean).join(', ') || geoData.display_name;
+        }
+        
+        const locInput = document.getElementById('f-location');
+        if (locInput && !locInput.value && shortAddr) locInput.value = shortAddr;
+        
+        if (detectedPin) {
+          document.getElementById('f-pincode').value = detectedPin;
+          autoSelectPS(detectedPin);
+          toast(`\ud83d\udccd Location detected: Pincode ${detectedPin}. Finding nearest PS...`);
+        } else {
+          toast(`Location found (${lat.toFixed(4)}, ${lng.toFixed(4)}). Enter pincode manually.`);
+        }
+      } catch (e) {
+        toast(`Location captured: ${lat.toFixed(4)}, ${lng.toFixed(4)}. Enter pincode manually.`);
+      }
+      
+      if (btn) { btn.textContent = '\ud83d\udccd Detect'; btn.disabled = false; }
+    },
+    (err) => {
+      toast('Location access denied. Please enter pincode manually.');
+      if (btn) { btn.textContent = '\ud83d\udccd Detect'; btn.disabled = false; }
+    },
+    { timeout: 8000, maximumAge: 60000 }
+  );
+}
+
+// Load location-wise police station info card into tracking result view
+async function loadPSInfoCard(pincode, fallbackStation, fallbackDistrict) {
+  const card = document.getElementById('tr-ps-info-card');
+  if (!card) return;
+  currentPSData = null;
+  
+  // Reset map state
+  const iframe = document.getElementById('tr-ps-map-iframe');
+  const gmap = document.getElementById('tr-ps-gmap');
+  const placeholder = document.getElementById('tr-ps-map-placeholder');
+  if (iframe) { iframe.src = ''; iframe.style.display = 'block'; }
+  if (gmap) { gmap.style.display = 'none'; gmap.innerHTML = ''; }
+  if (placeholder) placeholder.style.display = 'flex';
+  
+  let psData = null;
+  
+  // Try API lookup with pincode first
+  if (pincode && /^\d{6}$/.test(pincode)) {
+    try {
+      const res = await fetch(`/api/ps-lookup/${pincode}`);
+      const data = await res.json();
+      if (data.found) psData = data;
+    } catch (e) {}
+  }
+  
+  // Fallback: match by station name
+  if (!psData && fallbackStation) {
+    try {
+      const res = await fetch('/api/ps-list');
+      const stations = await res.json();
+      const match = stations.find(s => s.station === fallbackStation);
+      if (match) psData = match;
+    } catch (e) {}
+  }
+  
+  // Last resort: generate minimal info
+  if (!psData && fallbackStation) {
+    psData = {
+      station: fallbackStation,
+      district: fallbackDistrict || 'West Bengal',
+      zone: 'West Bengal Police',
+      address: `${fallbackStation} Police Station, West Bengal`,
+      phone: '100 (Emergency)',
+      email: `${fallbackStation.toLowerCase().replace(/\s/g,'')}.ps@wb.police.gov.in`,
+      lat: 22.5726, lng: 88.3639,
+      mapUrl: `https://maps.google.com/?q=${encodeURIComponent(fallbackStation + ' Police Station West Bengal')}`,
+      directionsUrl: `https://maps.google.com/?q=${encodeURIComponent(fallbackStation + ' Police Station West Bengal')}`,
+      found: true
+    };
+  }
+  
+  if (!psData) return;
+  
+  currentPSData = psData;
+  
+  // Fill info fields
+  document.getElementById('tr-ps-name').textContent = `${psData.station} Police Station`;
+  document.getElementById('tr-ps-district').textContent = psData.district;
+  document.getElementById('tr-ps-zone').textContent = psData.zone || psData.district;
+  document.getElementById('tr-ps-address').textContent = psData.address;
+  document.getElementById('tr-ps-phone').textContent = psData.phone;
+  document.getElementById('tr-ps-phone').dataset.phone = psData.phone;
+  document.getElementById('tr-ps-email').textContent = psData.email;
+  document.getElementById('tr-ps-map-btn').href = psData.mapUrl;
+  document.getElementById('tr-ps-directions-btn').href = psData.directionsUrl;
+  card.style.display = 'block';
+  
+  // Load map: use Google Maps JS API if loaded, else iframe embed
+  if (googleMapsLoaded && window.google) {
+    renderPSMapWithGoogleMaps(psData);
+  } else {
+    showPSMapIframe(psData);
+  }
+}
+
+// Copy police station phone number to clipboard
+function copyPSPhone() {
+  const phoneEl = document.getElementById('tr-ps-phone');
+  if (!phoneEl) return;
+  const phone = phoneEl.dataset.phone || phoneEl.textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(phone).then(() => toast(`\ud83d\udccb Phone number ${phone} copied!`));
+  } else {
+    toast(`Police Station Phone: ${phone}`);
   }
 }
 
@@ -2009,6 +2685,9 @@ async function trackComplaint() {
         badgeEl.style.display = 'none';
       }
     }
+
+    // Load location-wise PS info card from backend
+    loadPSInfoCard(pinVal, complaint.police_station, complaint.district);
 
     // Render attachments in tracking view
     const trAttachSection = document.getElementById('tr-attachments-section');
@@ -2413,6 +3092,190 @@ let rakshakChatHistory = [];
 let isVoiceRecording = false;
 let speechRecognitionInstance = null;
 
+// ─── AI COMPLAINT INTERVIEW MODE ─────────────────────────────────────────────
+let isInterviewMode = false;
+let interviewHistory = [];
+let collectedComplaintData = null;
+
+function startComplaintInterview() {
+  isInterviewMode = true;
+  interviewHistory = [];
+  collectedComplaintData = null;
+  
+  const chatBody = document.getElementById('chat-body');
+  if (!chatBody) return;
+  
+  // Update chat header to show interview mode
+  const botStatus = document.querySelector('.chat-bot-status');
+  if (botStatus) botStatus.textContent = '🚔 Complaint Interview Mode';
+  const botName = document.querySelector('.chat-bot-name');
+  if (botName) botName.textContent = 'SI Rakshak';
+  
+  // Update input placeholder
+  const chatInput = document.getElementById('chat-input');
+  if (chatInput) chatInput.placeholder = 'Reply to the officer...';
+  
+  // Hide suggestion chips during interview
+  const suggestionsContainer = document.querySelector('.chat-suggestions-container');
+  if (suggestionsContainer) suggestionsContainer.style.display = 'none';
+  
+  // Add mode indicator bar
+  const modeBar = document.createElement('div');
+  modeBar.id = 'interview-mode-bar';
+  modeBar.style.cssText = 'background:linear-gradient(135deg, #c9184a, #a01040); color:white; padding:8px 14px; font-size:11px; font-weight:600; text-align:center; display:flex; align-items:center; justify-content:space-between; letter-spacing:.03em;';
+  modeBar.innerHTML = `
+    <span>🚔 AI COMPLAINT INTERVIEW IN PROGRESS</span>
+    <button onclick="exitInterviewMode()" style="background:rgba(255,255,255,.2); border:none; color:white; font-size:11px; padding:3px 10px; border-radius:4px; cursor:pointer;">✕ Exit</button>
+  `;
+  const chatHeader = document.querySelector('.chat-header');
+  if (chatHeader && chatHeader.nextSibling) {
+    chatHeader.parentNode.insertBefore(modeBar, chatHeader.nextSibling);
+  }
+  
+  // Send initial greeting to start the interview
+  sendUserMessage('I want to file a complaint.');
+}
+
+function exitInterviewMode() {
+  isInterviewMode = false;
+  interviewHistory = [];
+  collectedComplaintData = null;
+  
+  // Restore chat header
+  const botStatus = document.querySelector('.chat-bot-status');
+  if (botStatus) botStatus.textContent = 'Legal Safety Advisor';
+  const botName = document.querySelector('.chat-bot-name');
+  if (botName) botName.textContent = 'Rakshak AI';
+  
+  // Restore input placeholder
+  const chatInput = document.getElementById('chat-input');
+  if (chatInput) chatInput.placeholder = 'Ask Rakshak AI...';
+  
+  // Show suggestion chips again
+  const suggestionsContainer = document.querySelector('.chat-suggestions-container');
+  if (suggestionsContainer) suggestionsContainer.style.display = 'flex';
+  
+  // Remove mode bar
+  const modeBar = document.getElementById('interview-mode-bar');
+  if (modeBar) modeBar.remove();
+  
+  // Add exit message
+  const chatBody = document.getElementById('chat-body');
+  if (chatBody) {
+    const exitMsg = document.createElement('div');
+    exitMsg.className = 'chat-msg bot';
+    exitMsg.innerHTML = '🛡️ Interview mode ended. I\'m back as <strong>Rakshak AI</strong>, your legal advisor. How can I help you?';
+    chatBody.appendChild(exitMsg);
+    scrollToBottom();
+  }
+  
+  toast('Complaint interview ended.');
+}
+
+// Auto-fill the complaint form with collected data
+function autoFillComplaintForm(data) {
+  if (!data) return;
+  
+  // Map fields to form elements
+  const fieldMap = {
+    'full_name': 'f-name',
+    'mobile': 'f-mobile',
+    'email': 'f-email',
+    'aadhaar': 'f-aadhaar',
+    'complaint_type': 'f-type',
+    'incident_date': 'f-date',
+    'incident_location': 'f-location',
+    'pincode': 'f-pincode',
+    'description': 'f-desc',
+    'accused_details': 'f-accused'
+  };
+  
+  for (const [jsonKey, formId] of Object.entries(fieldMap)) {
+    const el = document.getElementById(formId);
+    if (el && data[jsonKey]) {
+      el.value = data[jsonKey];
+    }
+  }
+  
+  // Auto-select police station based on pincode
+  if (data.pincode) {
+    autoSelectPS(data.pincode);
+  }
+  
+  // Close chat, navigate to file complaint page
+  toggleRakshakChat();
+  const fileBtn = document.querySelectorAll('.nav-links button')[1];
+  showPage('file', fileBtn);
+  
+  toast('✅ All complaint details have been filled by AI Officer Rakshak!');
+  
+  // Scroll to the form top
+  setTimeout(() => {
+    const formCard = document.querySelector('#page-file .card');
+    if (formCard) formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+}
+
+// Parse AI response for complaint data JSON block
+function parseComplaintDataJSON(text) {
+  const jsonRegex = /--- COMPLAINT_DATA_JSON ---\s*([\s\S]*?)\s*--- COMPLAINT_DATA_JSON_END ---/;
+  const match = text.match(jsonRegex);
+  if (!match) return null;
+  
+  try {
+    const data = JSON.parse(match[1]);
+    // Validate required fields exist
+    const required = ['full_name', 'mobile', 'complaint_type', 'incident_date', 'incident_location', 'description'];
+    const hasRequired = required.every(f => data[f] && data[f].trim() !== '');
+    if (!hasRequired) return null;
+    return data;
+  } catch (e) {
+    console.warn('Failed to parse complaint data JSON:', e);
+    return null;
+  }
+}
+
+// Render the auto-fill confirmation card
+function renderComplaintConfirmationCard(data, chatBody) {
+  collectedComplaintData = data;
+  
+  const card = document.createElement('div');
+  card.className = 'chat-msg bot';
+  card.innerHTML = `
+    <div style="background:linear-gradient(135deg, rgba(15,110,86,0.1), rgba(15,110,86,0.05)); border:1.5px solid var(--teal); border-radius:10px; padding:14px; margin-top:8px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <span style="font-size:20px;">✅</span>
+        <div>
+          <div style="font-weight:700; font-size:14px; color:var(--teal);">Complaint Details Collected</div>
+          <div style="font-size:11px; color:var(--text3);">All information verified by SI Rakshak</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:12px; color:var(--text2); line-height:1.6;">
+        <strong>Name:</strong><span>${data.full_name}</span>
+        <strong>Mobile:</strong><span>${data.mobile}</span>
+        <strong>Email:</strong><span>${data.email || '—'}</span>
+        <strong>Type:</strong><span style="color:var(--accent); font-weight:600;">${data.complaint_type}</span>
+        <strong>Date:</strong><span>${data.incident_date}</span>
+        <strong>Location:</strong><span>${data.incident_location}</span>
+        <strong>Pincode:</strong><span>${data.pincode || '—'}</span>
+      </div>
+      <div style="margin-top:10px; font-size:12px; color:var(--text2);">
+        <strong>Description:</strong><br/>
+        <span style="display:block; margin-top:2px; padding:6px; background:var(--surface); border-radius:4px; max-height:60px; overflow-y:auto; font-size:11px; line-height:1.5;">${data.description}</span>
+      </div>
+      <button class="btn btn-primary" style="width:100%; margin-top:12px; padding:10px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:8px;" onclick="autoFillComplaintForm(collectedComplaintData)">
+        🚀 Submit to Complaint Form & Auto-Fill
+      </button>
+      <button class="btn btn-ghost" style="width:100%; margin-top:6px; padding:6px; font-size:11px;" onclick="exitInterviewMode()">
+        ✕ Cancel & discard
+      </button>
+    </div>
+  `;
+  chatBody.appendChild(card);
+  scrollToBottom();
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function sendUserMessage(text) {
   const chatBody = document.getElementById('chat-body');
   if (!chatBody) return;
@@ -2428,31 +3291,39 @@ async function sendUserMessage(text) {
   const typingIndicator = document.createElement('div');
   typingIndicator.className = 'chat-msg bot';
   typingIndicator.id = 'chat-typing-indicator';
-  typingIndicator.innerHTML = '🛡️ <em>Rakshak AI is typing...</em>';
+  typingIndicator.innerHTML = isInterviewMode
+    ? '🚔 <em>SI Rakshak is reviewing...</em>'
+    : '🛡️ <em>Rakshak AI is typing...</em>';
   chatBody.appendChild(typingIndicator);
   scrollToBottom();
 
-  // Construct Context if User is currently tracking a complaint
-  let context = "";
-  const trackResult = document.getElementById('track-result');
-  if (trackResult && trackResult.style.display === 'block') {
-    const cid = document.getElementById('tr-id').textContent;
-    const typeDate = document.getElementById('tr-type').textContent;
-    const status = document.getElementById('tr-status-badge').textContent;
-    const officer = document.getElementById('tr-officer').textContent;
-    const ps = document.getElementById('tr-ps').textContent;
-    context = `The user is currently tracking their case. Case details: ID: ${cid}, Type: ${typeDate}, Current Status: ${status}, Assigned Officer: ${officer}, Police Station: ${ps}. Explain their current stage and next actions if they ask about their status.`;
+  // Choose endpoint and history based on mode
+  const endpoint = isInterviewMode ? '/api/chat/file-complaint' : '/api/chat';
+  const historyRef = isInterviewMode ? interviewHistory : rakshakChatHistory;
+
+  // Build request body
+  const body = { message: text, history: historyRef };
+  
+  // Add context for normal mode only
+  if (!isInterviewMode) {
+    let context = "";
+    const trackResult = document.getElementById('track-result');
+    if (trackResult && trackResult.style.display === 'block') {
+      const cid = document.getElementById('tr-id').textContent;
+      const typeDate = document.getElementById('tr-type').textContent;
+      const status = document.getElementById('tr-status-badge').textContent;
+      const officer = document.getElementById('tr-officer').textContent;
+      const ps = document.getElementById('tr-ps').textContent;
+      context = `The user is currently tracking their case. Case details: ID: ${cid}, Type: ${typeDate}, Current Status: ${status}, Assigned Officer: ${officer}, Police Station: ${ps}. Explain their current stage and next actions if they ask about their status.`;
+    }
+    if (context) body.context = context;
   }
 
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: text,
-        history: rakshakChatHistory,
-        context: context
-      })
+      body: JSON.stringify(body)
     });
     
     // Remove typing indicator
@@ -2462,16 +3333,36 @@ async function sendUserMessage(text) {
     if (!res.ok) throw new Error('API query failed');
     const data = await res.json();
 
-    // Save turn to history (Gemini style)
-    rakshakChatHistory.push({ role: 'user', parts: [{ text: text }] });
-    rakshakChatHistory.push({ role: 'model', parts: [{ text: data.reply }] });
+    // Save turn to history
+    historyRef.push({ role: 'user', parts: [{ text: text }] });
+    historyRef.push({ role: 'model', parts: [{ text: data.reply }] });
 
-    // Limit conversation history to last 10 turns to stay within bounds
-    if (rakshakChatHistory.length > 20) {
-      rakshakChatHistory = rakshakChatHistory.slice(-20);
+    // Limit history
+    if (historyRef.length > 30) {
+      historyRef.splice(0, historyRef.length - 30);
     }
 
-    // Render formatted response
+    // Check for complaint data JSON in interview mode
+    if (isInterviewMode) {
+      const complaintData = parseComplaintDataJSON(data.reply);
+      if (complaintData) {
+        // Strip the JSON block from the visible reply
+        const cleanReply = data.reply.replace(/--- COMPLAINT_DATA_JSON ---[\s\S]*?--- COMPLAINT_DATA_JSON_END ---/, '').trim();
+        
+        if (cleanReply) {
+          const botMsg = document.createElement('div');
+          botMsg.className = 'chat-msg bot';
+          botMsg.innerHTML = formatMarkdown(cleanReply);
+          chatBody.appendChild(botMsg);
+        }
+        
+        // Show the confirmation card with auto-fill button
+        renderComplaintConfirmationCard(complaintData, chatBody);
+        return;
+      }
+    }
+
+    // Render formatted response (normal flow)
     const botMsg = document.createElement('div');
     botMsg.className = 'chat-msg bot';
     botMsg.innerHTML = formatMarkdown(data.reply);
@@ -2484,13 +3375,18 @@ async function sendUserMessage(text) {
 
     const botMsg = document.createElement('div');
     botMsg.className = 'chat-msg bot';
-    botMsg.innerHTML = '🛡️ Sorry, I am having trouble connecting to my service. Please try again.';
+    botMsg.innerHTML = isInterviewMode
+      ? '🚔 I apologize, there was a technical issue. Please try again or use the manual form.'
+      : '🛡️ Sorry, I am having trouble connecting to my service. Please try again.';
     chatBody.appendChild(botMsg);
     scrollToBottom();
   }
 }
 
 // Advanced client-side parser converting markdown & legal draft envelopes
+// Global store for AI-generated drafts (avoids inline escaping issues)
+const _aiDrafts = [];
+
 function formatMarkdown(text) {
   if (!text) return '';
   
@@ -2499,12 +3395,14 @@ function formatMarkdown(text) {
   // 1. Extract and format AI legal draft envelopes
   const draftRegex = /--- COMPLAINT DRAFT START ---([\s\S]*?)--- COMPLAINT DRAFT END ---/g;
   html = html.replace(draftRegex, (match, draftText) => {
-    const trimmedDraft = draftText.trim().replace(/'/g, "\\'");
+    // Store draft text in array and reference by index (avoids all escaping issues)
+    const draftIndex = _aiDrafts.length;
+    _aiDrafts.push(draftText.trim());
     return `
       <div style="background:var(--surface2); border:1px dashed var(--accent); border-radius:var(--radius-sm); padding:12px; margin:10px 0; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
         <span style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px; text-align: left;">📋 Rakshak AI Legal Complaint Draft</span>
         <textarea style="width:100%; min-height:100px; font-family:inherit; font-size:12px; border:0.5px solid var(--border); border-radius:4px; padding:6px; background:var(--surface); color:var(--text); resize:vertical; outline:none;" readonly>${draftText.trim()}</textarea>
-        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; margin-top:8px; border-radius:4px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="copyDraftToForm('${trimmedDraft.replace(/\n/g, '\\n')}')">
+        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; margin-top:8px; border-radius:4px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="copyDraftToForm(${draftIndex})">
           📝 Copy Draft to Complaint Form
         </button>
       </div>
@@ -2526,11 +3424,25 @@ function formatMarkdown(text) {
 }
 
 // Copy AI legal draft to form and navigate
-function copyDraftToForm(draftText) {
+function copyDraftToForm(draftIndexOrText) {
+  // Support both index-based (new) and text-based (legacy) calls
+  let draftText;
+  if (typeof draftIndexOrText === 'number') {
+    draftText = _aiDrafts[draftIndexOrText];
+  } else {
+    draftText = draftIndexOrText;
+  }
+  
+  if (!draftText) {
+    toast('Draft not found. Please try generating a new draft.');
+    return;
+  }
+  
   const descArea = document.getElementById('f-desc');
   if (descArea) {
-    descArea.value = draftText;
-    toast('AI Draft successfully copied to complaint description.');
+    // Clean up escaped newlines and set the text
+    descArea.value = draftText.replace(/\\n/g, '\n');
+    toast('✅ AI Draft successfully copied to complaint description.');
     
     // Switch to file complaint tab
     const fileBtn = document.querySelectorAll('.nav-links button')[1];
@@ -2538,6 +3450,9 @@ function copyDraftToForm(draftText) {
     
     // Close chat panel
     toggleRakshakChat();
+    
+    // Scroll to the description field
+    setTimeout(() => descArea.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
   } else {
     toast('Error pre-filling description form.');
   }
@@ -2753,11 +3668,12 @@ function askRakshakAboutSection(query) {
   <div class="chat-body" id="chat-body">
     <div class="chat-msg bot">
       Hello! I am <strong>Rakshak AI</strong>, your secure legal safety advisor. 🛡️<br/><br/>
-      I can help you understand your legal rights, interpret BNS / IPC protections, explain Zero FIR procedures, and assist you in filing complaints.<br/><br/>
-      How can I assist you today? Feel free to tap a quick suggestion chip below!
+      I can help you understand your legal rights, interpret BNS / IPC protections, and guide you on safety concerns.<br/><br/>
+      <strong>🚔 New!</strong> Tap <em>"File Complaint with AI Officer"</em> below and I'll act as a trained police officer to collect your complaint step-by-step — then auto-fill the form for you!
     </div>
   </div>
   <div class="chat-suggestions-container">
+    <div class="chat-chip" onclick="startComplaintInterview()" style="background:var(--accent); color:white; font-weight:600; border-color:var(--accent);">🚔 File Complaint with AI Officer</div>
     <div class="chat-chip" onclick="triggerSuggestion('Tell me about Zero FIR')">Zero FIR</div>
     <div class="chat-chip" onclick="triggerSuggestion('Rights during police arrest?')">Arrest Rights</div>
     <div class="chat-chip" onclick="triggerSuggestion('How to report cyberstalking?')">Cyberstalking</div>
