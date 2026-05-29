@@ -7,20 +7,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --primary: #1a1a2e;
+  --primary: #0c0d1b;
   --accent: #c9184a;
   --accent-soft: #ff4d6d;
-  --accent-pale: #fff0f3;
+  --accent-pale: rgba(201, 24, 74, 0.07);
   --teal: #0f6e56;
-  --teal-light: #e1f5ee;
+  --teal-light: rgba(15, 110, 86, 0.1);
   --surface: #ffffff;
-  --surface2: #f8f8fc;
-  --border: rgba(0,0,0,0.09);
-  --text: #1a1a2e;
-  --text2: #5a5a7a;
-  --text3: #9898b2;
-  --radius: 14px;
+  --surface2: #f4f5f9;
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #0c0d1b;
+  --text2: #4f5270;
+  --text3: #8b8ea8;
+  --radius: 16px;
   --radius-sm: 8px;
+}
+
+body.dark-theme {
+  --primary: #05050b;
+  --accent: #c9184a;
+  --accent-soft: #ff4d6d;
+  --accent-pale: rgba(201, 24, 74, 0.14);
+  --teal: #108569;
+  --teal-light: rgba(16, 133, 105, 0.14);
+  --surface: #0e0f20;
+  --surface2: #05050c;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #eff0f6;
+  --text2: #9da1c2;
+  --text3: #6d7190;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -184,10 +215,362 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
   .form-row{grid-template-columns:1fr;}
   .emergency-contacts{grid-template-columns:1fr;}
 }
+
+/* RAKSHAK AI CHATBOT WIDGET */
+.rakshak-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 16px rgba(201, 24, 74, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 998;
+  font-size: 24px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+.rakshak-toggle:hover {
+  transform: scale(1.08);
+  background: #a8143d;
+}
+.rakshak-chat-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 360px;
+  height: 500px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 998;
+  transition: all 0.3s;
+}
+.rakshak-chat-window.open {
+  display: flex;
+  animation: slide-up-chat 0.25s ease-out;
+}
+@keyframes slide-up-chat {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.chat-header {
+  background: var(--primary);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-bot-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-bot-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.chat-bot-name {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+}
+.chat-bot-status {
+  font-size: 11px;
+  color: #ff8fab;
+  display: block;
+}
+.chat-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface2);
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  text-align: left;
+}
+.chat-msg.bot {
+  background: var(--surface);
+  color: var(--text);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  border: 0.5px solid var(--border);
+}
+.chat-msg.user {
+  background: var(--accent);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+.chat-suggestions-container {
+  padding: 8px 12px;
+  background: var(--surface);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.chat-suggestions-container::-webkit-scrollbar {
+  display: none;
+}
+.chat-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.chat-chip:hover {
+  background: var(--accent-pale);
+  color: var(--accent);
+  border-color: var(--accent-soft);
+}
+.chat-input-area {
+  padding: 10px 16px;
+  background: var(--surface);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chat-input-area input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+.chat-send-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.chat-send-btn:hover {
+  background: #a8143d;
+}
+@keyframes mic-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.recording-pulse {
+  animation: mic-pulse 1.2s infinite;
+  color: var(--accent) !important;
+}
+
+/* Custom Gateway Screens */
+.login-gateway-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--surface2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+.login-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 480px;
+  padding: 2.25rem 2.5rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.login-subtitle {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 1.75rem;
+}
+.role-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 1.75rem;
+}
+.role-option {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text2);
+}
+.role-option:hover {
+  border-color: var(--accent-soft);
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+.role-option.active {
+  border-color: var(--accent);
+  background: var(--accent-pale);
+  color: var(--accent);
+}
+.role-icon {
+  font-size: 24px;
+}
+.role-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+.login-form-container {
+  display: none;
+  animation: login-fade-in 0.3s;
+}
+.login-form-container.active {
+  display: block;
+}
+@keyframes login-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pulsing indicators for active SOS alerts */
+@keyframes border-pulse {
+  0% { border-color: #f09595; box-shadow: 0 0 0 0 rgba(240, 149, 149, 0.4); }
+  70% { border-color: #a32d2d; box-shadow: 0 0 0 6px rgba(240, 149, 149, 0); }
+  100% { border-color: #f09595; box-shadow: 0 0 0 0 rgba(240, 149, 149, 0); }
+}
+
+/* Flex-bar visual distributions */
+.analytics-bar-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+/* Microphone visual waveform waves container */
+.mic-wave-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+  margin-left: 6px;
+}
+.mic-bar {
+  width: 2px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.recording-pulse .mic-bar:nth-child(1) { animation: voice-wave 0.5s ease-in-out infinite alternate; }
+.recording-pulse .mic-bar:nth-child(2) { animation: voice-wave 0.7s ease-in-out infinite alternate 0.1s; }
+.recording-pulse .mic-bar:nth-child(3) { animation: voice-wave 0.4s ease-in-out infinite alternate 0.2s; }
+@keyframes voice-wave {
+  from { height: 4px; }
+  to { height: 12px; }
+}
 </style>
 </head>
 <body>
 
+<!-- GORGEOUS FULLSCREEN PORTAL GATEWAY -->
+<div id="login-gateway" class="login-gateway-overlay">
+  <div class="login-card">
+    <div class="login-title" style="font-family:'Playfair Display',serif; font-size:28px; font-weight:600; margin-bottom:4px; color:var(--text);">e-<span style="color:var(--accent);">Abhaya</span></div>
+    <div class="login-subtitle">Women Safety & Complaint Portal</div>
+    
+    <div class="role-selectors">
+      <div class="role-option active" id="role-btn-citizen" onclick="selectLoginRole('citizen')">
+        <span class="role-icon">👩‍💻</span>
+        <span class="role-label">Citizen Portal</span>
+      </div>
+      <div class="role-option" id="role-btn-police" onclick="selectLoginRole('police')">
+        <span class="role-icon">👮</span>
+        <span class="role-label">Police Department</span>
+      </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="login-alert" style="display:none; background:rgba(201,24,74,0.08); border:0.5px solid var(--accent); color:var(--accent); font-size:12px; padding:10px; border-radius:6px; margin-bottom:1.25rem; text-align: left;"></div>
+
+    <!-- Citizen Form -->
+    <div class="login-form-container active" id="form-citizen">
+      <div class="form-group" style="text-align: left;">
+        <label>Full name</label>
+        <input type="text" id="login-name" placeholder="As per Aadhaar card" value="Priya Sharma" onkeydown="if(event.key === 'Enter') handleLoginSubmit('citizen')" />
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label>Registered mobile number</label>
+        <input type="tel" id="login-mobile" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210" onkeydown="if(event.key === 'Enter') handleLoginSubmit('citizen')" />
+      </div>
+      <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:0.75rem;" onclick="handleLoginSubmit('citizen')">Enter Portal Gateway</button>
+    </div>
+
+    <!-- Police Form -->
+    <div class="login-form-container" id="form-police">
+      <div class="form-group" style="text-align: left;">
+        <label>Officer badge ID</label>
+        <input type="text" id="login-badge" placeholder="e.g. INS-KUMAR" onkeydown="if(event.key === 'Enter') handleLoginSubmit('police')" />
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label>Secure validation PIN</label>
+        <input type="password" id="login-pin" placeholder="••••" onkeydown="if(event.key === 'Enter') handleLoginSubmit('police')" />
+      </div>
+      <div style="font-size: 11px; color: var(--text3); margin-top: -6px; margin-bottom: 12px; text-align: left;">Demo ID: INS-KUMAR or SI-SHARMA (PIN: 1234)</div>
+      <button class="btn btn-teal" style="width:100%; padding:12px; margin-top:0.5rem;" onclick="handleLoginSubmit('police')">Validate Badge & Login</button>
+    </div>
+  </div>
+</div>
+
+<div id="main-app-nav" style="display:none; flex-direction:column; min-height:100vh;">
 <nav>
   <div class="nav-brand">
     <div class="nav-logo">
@@ -196,17 +579,22 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
     <span class="nav-brand-name">e-<span>Abhaya</span></span>
   </div>
   <div class="nav-links">
-    <button class="active" onclick="showPage('home',this)">Home</button>
-    <button onclick="showPage('file',this)">File complaint</button>
-    <button onclick="showPage('track',this)">Track</button>
-    <button onclick="showPage('sos',this)" class="nav-sos">SOS</button>
-    <button onclick="showPage('officer',this)">Officer portal</button>
+    <button class="nav-citizen-link active" id="nav-btn-home" onclick="showPage('home',this)">Home</button>
+    <button class="nav-citizen-link" onclick="showPage('file',this)">File complaint</button>
+    <button class="nav-citizen-link" onclick="showPage('track',this)">Track</button>
+    <button class="nav-citizen-link nav-sos" onclick="showPage('sos',this)">SOS</button>
+    <button class="nav-citizen-link" onclick="showPage('legal',this)">Legal Aid</button>
+    <button class="nav-police-link" id="nav-btn-officer" onclick="showPage('officer',this)">Officer Dashboard</button>
   </div>
   <div class="nav-right">
+    <button id="theme-toggle" class="btn btn-outline" style="padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; margin-right: 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.25);" onclick="toggleTheme()">
+      <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">Dark</span>
+    </button>
     <div class="nav-user">
-      <div class="nav-avatar">P</div>
-      <span>Priya S.</span>
+      <div class="nav-avatar" id="nav-user-avatar">P</div>
+      <span id="nav-user-name">Priya S.</span>
     </div>
+    <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.25); background:none; color:white; margin-left:8px;" onclick="logout()">Logout</button>
   </div>
 </nav>
 
@@ -228,10 +616,19 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
       <div class="stat-label">Complaints registered</div>
       <span class="stat-badge badge-success">+12% this month</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-resolved">-</div>
-      <div class="stat-label">Cases resolved</div>
-      <span class="stat-badge badge-success" id="stat-rate">- rate</span>
+    <div class="stat-card" style="display: flex; align-items: center; justify-content: space-between; gap: 14px;">
+      <div style="flex: 1; text-align: left;">
+        <div class="stat-val" id="stat-resolved">-</div>
+        <div class="stat-label">Cases resolved</div>
+        <span class="stat-badge badge-success" id="stat-rate">- rate</span>
+      </div>
+      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg width="56" height="56" viewBox="0 0 56 56" style="transform: rotate(-90deg);">
+          <circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="4" />
+          <circle id="stat-rate-ring" cx="28" cy="28" r="22" fill="none" stroke="var(--teal)" stroke-width="4" stroke-dasharray="138.23" stroke-dashoffset="138.23" style="transition: stroke-dashoffset 1s ease-in-out;" />
+        </svg>
+        <span id="stat-rate-text" style="position: absolute; font-size: 11px; font-weight: 600; color: var(--text);">0%</span>
+      </div>
     </div>
     <div class="stat-card">
       <div class="stat-val" id="stat-response">-</div>
@@ -242,6 +639,100 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
       <div class="stat-val" id="stat-uptime">-</div>
       <div class="stat-label">Uptime this year</div>
       <span class="stat-badge badge-info">System healthy</span>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE CSS/SVG CASE DISTRIBUTION FLEXBARS -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <h3 style="font-family:'Playfair Display',serif; font-size:16px; font-weight:500; margin-bottom:14px; text-align: left;">Interactive Analytics & Category Distribution</h3>
+    
+    <div class="form-row" style="margin-bottom: 0; gap: 2rem;">
+      <!-- 1. Categories bars -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; text-align: left; margin-bottom:4px; font-weight: 600;">Case Category Metrics</div>
+        
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Domestic Abuse & Violence (BNS 85/86)</span><strong>35%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 35%; height: 100%; background: var(--accent); border-radius: 4px;"></div>
+          </div>
+        </div>
+        
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Stalking & Cyberstalking (BNS 78)</span><strong>25%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 25%; height: 100%; background: #3c3489; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Sexual Harassment (BNS 74/75)</span><strong>20%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 20%; height: 100%; background: var(--teal); border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Cybercrime & Privacy (IT Act)</span><strong>12%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 12%; height: 100%; background: #185fa5; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Other Incidents (Robbery/Theft/etc.)</span><strong>8%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 8%; height: 100%; background: var(--text3); border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. System status timeline ledger -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; text-align: left; margin-bottom:6px; font-weight: 600;">Case Status Ledger</div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-submitted" style="padding:1px 6px;">New</span>
+            <span>Submitted Complaints</span>
+          </span>
+          <strong id="ledger-submitted" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-reviewing" style="padding:1px 6px;">Review</span>
+            <span>Under Intake Review</span>
+          </span>
+          <strong id="ledger-reviewing" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-investigating" style="padding:1px 6px;">Active</span>
+            <span>Ongoing Investigations</span>
+          </span>
+          <strong id="ledger-investigating" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-resolved" style="padding:1px 6px;">Done</span>
+            <span>Resolved / Closed Cases</span>
+          </span>
+          <strong id="ledger-resolved" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -271,7 +762,7 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
       <div class="card-icon amber">⚖️</div>
       <h3>Legal aid & support</h3>
       <p>Access free legal guidance, connect with NGOs, and find nearest women's helpdesk — all verified resources.</p>
-      <div class="card-action"><button class="btn btn-ghost" onclick="toast('Legal aid directory coming soon.')">Explore resources →</button></div>
+      <div class="card-action"><button class="btn btn-ghost" onclick="showPage('legal',document.querySelectorAll('.nav-links button')[4])">Explore resources →</button></div>
     </div>
   </div>
 
@@ -355,11 +846,13 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
     </div>
 
     <div class="form-section-title">Evidence & attachments</div>
-    <div class="upload-area" onclick="toast('File picker would open in the live app.')">
+    <input type="file" id="f-evidence" multiple style="display:none;" onchange="handleFileSelect(event)" />
+    <div class="upload-area" onclick="document.getElementById('f-evidence').click()">
       <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 16V8m-4 4 4-4 4 4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
-      Drag & drop photos, videos, screenshots, or documents<br/>
-      <span style="font-size:12px;color:var(--text3);">JPG, PNG, MP4, PDF — max 50 MB each</span>
+      Click to upload photos, videos, screenshots, or documents<br/>
+      <span style="font-size:12px;color:var(--text3);">JPG, PNG, MP4, PDF — max 10 MB each</span>
     </div>
+    <div id="evidence-preview-list" style="margin: 10px 0; display:flex; flex-direction:column; gap:6px;"></div>
     <p class="form-note">All evidence is encrypted and accessible only to the assigned officer and authorised personnel.</p>
 
     <div class="form-section-title" style="margin-top:1.5rem;">Preferred police station</div>
@@ -429,6 +922,11 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
         <div class="meta-pair"><label>Police station</label><span id="tr-ps">-</span></div>
       </div>
 
+      <div id="tr-attachments-section" style="display:none; border-top:0.5px solid var(--border); padding-top:1rem; margin-top:1rem;">
+        <div style="font-size:12px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Submitted Evidence</div>
+        <div id="tr-attachments-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+
       <div style="border-top:0.5px solid var(--border);padding-top:1rem;">
         <div style="font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Case timeline</div>
         <div class="timeline" id="tr-timeline">
@@ -442,7 +940,7 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
 
       <div style="display:flex;gap:8px;margin-top:1rem;">
         <button class="btn btn-ghost" style="font-size:13px;" onclick="toast('Status update request sent to officer.')">Request update</button>
-        <button class="btn btn-ghost" style="font-size:13px;" onclick="toast('Download will start in the live app.')">Download PDF</button>
+        <button class="btn btn-ghost" style="font-size:13px;" onclick="generateFIRPDF(document.getElementById('tr-id').textContent)">Download FIR Receipt</button>
       </div>
     </div>
   </div>
@@ -494,8 +992,196 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
   </div>
 </div>
 
+<!-- LEGAL AID & LAWS PAGE -->
+<div class="page" id="page-legal">
+  <div class="section-head" style="margin-bottom:1.5rem;">
+    <h2>Legal aid & Indian laws</h2>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input type="text" id="law-search" placeholder="Search laws or rights..." onkeyup="searchLaws()" style="padding: 6px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; outline:none; background:var(--surface); color:var(--text);" />
+    </div>
+  </div>
+
+  <!-- Tabs for Category Selection -->
+  <div class="filter-bar" style="margin-bottom:1.5rem;">
+    <button class="filter-btn active" onclick="filterLaws('all', this)">All resources</button>
+    <button class="filter-btn" onclick="filterLaws('rights', this)">Your legal rights</button>
+    <button class="filter-btn" onclick="filterLaws('bns', this)">BNS / IPC protections</button>
+    <button class="filter-btn" onclick="filterLaws('acts', this)">Special safety acts</button>
+    <button class="filter-btn" onclick="filterLaws('helplines', this)">Emergency contacts</button>
+  </div>
+
+  <!-- Cards Grid for Resources -->
+  <div class="cards-grid" id="laws-container" style="grid-template-columns: 1fr; gap:16px;">
+    
+    <!-- 1. Right to Free Legal Aid -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Fundamental Right</span>
+        <span style="font-size:12px; color:var(--text3);">Right #1</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to Free Legal Aid</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Every woman in India has a fundamental right to free legal services under Article 39A of the Indian Constitution, regardless of her income. If a woman cannot afford a lawyer, the Legal Services Authority will appoint one for her free of cost.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Legal Services Authorities Act, 1987</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the Right to Free Legal Aid under Article 39A of the Indian Constitution in detail.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 2. The Night Arrest Rule -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Arrest Protection</span>
+        <span style="font-size:12px; color:var(--text3);">Right #2</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">The Night Arrest Protection</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A woman cannot be arrested after sunset (6 PM) and before sunrise (6 AM), except in exceptional circumstances. Even in such rare cases, the arrest must be made by a woman officer, and prior permission from a Judicial Magistrate must be obtained.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Section 46(4) of Criminal Procedure Code (CrPC) / BNSS</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the Night Arrest Protection rules for women under Section 46(4) of CrPC / BNSS in detail.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 3. Zero FIR -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">LODGING PROTECTION</span>
+        <span style="font-size:12px; color:var(--text3);">Right #3</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to File a Zero FIR</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A woman can lodge an FIR at *any* police station, irrespective of where the crime occurred or jurisdiction boundaries. The police station is legally bound to accept the complaint, register it under a "Zero" serial number, and immediately transfer it to the jurisdictional station.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Supreme Court Ruling & Ministry of Home Affairs Advisory</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my absolute rights to file a Zero FIR at any police station in India and what to do if refused.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 4. Right to Confidentiality -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Privacy Shield</span>
+        <span style="font-size:12px; color:var(--text3);">Right #4</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to Anonymity and Privacy</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        It is a criminal offense to publish or disclose the name or any details that reveal the identity of a victim of sexual assault or harassment. A woman has the right to record her statement privately in the presence of a woman police officer or a magistrate.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Section 72 of BNS / Section 228A of IPC</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my rights to privacy and victim anonymity under Section 72 of BNS / 228A of IPC.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 5. Cruelty & Domestic Violence -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Domestic Abuse</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 85 / 86</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Cruelty by Husband or Relatives (Section 498A IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Protects married women from physical, mental, or emotional cruelty, harassment, or torture by their husband or his relatives. This includes persistent demands for dowry, coercion, or severe mental distress. The offense is non-bailable.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Imprisonment up to 3 years and a heavy fine</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the criminal cruelty under BNS Section 85/86 (previously IPC Section 498A) for domestic abuse.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 6. Sexual Harassment -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Harassment</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 74 / 75</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Assault & Sexual Harassment (Section 354 IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Protects women against any acts of physical force, unwanted physical contact, demands for sexual favors, showing pornography against consent, or making sexually colored remarks. Outraging the modesty of a woman is heavily penalized.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Rigorous imprisonment from 1 to 5 years with fines</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the definitions and punishments for sexual harassment and modesty outrage under BNS Section 74/75.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 7. Stalking & Cyberstalking -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Monitoring & Stalking</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 78</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Stalking and Cyberstalking (Section 354D IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        It is a crime to follow a woman, contact her repeatedly, or monitor her internet usage, social media accounts, emails, or other digital communication despite a clear indication of disinterest. This includes online harassment and digital tracking.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Up to 3 years imprisonment for first offense, 5 years for subsequent</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my anti-stalking and cyberstalking protections under BNS Section 78 (previously IPC 354D).')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 8. Protection of Women from Domestic Violence Act -->
+    <div class="card law-card" data-category="acts" style="border-left: 4px solid #eeedfe; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-fir">Special Act</span>
+        <span style="font-size:12px; color:var(--text3);">PWDVA, 2005</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Protection of Women from Domestic Violence Act, 2005</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A comprehensive civil act protecting women from physical, sexual, verbal, emotional, and economic abuse within a shared household. It provides rights for protection orders, residence orders, monetary relief, custody orders, and free medical care.
+      </p>
+      <div style="font-size:12px; color:#3c3489; font-weight:500; margin-bottom:10px;">Provision: Protection Orders, Monetary Relief, Free Residence Rights</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the civil remedies and protection orders under the Protection of Women from Domestic Violence Act 2005.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 9. POSH Act -->
+    <div class="card law-card" data-category="acts" style="border-left: 4px solid #eeedfe; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-fir">Special Act</span>
+        <span style="font-size:12px; color:var(--text3);">POSH Act, 2013</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Sexual Harassment of Women at Workplace (POSH) Act</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Mandates every organization with 10 or more employees to set up an Internal Complaints Committee (ICC) to address sexual harassment. It defines safe workspaces and provides legal resolution mechanics for working women in both formal and informal sectors.
+      </p>
+      <div style="font-size:12px; color:#3c3489; font-weight:500; margin-bottom:10px;">Provision: Internal Complaints Committee, Safe Workspace Guidelines</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the workplace sexual harassment protections and ICC mechanics under the POSH Act 2013.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 10. Emergency Helplines Card -->
+    <div class="card law-card" data-category="helplines" style="border-left: 4px solid #faeeda; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-reviewing">National Helplines</span>
+        <span style="font-size:12px; color:var(--text3);">24/7 Access</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:8px; text-align: left;">Instant Helpline Support</h3>
+      <div class="complaint-meta" style="grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;">
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Police Emergency</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">112 / 100</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Women Helpline</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">1091</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Domestic Abuse (NCW)</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">181</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>NCW WhatsApp Support</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">7827170170</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- OFFICER PORTAL PAGE -->
 <div class="page" id="page-officer">
+  
+  <!-- LIVE EMERGENCY SOS RADAR HUB -->
+  <div id="officer-sos-alert-hub" style="display:none; background:rgba(201,24,74,0.07); border:1.5px solid var(--accent); border-radius:var(--radius); padding:1.25rem; margin-bottom:1.5rem; animation:border-pulse 1.8s infinite;">
+    <div style="display:flex; align-items:center; gap:8px; color:var(--accent); font-family:'Playfair Display',serif; font-size:15px; font-weight:600; margin-bottom:10px;">
+      <span class="recording-pulse" style="font-size:18px;">🚨</span> Active SOS Emergency Dispatches <span style="font-size:10px; font-weight:normal; background:var(--accent); color:white; padding:1px 8px; border-radius:10px; margin-left:4px; vertical-align:middle; letter-spacing: 0.05em; font-family:sans-serif;">RADAR ACTIVE</span>
+    </div>
+    <div id="officer-sos-list" style="display:flex; flex-direction:column; gap:8px;">
+      <!-- Dynamic Active SOS dispatches list -->
+    </div>
+  </div>
+
   <div class="portal-header">
     <div>
       <h2>Officer dashboard</h2>
@@ -542,6 +1228,12 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
     <button class="modal-close" onclick="closeModal()">×</button>
     <h3>Update complaint status</h3>
     <p>Complaint ID: <strong id="modal-cid">-</strong></p>
+    
+    <!-- Render evidence files here! -->
+    <div id="modal-attachments-section" style="display:none; margin: 12px 0;">
+      <label style="font-size:12px; font-weight:500; color:var(--text3); display:block; margin-bottom:4px;">Attached Evidence:</label>
+      <div id="modal-attachments-list" style="display:flex; flex-direction:column; gap:6px; max-height: 120px; overflow-y: auto;"></div>
+    </div>
     <div class="form-group">
       <label>New status</label>
       <select id="modal-status">
@@ -599,6 +1291,35 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
 </div>
 
 <script>
+// Robust Try-Catch browser storage abstraction
+const SafeStorage = {
+  getItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn('Storage read blocked, using memory fallback:', e);
+      return this._mem[key] || null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn('Storage write blocked, using memory fallback:', e);
+      this._mem[key] = value;
+    }
+  },
+  removeItem(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.warn('Storage remove blocked, using memory fallback:', e);
+      delete this._mem[key];
+    }
+  },
+  _mem: {}
+};
+
 // Format dates cleanly
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -614,6 +1335,312 @@ function formatDateTime(dateStr) {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Dynamic Selection of Login Roles
+function selectLoginRole(role) {
+  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.login-form-container').forEach(el => el.classList.remove('active'));
+  
+  if (role === 'citizen') {
+    document.getElementById('role-btn-citizen').classList.add('active');
+    document.getElementById('form-citizen').classList.add('active');
+  } else {
+    document.getElementById('role-btn-police').classList.add('active');
+    document.getElementById('form-police').classList.add('active');
+  }
+  document.getElementById('login-alert').style.display = 'none';
+}
+
+let currentUser = null;
+
+function checkSession() {
+  try {
+    const sessionData = SafeStorage.getItem('abhaya_session');
+    if (sessionData) {
+      currentUser = JSON.parse(sessionData);
+      applyUserSession(currentUser);
+    } else {
+      showLoginGateway();
+    }
+  } catch (err) {
+    console.error('Session load failed:', err);
+    SafeStorage.removeItem('abhaya_session');
+    showLoginGateway();
+  }
+}
+
+function showLoginGateway() {
+  document.getElementById('login-gateway').style.display = 'flex';
+  document.getElementById('main-app-nav').style.display = 'none';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  stopSOSMonitor();
+}
+
+function applyUserSession(user) {
+  document.getElementById('login-gateway').style.display = 'none';
+  document.getElementById('main-app-nav').style.display = 'flex';
+  
+  // Set User Profile elements
+  const avatarEl = document.getElementById('nav-user-avatar');
+  const nameEl = document.getElementById('nav-user-name');
+  if (avatarEl && nameEl) {
+    avatarEl.textContent = user.name.charAt(0).toUpperCase();
+    nameEl.textContent = user.role === 'police' ? user.name : user.name.split(' ')[0] + '.';
+  }
+
+  // Route-Guarding Navigation Links
+  const citizenLinks = document.querySelectorAll('.nav-citizen-link');
+  const policeLinks = document.querySelectorAll('.nav-police-link');
+
+  if (user.role === 'police') {
+    citizenLinks.forEach(l => l.style.display = 'none');
+    policeLinks.forEach(l => l.style.display = 'inline-block');
+    
+    // Hide chat advisor icon for officers
+    const chatToggle = document.querySelector('.rakshak-toggle');
+    if (chatToggle) chatToggle.style.display = 'none';
+    
+    // Force direct entrance to Officer dashboard
+    showPage('officer', document.getElementById('nav-btn-officer'));
+    
+    // Trigger SOS feed updater radar
+    startSOSMonitor();
+  } else {
+    citizenLinks.forEach(l => l.style.display = 'inline-block');
+    policeLinks.forEach(l => l.style.display = 'none');
+    
+    // Show chat advisor icon for citizens
+    const chatToggle = document.querySelector('.rakshak-toggle');
+    if (chatToggle) chatToggle.style.display = 'flex';
+
+    // Autofill Personal Form parameters
+    const formName = document.getElementById('f-name');
+    const formMobile = document.getElementById('f-mobile');
+    if (formName) formName.value = user.name;
+    if (formMobile) formMobile.value = user.mobile;
+    
+    // Default Citizen landing page
+    showPage('home', document.getElementById('nav-btn-home'));
+    
+    // Clear SOS alarm sirens
+    stopSOSMonitor();
+  }
+}
+
+async function handleLoginSubmit(role) {
+  const alertEl = document.getElementById('login-alert');
+  alertEl.style.display = 'none';
+
+  let bodyData = { role };
+  if (role === 'police') {
+    const badgeId = document.getElementById('login-badge').value.trim();
+    const pin = document.getElementById('login-pin').value.trim();
+    if (!badgeId || !pin) {
+      showLoginError('Please enter both Badge ID and secure PIN.');
+      return;
+    }
+    bodyData.badgeId = badgeId;
+    bodyData.pin = pin;
+  } else {
+    const name = document.getElementById('login-name').value.trim();
+    const mobile = document.getElementById('login-mobile').value.trim();
+    if (!name || !mobile) {
+      showLoginError('Please enter your Full Name and Mobile.');
+      return;
+    }
+    bodyData.name = name;
+    bodyData.mobile = mobile;
+  }
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Authentication failed.');
+    }
+
+    const data = await res.json();
+    SafeStorage.setItem('abhaya_session', JSON.stringify(data.user));
+    currentUser = data.user;
+    applyUserSession(currentUser);
+    toast(`Welcome back, ${currentUser.name}.`);
+  } catch (err) {
+    showLoginError(err.message);
+  }
+}
+
+function showLoginError(msg) {
+  const alertEl = document.getElementById('login-alert');
+  alertEl.textContent = msg;
+  alertEl.style.display = 'block';
+}
+
+function logout() {
+  SafeStorage.removeItem('abhaya_session');
+  currentUser = null;
+  stopSOSMonitor();
+  
+  // Reset inputs
+  document.getElementById('login-badge').value = '';
+  document.getElementById('login-pin').value = '';
+  document.getElementById('login-alert').style.display = 'none';
+
+  showLoginGateway();
+  toast('Logged out successfully.');
+}
+
+// SOS Sirens Alarm Audio synthesis
+let sosSirenInterval = null;
+let audioCtx = null;
+
+function playSirenTone() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+    
+    // High Tone Beep
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(800, now);
+    osc1.frequency.linearRampToValueAtTime(1000, now + 0.15);
+    gain1.gain.setValueAtTime(0.06, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    
+    osc1.start(now);
+    osc1.stop(now + 0.25);
+
+    // Low Tone Beep (after 0.2s)
+    setTimeout(() => {
+      if (!currentUser || currentUser.role !== 'police') return;
+      const now2 = audioCtx.currentTime;
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(600, now2);
+      osc2.frequency.linearRampToValueAtTime(800, now2 + 0.15);
+      gain2.gain.setValueAtTime(0.06, now2);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now2 + 0.25);
+      
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      
+      osc2.start(now2);
+      osc2.stop(now2 + 0.25);
+    }, 200);
+
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+function startSirenAlarm() {
+  if (sosSirenInterval) return;
+  playSirenTone();
+  sosSirenInterval = setInterval(playSirenTone, 2500);
+}
+
+function stopSirenAlarm() {
+  if (sosSirenInterval) {
+    clearInterval(sosSirenInterval);
+    sosSirenInterval = null;
+  }
+}
+
+let sosMonitorTimer = null;
+
+function startSOSMonitor() {
+  if (sosMonitorTimer) return;
+  // Poll alerts every 4 seconds
+  updateSOSRadar();
+  sosMonitorTimer = setInterval(updateSOSRadar, 4000);
+}
+
+function stopSOSMonitor() {
+  if (sosMonitorTimer) {
+    clearInterval(sosMonitorTimer);
+    sosMonitorTimer = null;
+  }
+  stopSirenAlarm();
+  const alertHub = document.getElementById('officer-sos-alert-hub');
+  if (alertHub) alertHub.style.display = 'none';
+}
+
+async function updateSOSRadar() {
+  if (!currentUser || currentUser.role !== 'police') {
+    stopSOSMonitor();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/sos');
+    if (!res.ok) throw new Error();
+    const alerts = await res.json();
+
+    const activeAlerts = alerts.filter(a => a.status === 'active');
+    const alertHub = document.getElementById('officer-sos-alert-hub');
+    const sosList = document.getElementById('officer-sos-list');
+    
+    if (activeAlerts.length > 0) {
+      alertHub.style.display = 'block';
+      sosList.innerHTML = '';
+
+      activeAlerts.forEach(alert => {
+        const item = document.createElement('div');
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; font-size:12px;';
+        item.innerHTML = `
+          <div style="text-align: left;">
+            <strong style="color:var(--accent); font-size:13px;">🚨 ${alert.id}</strong> · Complainant: <strong>${alert.complainant_name}</strong>
+            <div style="color:var(--text2); margin-top:2px;">Location Coordinates: <strong>${alert.location}</strong></div>
+            <div style="color:var(--text3); font-size:10px; margin-top:2px;">Signal captured: ${formatDateTime(alert.created_at)}</div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline" style="font-size:11px; padding:4px 8px; border-radius:4px;" onclick="window.open('https://maps.google.com/?q=${encodeURIComponent(alert.location)}', '_blank')">🗺️ Track Map</button>
+            <button class="btn btn-primary" style="font-size:11px; padding:4px 10px; border-radius:4px;" onclick="resolveSOSAlert('${alert.id}')">🚒 Dispatch Rescue</button>
+          </div>
+        `;
+        sosList.appendChild(item);
+      });
+
+      // Sound emergency beeps
+      startSirenAlarm();
+    } else {
+      alertHub.style.display = 'none';
+      stopSirenAlarm();
+    }
+  } catch (e) {
+    console.error('SOS Radar fetch failed', e);
+  }
+}
+
+async function resolveSOSAlert(id) {
+  try {
+    const res = await fetch(`/api/sos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'resolved' })
+    });
+    if (!res.ok) throw new Error();
+    toast(`Emergency dispatcher response sent. Signal ${id} cleared.`);
+    updateSOSRadar();
+  } catch (err) {
+    toast('Error updating alert signal.');
+  }
+}
+
 // Global page load initializations
 document.addEventListener('DOMContentLoaded', () => {
   // Set today's date as default in complaint form
@@ -623,10 +1650,42 @@ document.addEventListener('DOMContentLoaded', () => {
     dateInput.value = today;
   }
   
+  // Verify active sessions
+  checkSession();
+
   // Load dynamic data for home page stats & recent activity
   loadStats();
   loadRecentActivity();
+
+  // Initialize theme from local storage
+  const savedTheme = SafeStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    updateThemeUI(true);
+  } else {
+    updateThemeUI(false);
+  }
 });
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-theme');
+  SafeStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeUI(isDark);
+}
+
+function updateThemeUI(isDark) {
+  const icon = document.getElementById('theme-toggle-icon');
+  const text = document.getElementById('theme-toggle-text');
+  if (icon && text) {
+    if (isDark) {
+      icon.textContent = '☀️';
+      text.textContent = 'Light';
+    } else {
+      icon.textContent = '🌙';
+      text.textContent = 'Dark';
+    }
+  }
+}
 
 // Load statistics dynamically
 async function loadStats() {
@@ -640,6 +1699,44 @@ async function loadStats() {
     document.getElementById('stat-rate').textContent = `${data.resolutionRate} rate`;
     document.getElementById('stat-response').textContent = data.avgResponse;
     document.getElementById('stat-uptime').textContent = data.uptime;
+
+    // Animate SVG rate progress ring
+    const rateNum = parseFloat(data.resolutionRate);
+    const ring = document.getElementById('stat-rate-ring');
+    const ringText = document.getElementById('stat-rate-text');
+    if (ring && ringText) {
+      const circumference = 2 * Math.PI * 22; // ~138.23
+      const offset = circumference - (rateNum / 100) * circumference;
+      ring.style.strokeDashoffset = offset;
+      ringText.textContent = `${rateNum.toFixed(0)}%`;
+    }
+
+    // Refresh dynamic status ledgers
+    updateLedger();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function updateLedger() {
+  try {
+    const res = await fetch('/api/complaints');
+    if (!res.ok) return;
+    const complaints = await res.json();
+    const counts = { submitted: 0, reviewing: 0, investigating: 0, evidence: 0, action: 0, resolved: 0, closed: 0 };
+    complaints.forEach(c => {
+      if (counts[c.status] !== undefined) counts[c.status]++;
+    });
+    
+    const subCount = counts.submitted;
+    const revCount = counts.reviewing;
+    const invCount = counts.investigating + counts.evidence;
+    const resCount = counts.action + counts.resolved + counts.closed;
+    
+    document.getElementById('ledger-submitted').textContent = subCount;
+    document.getElementById('ledger-reviewing').textContent = revCount;
+    document.getElementById('ledger-investigating').textContent = invCount;
+    document.getElementById('ledger-resolved').textContent = resCount;
   } catch (err) {
     console.error(err);
   }
@@ -708,7 +1805,40 @@ function showPage(id, btn) {
     // Reset to "all" case filter on entrance
     const allBtn = document.querySelector('.filter-bar button');
     loadOfficerCases('all', allBtn);
+  } else if (id === 'legal') {
+    const searchBar = document.getElementById('law-search');
+    if (searchBar) searchBar.value = '';
+    const allBtn = document.querySelector('#page-legal .filter-bar button');
+    if (allBtn) filterLaws('all', allBtn);
   }
+}
+
+function filterLaws(category, btn) {
+  document.querySelectorAll('#page-legal .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const query = document.getElementById('law-search').value.toLowerCase().trim();
+  document.querySelectorAll('.law-card').forEach(card => {
+    const matchesCat = (category === 'all' || card.dataset.category === category);
+    const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+    card.style.display = (matchesCat && matchesQuery) ? 'block' : 'none';
+  });
+}
+
+function searchLaws() {
+  const query = document.getElementById('law-search').value.toLowerCase().trim();
+  const activeBtn = document.querySelector('#page-legal .filter-btn.active');
+  let category = 'all';
+  if (activeBtn) {
+    const match = activeBtn.getAttribute('onclick').match(/'([^']+)'/);
+    if (match) category = match[1];
+  }
+
+  document.querySelectorAll('.law-card').forEach(card => {
+    const matchesCat = (category === 'all' || card.dataset.category === category);
+    const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+    card.style.display = (matchesCat && matchesQuery) ? 'block' : 'none';
+  });
 }
 
 function toast(msg) {
@@ -742,7 +1872,8 @@ async function submitComplaint() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station
+        name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station,
+        attachments: selectedEvidenceFiles.length > 0 ? JSON.stringify(selectedEvidenceFiles) : null
       })
     });
     
@@ -776,6 +1907,14 @@ function clearForm() {
   if (dateInput) {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
+
+  // Clear attachments
+  selectedEvidenceFiles = [];
+  const previewList = document.getElementById('evidence-preview-list');
+  if (previewList) previewList.innerHTML = '';
+  const fileInput = document.getElementById('f-evidence');
+  if (fileInput) fileInput.value = '';
+
   toast('Form cleared.');
 }
 
@@ -805,6 +1944,38 @@ async function trackComplaint() {
     document.getElementById('tr-updated').textContent = formatDateTime(complaint.updated_at);
     document.getElementById('tr-officer').textContent = complaint.assigned_officer;
     document.getElementById('tr-ps').textContent = `${complaint.police_station} P.S.`;
+
+    // Render attachments in tracking view
+    const trAttachSection = document.getElementById('tr-attachments-section');
+    const trAttachList = document.getElementById('tr-attachments-list');
+    if (complaint.attachments) {
+      const files = JSON.parse(complaint.attachments);
+      if (files && files.length > 0) {
+        trAttachList.innerHTML = '';
+        files.forEach(file => {
+          const item = document.createElement('a');
+          item.href = file.dataUrl;
+          item.download = file.name;
+          item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:8px 12px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px; text-decoration:none; color:inherit; transition:.15s;';
+          item.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>📁</span>
+              <div>
+                <strong style="color:var(--accent);">${file.name}</strong>
+                <span style="color:var(--text3); font-size:10px; display:block;">${(file.size / 1024).toFixed(1)} KB · Click to download</span>
+              </div>
+            </div>
+            <span style="font-size:14px; color:var(--text3);">⬇️</span>
+          `;
+          trAttachList.appendChild(item);
+        });
+        trAttachSection.style.display = 'block';
+      } else {
+        trAttachSection.style.display = 'none';
+      }
+    } else {
+      trAttachSection.style.display = 'none';
+    }
     
     // Next action mapping
     const nextActions = {
@@ -925,7 +2096,7 @@ async function sendSOSRequest(location) {
 // 4. Officer Dashboard Portal Functions
 async function loadOfficerCases(filterStatus = 'all', btn) {
   if (btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#page-officer .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
   
@@ -980,6 +2151,63 @@ async function loadOfficerCases(filterStatus = 'all', btn) {
   }
 }
 
+// Global variable to store active file attachments
+let selectedEvidenceFiles = [];
+
+function handleFileSelect(event) {
+  const files = Array.from(event.target.files);
+  selectedEvidenceFiles = []; // reset selection list for new selection batch if desired, or push to it
+  
+  files.forEach(file => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast(`File "${file.name}" exceeds the 10MB limit.`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const fileData = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        dataUrl: e.target.result
+      };
+      selectedEvidenceFiles.push(fileData);
+      renderEvidencePreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderEvidencePreviews() {
+  const previewList = document.getElementById('evidence-preview-list');
+  if (!previewList) return;
+  previewList.innerHTML = '';
+
+  selectedEvidenceFiles.forEach((file, index) => {
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:8px 12px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px;';
+    item.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:16px;">📄</span>
+        <div style="text-align: left;">
+          <strong style="color:var(--text);">${file.name}</strong>
+          <span style="color:var(--text3); font-size:10px; display:block;">${sizeKB} KB · ${file.type}</span>
+        </div>
+      </div>
+      <button class="modal-close" style="position:static; font-size:18px; line-height:1; cursor:pointer;" onclick="removeEvidenceFile(${index})">×</button>
+    `;
+    previewList.appendChild(item);
+  });
+}
+
+function removeEvidenceFile(index) {
+  selectedEvidenceFiles.splice(index, 1);
+  renderEvidencePreviews();
+  toast('Attachment removed.');
+}
+
 // 5. Update Status Modal Flows
 function openUpdateModal(cid) {
   document.getElementById('modal-cid').textContent = cid;
@@ -998,6 +2226,32 @@ function openUpdateModal(cid) {
           select.selectedIndex = i;
           break;
         }
+      }
+
+      // Render attachments in modal
+      const modalAttachSection = document.getElementById('modal-attachments-section');
+      const modalAttachList = document.getElementById('modal-attachments-list');
+      if (complaint.attachments) {
+        const files = JSON.parse(complaint.attachments);
+        if (files && files.length > 0) {
+          modalAttachList.innerHTML = '';
+          files.forEach(file => {
+            const item = document.createElement('a');
+            item.href = file.dataUrl;
+            item.download = file.name;
+            item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:6px 10px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:11px; text-decoration:none; color:inherit;';
+            item.innerHTML = `
+              <span style="color:var(--accent); font-weight:500; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:200px; text-align: left;">${file.name}</span>
+              <span style="font-size:11px; color:var(--text3);">⬇️ Download</span>
+            `;
+            modalAttachList.appendChild(item);
+          });
+          modalAttachSection.style.display = 'block';
+        } else {
+          modalAttachSection.style.display = 'none';
+        }
+      } else {
+        modalAttachSection.style.display = 'none';
       }
     })
     .catch(err => console.error(err));
@@ -1052,6 +2306,405 @@ function goTrack() {
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 });
+
+// 6. RAKSHAK AI CHATBOT LOGIC
+function toggleRakshakChat() {
+  const windowEl = document.getElementById('rakshak-chat');
+  if (windowEl) {
+    windowEl.classList.toggle('open');
+    scrollToBottom();
+  }
+}
+
+function scrollToBottom() {
+  const body = document.getElementById('chat-body');
+  if (body) body.scrollTop = body.scrollHeight;
+}
+
+function triggerSuggestion(text) {
+  sendUserMessage(text);
+}
+
+function handleChatKeyPress(event) {
+  if (event.key === 'Enter') {
+    const input = document.getElementById('chat-input');
+    if (input && input.value.trim()) {
+      sendUserMessage(input.value.trim());
+      input.value = '';
+    }
+  }
+}
+
+function triggerChatSend() {
+  const input = document.getElementById('chat-input');
+  if (input && input.value.trim()) {
+    sendUserMessage(input.value.trim());
+    input.value = '';
+  }
+}
+
+// Global memory state variables for Rakshak AI
+let rakshakChatHistory = [];
+let isVoiceRecording = false;
+let speechRecognitionInstance = null;
+
+async function sendUserMessage(text) {
+  const chatBody = document.getElementById('chat-body');
+  if (!chatBody) return;
+
+  // Append user bubble
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = text;
+  chatBody.appendChild(userMsg);
+  scrollToBottom();
+
+  // Append typing indicator
+  const typingIndicator = document.createElement('div');
+  typingIndicator.className = 'chat-msg bot';
+  typingIndicator.id = 'chat-typing-indicator';
+  typingIndicator.innerHTML = '🛡️ <em>Rakshak AI is typing...</em>';
+  chatBody.appendChild(typingIndicator);
+  scrollToBottom();
+
+  // Construct Context if User is currently tracking a complaint
+  let context = "";
+  const trackResult = document.getElementById('track-result');
+  if (trackResult && trackResult.style.display === 'block') {
+    const cid = document.getElementById('tr-id').textContent;
+    const typeDate = document.getElementById('tr-type').textContent;
+    const status = document.getElementById('tr-status-badge').textContent;
+    const officer = document.getElementById('tr-officer').textContent;
+    const ps = document.getElementById('tr-ps').textContent;
+    context = `The user is currently tracking their case. Case details: ID: ${cid}, Type: ${typeDate}, Current Status: ${status}, Assigned Officer: ${officer}, Police Station: ${ps}. Explain their current stage and next actions if they ask about their status.`;
+  }
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        history: rakshakChatHistory,
+        context: context
+      })
+    });
+    
+    // Remove typing indicator
+    const indicator = document.getElementById('chat-typing-indicator');
+    if (indicator) indicator.remove();
+
+    if (!res.ok) throw new Error('API query failed');
+    const data = await res.json();
+
+    // Save turn to history (Gemini style)
+    rakshakChatHistory.push({ role: 'user', parts: [{ text: text }] });
+    rakshakChatHistory.push({ role: 'model', parts: [{ text: data.reply }] });
+
+    // Limit conversation history to last 10 turns to stay within bounds
+    if (rakshakChatHistory.length > 20) {
+      rakshakChatHistory = rakshakChatHistory.slice(-20);
+    }
+
+    // Render formatted response
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg bot';
+    botMsg.innerHTML = formatMarkdown(data.reply);
+    chatBody.appendChild(botMsg);
+    scrollToBottom();
+  } catch (err) {
+    console.error(err);
+    const indicator = document.getElementById('chat-typing-indicator');
+    if (indicator) indicator.remove();
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg bot';
+    botMsg.innerHTML = '🛡️ Sorry, I am having trouble connecting to my service. Please try again.';
+    chatBody.appendChild(botMsg);
+    scrollToBottom();
+  }
+}
+
+// Advanced client-side parser converting markdown & legal draft envelopes
+function formatMarkdown(text) {
+  if (!text) return '';
+  
+  let html = text;
+
+  // 1. Extract and format AI legal draft envelopes
+  const draftRegex = /--- COMPLAINT DRAFT START ---([\s\S]*?)--- COMPLAINT DRAFT END ---/g;
+  html = html.replace(draftRegex, (match, draftText) => {
+    const trimmedDraft = draftText.trim().replace(/'/g, "\\'");
+    return `
+      <div style="background:var(--surface2); border:1px dashed var(--accent); border-radius:var(--radius-sm); padding:12px; margin:10px 0; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+        <span style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px; text-align: left;">📋 Rakshak AI Legal Complaint Draft</span>
+        <textarea style="width:100%; min-height:100px; font-family:inherit; font-size:12px; border:0.5px solid var(--border); border-radius:4px; padding:6px; background:var(--surface); color:var(--text); resize:vertical; outline:none;" readonly>${draftText.trim()}</textarea>
+        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; margin-top:8px; border-radius:4px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="copyDraftToForm('${trimmedDraft.replace(/\n/g, '\\n')}')">
+          📝 Copy Draft to Complaint Form
+        </button>
+      </div>
+    `;
+  });
+
+  // 2. Format standard Markdown elements
+  html = html
+    // Bolding (converts **text** to <strong>text</strong>)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Line breaks
+    .replace(/\n\n/g, '<br/><br/>')
+    .replace(/\n/g, '<br/>')
+    // Bullet lists (converts - list to list items)
+    .replace(/<br\/>-\s(.*?)(?=<br\/>|$)/g, '<div style="margin-left: 10px; display: flex; gap: 6px; margin-top: 4px;"><span>•</span><span>$1</span></div>')
+    .replace(/<br\/>\*\s(.*?)(?=<br\/>|$)/g, '<div style="margin-left: 10px; display: flex; gap: 6px; margin-top: 4px;"><span>•</span><span>$1</span></div>');
+    
+  return html;
+}
+
+// Copy AI legal draft to form and navigate
+function copyDraftToForm(draftText) {
+  const descArea = document.getElementById('f-desc');
+  if (descArea) {
+    descArea.value = draftText;
+    toast('AI Draft successfully copied to complaint description.');
+    
+    // Switch to file complaint tab
+    const fileBtn = document.querySelectorAll('.nav-links button')[1];
+    showPage('file', fileBtn);
+    
+    // Close chat panel
+    toggleRakshakChat();
+  } else {
+    toast('Error pre-filling description form.');
+  }
+}
+
+// Speech recognition voice input (Web Speech API)
+function toggleVoiceInput(event) {
+  event.stopPropagation();
+  
+  const micBtn = document.getElementById('chat-mic-btn');
+  const chatInput = document.getElementById('chat-input');
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    toast('Voice recognition is not supported on this browser. Try Chrome.');
+    return;
+  }
+
+  if (isVoiceRecording) {
+    // Stop recording
+    if (speechRecognitionInstance) {
+      speechRecognitionInstance.stop();
+    }
+    return;
+  }
+
+  // Start recording
+  isVoiceRecording = true;
+  micBtn.style.color = 'var(--accent)';
+  micBtn.classList.add('recording-pulse');
+  toast('Voice Input active. Speak now...');
+
+  speechRecognitionInstance = new SpeechRecognition();
+  speechRecognitionInstance.continuous = false;
+  speechRecognitionInstance.interimResults = false;
+  speechRecognitionInstance.lang = 'en-IN'; // Optimized for Indian English/Accent
+
+  speechRecognitionInstance.onresult = function(e) {
+    const transcript = e.results[0][0].transcript;
+    if (chatInput) {
+      chatInput.value = transcript;
+    }
+    toast('Speech transcribed successfully.');
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.onerror = function(err) {
+    console.error(err);
+    toast('Voice recording failed. Try again.');
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.onend = function() {
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.start();
+}
+
+function stopRecordingUI() {
+  isVoiceRecording = false;
+  const micBtn = document.getElementById('chat-mic-btn');
+  if (micBtn) {
+    micBtn.style.color = 'var(--text3)';
+    micBtn.classList.remove('recording-pulse');
+  }
+  speechRecognitionInstance = null;
+}
+
+function generateFIRPDF(cid) {
+  fetch(`/api/complaints/${cid}`)
+    .then(r => {
+      if (!r.ok) throw new Error('Complaint ID not found');
+      return r.json();
+    })
+    .then(({ complaint, timeline }) => {
+      const newWin = window.open('', '_blank');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>FIR_Receipt_${cid}</title>
+          <style>
+            body { font-family: 'Times New Roman', Times, serif; padding: 40px; color: #111; line-height: 1.5; background: #fff; text-align: left; }
+            .header-title { text-align: center; font-size: 20px; font-weight: bold; text-transform: uppercase; font-family: 'Times New Roman', serif; }
+            .gov-subtitle { text-align: center; font-size: 13px; font-style: italic; margin-bottom: 24px; letter-spacing: 0.05em; }
+            .section-title { font-size: 15px; font-weight: bold; text-transform: uppercase; border-bottom: 1.5px solid #222; padding-bottom: 4px; margin: 24px 0 12px 0; text-align: left; }
+            .field-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
+            .field-table th { text-align: left; width: 30%; font-weight: bold; border: 1px solid #ddd; padding: 6px 10px; background: #f9f9f9; }
+            .field-table td { text-align: left; border: 1px solid #ddd; padding: 6px 10px; }
+            .timeline-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+            .timeline-table th { background: #eaeaea; font-weight: bold; border: 1px solid #ccc; padding: 6px; text-align: left; }
+            .timeline-table td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            .footer { margin-top: 50px; display: flex; justify-content: space-between; font-size: 12px; }
+            .stamp-placeholder { border: 2px dashed #999; border-radius: 8px; width: 120px; height: 80px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+            @media print {
+              body { padding: 20px; }
+              button { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div style="text-align:center; margin-bottom: 4px; font-size: 24px;">⚖️</div>
+          <div class="header-title">Government of West Bengal - Police Department</div>
+          <div class="gov-subtitle">Office of the Commissioner of Police, Bidhannagar Division</div>
+          <div style="text-align: center; font-weight: bold; font-size: 16px; text-decoration: underline; margin-bottom: 20px;">FIRST INFORMATION REPORT (FIR) RECEIPT</div>
+
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:15px; border:1px solid #ddd; padding:8px 12px; background:#f5f5f5;">
+            <div>COMPLAINT ID: ${complaint.id}</div>
+            <div>DATE FILED: ${new Date(complaint.created_at).toLocaleString()}</div>
+          </div>
+
+          <div class="section-title">1. Complainant Personal Parameters</div>
+          <table class="field-table">
+            <tr><th>Full Name</th><td>${complaint.name}</td></tr>
+            <tr><th>Mobile Number</th><td>${complaint.mobile}</td></tr>
+            <tr><th>Email Address</th><td>${complaint.email || 'N/A'}</td></tr>
+            <tr><th>Aadhaar Identification</th><td>${complaint.aadhaar || 'CONFIDENTIAL'}</td></tr>
+          </table>
+
+          <div class="section-title">2. Incident Chronicle Details</div>
+          <table class="field-table">
+            <tr><th>Offense Category</th><td>${complaint.type}</td></tr>
+            <tr><th>Incident Occurrence Date</th><td>${complaint.date}</td></tr>
+            <tr><th>Incident Geo Location</th><td>${complaint.location}</td></tr>
+            <tr><th>Accused Person(s) Profile</th><td>${complaint.accused || 'Unknown / Unidentified'}</td></tr>
+          </table>
+
+          <div class="section-title">3. Detailed Narrative Deposition</div>
+          <div style="font-size: 13px; border: 1px solid #ddd; padding: 12px; background: #fafafa; font-family: monospace; white-space: pre-wrap; margin-bottom: 14px; text-align: left;">${complaint.description}</div>
+
+          <div class="section-title">4. Law Enforcement Allocation</div>
+          <table class="field-table">
+            <tr><th>Preferred District</th><td>${complaint.district}</td></tr>
+            <tr><th>Jurisdictional Station</th><td>${complaint.police_station} P.S.</td></tr>
+            <tr><th>Assigned Investigating Officer</th><td>${complaint.assigned_officer}</td></tr>
+            <tr><th>FIR Priority Code</th><td>${complaint.priority} Severity</td></tr>
+          </table>
+
+          <div class="section-title">5. Official Timeline Logs & Status</div>
+          <table class="timeline-table">
+            <thead>
+              <tr><th>Milestone Title</th><th>Logged Remarks</th><th>Timestamp</th></tr>
+            </thead>
+            <tbody>
+              ${timeline.map(t => `
+                <tr>
+                  <td style="font-weight:bold;">${t.title}</td>
+                  <td>${t.remarks}</td>
+                  <td>${new Date(t.created_at).toLocaleString()}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="footer">
+            <div>
+              <div class="stamp-placeholder">OFFICIAL RECORD STAMP</div>
+              <div style="font-size:10px; color:#555; margin-top:4px;">Portal Verification Signature: MOCK-SECAMP-STAMP</div>
+            </div>
+            <div style="text-align: right; margin-top:20px;">
+              <div style="border-bottom: 1px solid #000; width: 180px; margin-bottom: 4px;"></div>
+              <div style="font-weight:bold; font-size:11px;">Signed, Assigned intake Officer</div>
+              <div style="font-size: 10px; color: #555;">${complaint.assigned_officer}</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; text-align: center;">
+            <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background: #c9184a; color: white; border: none; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">🖨️ Print / Save FIR Document</button>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      newWin.document.write(htmlContent);
+      newWin.document.close();
+    })
+    .catch(err => toast(err.message));
+}
+
+function askRakshakAboutSection(query) {
+  // Ensure chat window is open
+  const chatWindow = document.getElementById('rakshak-chat');
+  if (chatWindow && !chatWindow.classList.contains('open')) {
+    toggleRakshakChat();
+  }
+  
+  // Send user message
+  sendUserMessage(query);
+  toast('Grounded legal context queried to Rakshak AI.');
+}
 </script>
+
+</div>
+
+<!-- RAKSHAK AI CHATBOT INTERFACE -->
+<div class="rakshak-toggle" onclick="toggleRakshakChat()">
+  🛡️
+</div>
+
+<div class="rakshak-chat-window" id="rakshak-chat">
+  <div class="chat-header">
+    <div class="chat-bot-info">
+      <div class="chat-bot-avatar">🛡️</div>
+      <div>
+        <span class="chat-bot-name">Rakshak AI</span>
+        <span class="chat-bot-status">Legal Safety Advisor</span>
+      </div>
+    </div>
+    <button class="modal-close" style="position:static; color:white; font-size:24px;" onclick="toggleRakshakChat()">×</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">
+      Hello! I am <strong>Rakshak AI</strong>, your secure legal safety advisor. 🛡️<br/><br/>
+      I can help you understand your legal rights, interpret BNS / IPC protections, explain Zero FIR procedures, and assist you in filing complaints.<br/><br/>
+      How can I assist you today? Feel free to tap a quick suggestion chip below!
+    </div>
+  </div>
+  <div class="chat-suggestions-container">
+    <div class="chat-chip" onclick="triggerSuggestion('Tell me about Zero FIR')">Zero FIR</div>
+    <div class="chat-chip" onclick="triggerSuggestion('Rights during police arrest?')">Arrest Rights</div>
+    <div class="chat-chip" onclick="triggerSuggestion('How to report cyberstalking?')">Cyberstalking</div>
+    <div class="chat-chip" onclick="triggerSuggestion('Domestic abuse protections?')">Domestic Violence</div>
+    <div class="chat-chip" onclick="triggerSuggestion('What is the POSH Act?')">POSH Act</div>
+  </div>
+  <div class="chat-input-area" style="position: relative; display: flex; align-items: center; gap: 8px;">
+    <input type="text" id="chat-input" placeholder="Ask Rakshak AI..." onkeypress="handleChatKeyPress(event)" style="padding-right: 36px;" />
+    <button id="chat-mic-btn" style="position: absolute; right: 54px; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text3); padding: 4px; transition: color 0.15s; outline:none;" onclick="toggleVoiceInput(event)">🎙️</button>
+    <button class="chat-send-btn" onclick="triggerChatSend()">➔</button>
+  </div>
+</div>
+
 </body>
 </html>

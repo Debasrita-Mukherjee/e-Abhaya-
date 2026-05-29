@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/Debasrita-Mukherjee/e-Abhaya-#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "sqlite3": "^6.0.1"
   }
