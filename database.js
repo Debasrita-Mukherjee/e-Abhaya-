@@ -59,10 +59,19 @@ async function initDatabase() {
         status TEXT DEFAULT 'submitted',
         priority TEXT DEFAULT 'medium',
         assigned_officer TEXT DEFAULT 'Insp. A. Kumar',
+        attachments TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Migration to add attachments column if database already exists
+    try {
+      await dbRun("ALTER TABLE complaints ADD COLUMN attachments TEXT");
+      console.log("Database migration: Added 'attachments' column to complaints table.");
+    } catch (e) {
+      // Safely ignore if column already exists
+    }
 
     // 2. Create timeline table
     await dbRun(`
