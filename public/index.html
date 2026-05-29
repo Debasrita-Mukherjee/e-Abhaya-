@@ -832,9 +832,15 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
         <input type="date" id="f-date"/>
       </div>
     </div>
-    <div class="form-group">
-      <label>Location of incident</label>
-      <input type="text" id="f-location" placeholder="Address / landmark / area"/>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Location of incident</label>
+        <input type="text" id="f-location" placeholder="Address / landmark / area"/>
+      </div>
+      <div class="form-group">
+        <label>Pincode of Place of Occurrence</label>
+        <input type="text" id="f-pincode" placeholder="e.g. 700091 (6-digit West Bengal PIN)" maxlength="6" oninput="autoSelectPS(this.value)"/>
+      </div>
     </div>
     <div class="form-group">
       <label>Detailed description</label>
@@ -918,8 +924,14 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
       <div class="complaint-meta">
         <div class="meta-pair"><label>Last updated</label><span id="tr-updated">-</span></div>
         <div class="meta-pair"><label>Next action</label><span id="tr-next">-</span></div>
+        <div class="meta-pair"><label>Pincode of Occurrence</label><span id="tr-pincode">-</span></div>
         <div class="meta-pair"><label>Assigned officer</label><span id="tr-officer">-</span></div>
         <div class="meta-pair"><label>Police station</label><span id="tr-ps">-</span></div>
+        <div class="meta-pair" id="tr-dispatch-badge-pair" style="grid-column: span 2; display: none; background: rgba(15, 110, 86, 0.08); border: 0.5px solid var(--teal); border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 5px;">
+          <span style="font-size:12px; font-weight:600; color:var(--teal); display:flex; align-items:center; gap:6px;">
+            🛡️ Soft Copy Dispatched to Police Station Inbox
+          </span>
+        </div>
       </div>
 
       <div id="tr-attachments-section" style="display:none; border-top:0.5px solid var(--border); padding-top:1rem; margin-top:1rem;">
@@ -1848,6 +1860,30 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+function autoSelectPS(pin) {
+  const pinMap = {
+    '700091': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
+    '700106': { ps: 'Bidhannagar', dist: 'North 24 Parganas' },
+    '700156': { ps: 'New Town', dist: 'North 24 Parganas' },
+    '700160': { ps: 'New Town', dist: 'North 24 Parganas' },
+    '700089': { ps: 'Lake Town', dist: 'North 24 Parganas' },
+    '700048': { ps: 'Lake Town', dist: 'North 24 Parganas' },
+    '700028': { ps: 'Dum Dum', dist: 'North 24 Parganas' },
+    '700030': { ps: 'Dum Dum', dist: 'North 24 Parganas' }
+  };
+  
+  const mapped = pinMap[pin.trim()];
+  if (mapped) {
+    const distSelect = document.getElementById('f-district');
+    const psSelect = document.getElementById('f-ps');
+    if (distSelect && psSelect) {
+      distSelect.value = mapped.dist;
+      psSelect.value = mapped.ps;
+      toast(`Mapped Pincode ${pin} to ${mapped.ps} Police Station.`);
+    }
+  }
+}
+
 // 1. Submit Complaint Flow
 async function submitComplaint() {
   const name = document.getElementById('f-name').value.trim();
@@ -1857,6 +1893,7 @@ async function submitComplaint() {
   const type = document.getElementById('f-type').value;
   const date = document.getElementById('f-date').value;
   const location = document.getElementById('f-location').value.trim();
+  const pincode = document.getElementById('f-pincode').value.trim();
   const description = document.getElementById('f-desc').value.trim();
   const accused = document.getElementById('f-accused').value.trim();
   const district = document.getElementById('f-district').value;
@@ -1867,12 +1904,17 @@ async function submitComplaint() {
     return;
   }
   
+  if (pincode && !/^\d{6}$/.test(pincode)) {
+    toast('Pincode must be exactly a 6-digit numeric code.');
+    return;
+  }
+  
   try {
     const res = await fetch('/api/complaints', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station,
+        name, mobile, email, aadhaar, type, date, location, pincode, description, accused, district, police_station,
         attachments: selectedEvidenceFiles.length > 0 ? JSON.stringify(selectedEvidenceFiles) : null
       })
     });
@@ -1894,7 +1936,7 @@ async function submitComplaint() {
 }
 
 function clearForm() {
-  ['f-name','f-mobile','f-email','f-aadhaar','f-location','f-desc','f-accused'].forEach(id => {
+  ['f-name','f-mobile','f-email','f-aadhaar','f-location','f-pincode','f-desc','f-accused'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1923,6 +1965,8 @@ async function trackComplaint() {
   const id = document.getElementById('t-id').value.trim();
   if (!id) { toast('Enter a complaint ID.'); return; }
   
+  const mobileDigits = document.getElementById('t-mobile').value.trim();
+  
   try {
     const res = await fetch(`/api/complaints/${id}`);
     if (!res.ok) {
@@ -1930,6 +1974,14 @@ async function trackComplaint() {
     }
     
     const { complaint, timeline } = await res.json();
+    
+    // Validate mobile number last 4 digits if entered
+    if (mobileDigits) {
+      const cleanMobile = complaint.mobile.replace(/\D/g, '');
+      if (!cleanMobile.endsWith(mobileDigits)) {
+        throw new Error('Mobile number does not match registered complaint.');
+      }
+    }
     
     // Set text elements
     document.getElementById('tr-id').textContent = complaint.id;
@@ -1944,6 +1996,19 @@ async function trackComplaint() {
     document.getElementById('tr-updated').textContent = formatDateTime(complaint.updated_at);
     document.getElementById('tr-officer').textContent = complaint.assigned_officer;
     document.getElementById('tr-ps').textContent = `${complaint.police_station} P.S.`;
+    
+    const pinVal = complaint.pincode;
+    const pinEl = document.getElementById('tr-pincode');
+    const badgeEl = document.getElementById('tr-dispatch-badge-pair');
+    if (pinEl && badgeEl) {
+      if (pinVal) {
+        pinEl.textContent = pinVal;
+        badgeEl.style.display = 'block';
+      } else {
+        pinEl.textContent = 'N/A';
+        badgeEl.style.display = 'none';
+      }
+    }
 
     // Render attachments in tracking view
     const trAttachSection = document.getElementById('tr-attachments-section');
