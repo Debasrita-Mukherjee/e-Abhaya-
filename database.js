@@ -56,6 +56,7 @@ async function initDatabase() {
         accused TEXT,
         district TEXT NOT NULL,
         police_station TEXT NOT NULL,
+        pincode TEXT,
         status TEXT DEFAULT 'submitted',
         priority TEXT DEFAULT 'medium',
         assigned_officer TEXT DEFAULT 'Insp. A. Kumar',
@@ -69,6 +70,14 @@ async function initDatabase() {
     try {
       await dbRun("ALTER TABLE complaints ADD COLUMN attachments TEXT");
       console.log("Database migration: Added 'attachments' column to complaints table.");
+    } catch (e) {
+      // Safely ignore if column already exists
+    }
+
+    // Migration to add pincode column if database already exists
+    try {
+      await dbRun("ALTER TABLE complaints ADD COLUMN pincode TEXT");
+      console.log("Database migration: Added 'pincode' column to complaints table.");
     } catch (e) {
       // Safely ignore if column already exists
     }
@@ -125,6 +134,7 @@ async function seedInitialData() {
       accused: 'Unknown person wearing a black jacket',
       district: 'North 24 Parganas',
       police_station: 'Bidhannagar',
+      pincode: '700091',
       status: 'investigating',
       priority: 'Medium',
       assigned_officer: 'Insp. A. Kumar',
@@ -144,6 +154,7 @@ async function seedInitialData() {
       accused: 'Two young males riding a blue scooter',
       district: 'North 24 Parganas',
       police_station: 'New Town',
+      pincode: '700156',
       status: 'submitted',
       priority: 'High',
       assigned_officer: 'SI R. Sharma',
@@ -163,6 +174,7 @@ async function seedInitialData() {
       accused: 'User account under handle @cyber_anon2025',
       district: 'Kolkata',
       police_station: 'Dum Dum',
+      pincode: '700028',
       status: 'evidence',
       priority: 'High',
       assigned_officer: 'Insp. M. Das',
@@ -182,6 +194,7 @@ async function seedInitialData() {
       accused: 'Ramesh Roy and Lalita Roy',
       district: 'North 24 Parganas',
       police_station: 'Lake Town',
+      pincode: '700089',
       status: 'submitted',
       priority: 'High',
       assigned_officer: 'SI R. Sharma',
@@ -201,6 +214,7 @@ async function seedInitialData() {
       accused: 'A colleague named Vikrant S.',
       district: 'North 24 Parganas',
       police_station: 'New Town',
+      pincode: '700156',
       status: 'resolved',
       priority: 'Low',
       assigned_officer: 'SI R. Sharma',
@@ -240,9 +254,9 @@ async function seedInitialData() {
   // Insert complaints
   for (const c of initialComplaints) {
     await dbRun(`
-      INSERT INTO complaints (id, name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station, status, priority, assigned_officer, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [c.id, c.name, c.mobile, c.email, c.aadhaar, c.type, c.date, c.location, c.description, c.accused, c.district, c.police_station, c.status, c.priority, c.assigned_officer, c.created_at, c.updated_at]);
+      INSERT INTO complaints (id, name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station, pincode, status, priority, assigned_officer, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [c.id, c.name, c.mobile, c.email, c.aadhaar, c.type, c.date, c.location, c.description, c.accused, c.district, c.police_station, c.pincode || null, c.status, c.priority, c.assigned_officer, c.created_at, c.updated_at]);
   }
 
   // Insert timelines

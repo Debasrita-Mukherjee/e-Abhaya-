@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const {
   dbRun,
@@ -43,6 +44,17 @@ const statusMilestones = {
   'action': 'Action taken',
   'resolved': 'Resolved',
   'closed': 'Closed'
+};
+
+const pincodeToPS = {
+  '700091': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in' },
+  '700106': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in' },
+  '700156': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in' },
+  '700160': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in' },
+  '700089': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in' },
+  '700048': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in' },
+  '700028': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in' },
+  '700030': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in' }
 };
 
 // API Endpoints
@@ -167,9 +179,6 @@ app.get('/api/complaints/:id', async (req, res) => {
   }
 });
 
-// 4. POST /api/complaints
-app.get('/api/check', (req, res) => res.send('OK')); // simple check
-
 app.post('/api/complaints', async (req, res) => {
   try {
     const {
@@ -180,6 +189,7 @@ app.post('/api/complaints', async (req, res) => {
       type,
       date,
       location,
+      pincode,
       description,
       accused,
       district,
@@ -206,9 +216,9 @@ app.post('/api/complaints', async (req, res) => {
 
     // Insert into complaints
     await dbRun(`
-      INSERT INTO complaints (id, name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station, status, priority, assigned_officer, attachments)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', ?, 'SI R. Sharma', ?)
-    `, [id, name, mobile, email || null, aadhaar || null, type, date, location, description, accused || null, district, police_station, priority, attachments || null]);
+      INSERT INTO complaints (id, name, mobile, email, aadhaar, type, date, location, pincode, description, accused, district, police_station, status, priority, assigned_officer, attachments)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', ?, 'SI R. Sharma', ?)
+    `, [id, name, mobile, email || null, aadhaar || null, type, date, location, pincode || null, description, accused || null, district, police_station, priority, attachments || null]);
 
     // Insert initial timeline event
     await dbRun(`
@@ -216,7 +226,148 @@ app.post('/api/complaints', async (req, res) => {
       VALUES (?, 'submitted', 'Complaint submitted', 'SMS and Email confirmation sent. System logged successfully.')
     `, [id]);
 
-    res.status(201).json({ id, message: 'Complaint successfully registered.' });
+    // Soft copy dispatch simulation
+    let dispatchMessage = "Complaint registered under preferred station. No matching Pincode mapping found.";
+    const pinStr = pincode ? pincode.toString().trim() : '';
+    const stationInfo = pincodeToPS[pinStr];
+    
+    if (stationInfo) {
+      const psName = stationInfo.station;
+      const psEmail = stationInfo.email;
+      
+      // Create dispatch folders on the server if they don't exist
+      const dispatchDir = path.join(__dirname, 'police_stations', psName, 'inbox');
+      if (!fs.existsSync(dispatchDir)) {
+        fs.mkdirSync(dispatchDir, { recursive: true });
+      }
+      
+      // Build HTML report template
+      const reportHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OFFICIAL INTAKE REPORT — ${id}</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #222; padding: 40px; background-color: #f9f9f9; line-height: 1.6; }
+    .report-container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .header { border-bottom: 2px solid #c9184a; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-family: 'Georgia', serif; font-size: 26px; color: #0c0d1b; margin: 0; }
+    .header .meta { text-align: right; font-size: 13px; color: #666; }
+    .badge { background: #c9184a; color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+    .section-title { font-size: 15px; font-weight: bold; color: #c9184a; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 6px; margin: 25px 0 15px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 25px; margin-bottom: 10px; }
+    .field { display: flex; flex-direction: column; }
+    .field label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 3px; }
+    .field span { font-size: 14px; color: #111; font-weight: 500; }
+    .full-width { grid-column: span 2; }
+    .description-box { background: #fcfcfc; border: 1px solid #eee; padding: 15px; border-radius: 4px; font-size: 13.5px; color: #333; white-space: pre-wrap; margin-top: 5px; }
+    .footer { border-top: 1px solid #eee; padding-top: 20px; margin-top: 40px; font-size: 12px; color: #888; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+    <div class="header">
+      <div>
+        <h1>e-ABHAYA COMPLAINT PORTAL</h1>
+        <div style="font-size: 13px; color: #888; margin-top: 4px;">State of West Bengal Women Safety Intake Dispatch</div>
+      </div>
+      <div class="meta">
+        <div><strong>Complaint ID:</strong> ${id}</div>
+        <div><strong>Date Filed:</strong> ${new Date().toLocaleDateString('en-GB')}</div>
+        <div style="margin-top: 5px;"><span class="badge">DISPATCHED</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">Respected Police Station & Dispatch Meta</div>
+    <div class="grid">
+      <div class="field">
+        <label>Receiving Station</label>
+        <span>${psName} Police Station</span>
+      </div>
+      <div class="field">
+        <label>Official Station Pincode</label>
+        <span>${pinStr}</span>
+      </div>
+      <div class="field">
+        <label>Direct PS Email</label>
+        <span>${psEmail}</span>
+      </div>
+      <div class="field">
+        <label>District Authority</label>
+        <span>${district}</span>
+      </div>
+    </div>
+
+    <div class="section-title">Complainant Information</div>
+    <div class="grid">
+      <div class="field">
+        <label>Full Name</label>
+        <span>${name}</span>
+      </div>
+      <div class="field">
+        <label>Registered Mobile</label>
+        <span>${mobile}</span>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <span>${email || 'N/A'}</span>
+      </div>
+      <div class="field">
+        <label>Aadhaar / ID Card</label>
+        <span>${aadhaar || 'N/A'}</span>
+      </div>
+    </div>
+
+    <div class="section-title">Incident Specifications</div>
+    <div class="grid">
+      <div class="field">
+        <label>Incident Classification</label>
+        <span>${type}</span>
+      </div>
+      <div class="field">
+        <label>Incident Date</label>
+        <span>${date}</span>
+      </div>
+      <div class="field full-width">
+        <label>Exact Location of Occurrence</label>
+        <span>${location} (PIN Code: ${pinStr})</span>
+      </div>
+      <div class="field full-width">
+        <label>Identified Accused Details</label>
+        <span>${accused || 'Unknown / Unspecified accused details.'}</span>
+      </div>
+    </div>
+
+    <div class="section-title">Statement & Facts of the Incident</div>
+    <div class="description-box">${description}</div>
+
+    <div class="section-title">Evidence & Attachments Ledger</div>
+    <div style="font-size: 13px; color: #555;">
+      ${attachments ? 'Digital evidence files uploaded and secured on portal.' : 'No digital evidence files attached.'}
+    </div>
+
+    <div class="footer">
+      <p>This report has been digitally generated and dispatched directly from the e-Abhaya Web Portal.</p>
+      <p>Confidentiality notice: Information contained in this document is strictly secure under the Women Protection Act.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+      // Save report HTML file
+      const reportPath = path.join(dispatchDir, `${id}_complaint_report.html`);
+      fs.writeFileSync(reportPath, reportHtml, 'utf8');
+      
+      dispatchMessage = `Soft copy of complaint report generated and successfully dispatched to ${psName} Police Station (e-mail: ${psEmail}, Pincode: ${pinStr}).`;
+    }
+
+    // Insert second timeline event for soft copy dispatch!
+    await dbRun(`
+      INSERT INTO timeline (complaint_id, status, title, remarks)
+      VALUES (?, 'submitted', 'Soft Copy Dispatched', ?)
+    `, [id, dispatchMessage]);
+
+    res.status(201).json({ id, message: 'Complaint successfully registered and dispatched.' });
   } catch (err) {
     console.error('Error lodging complaint:', err);
     res.status(500).json({ error: 'Internal server error' });
