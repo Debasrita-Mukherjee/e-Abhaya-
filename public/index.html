@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>e-Abhaya — Women Safety & Complaint Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary: #0c0d1b;
+  --accent: #c9184a;
+  --accent-soft: #ff4d6d;
+  --accent-pale: rgba(201, 24, 74, 0.07);
+  --teal: #0f6e56;
+  --teal-light: rgba(15, 110, 86, 0.1);
+  --surface: #ffffff;
+  --surface2: #f4f5f9;
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #0c0d1b;
+  --text2: #4f5270;
+  --text3: #8b8ea8;
+  --radius: 16px;
+  --radius-sm: 8px;
+}
+
+body.dark-theme {
+  --primary: #05050b;
+  --accent: #c9184a;
+  --accent-soft: #ff4d6d;
+  --accent-pale: rgba(201, 24, 74, 0.14);
+  --teal: #108569;
+  --teal-light: rgba(16, 133, 105, 0.14);
+  --surface: #0e0f20;
+  --surface2: #05050c;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #eff0f6;
+  --text2: #9da1c2;
+  --text3: #6d7190;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:34px;height:34px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.nav-logo svg{width:18px;height:18px;fill:white;}
+.nav-brand-name{font-family:'Playfair Display',serif;font-size:20px;color:white;font-weight:600;letter-spacing:-0.01em;}
+.nav-brand-name span{color:#ff8fab;}
+.nav-links{display:flex;gap:4px;}
+.nav-links button{background:none;border:none;color:rgba(255,255,255,0.7);font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.nav-links button:hover,.nav-links button.active{background:rgba(255,255,255,0.1);color:white;}
+.nav-sos{background:var(--accent)!important;color:white!important;font-weight:500;animation:sos-pulse 2s infinite;}
+@keyframes sos-pulse{0%,100%{opacity:1}50%{opacity:.8}}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-user{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.8);font-size:13px;}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:#c9184a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:white;}
+
+/* PAGES */
+.page{display:none;padding:2rem;max-width:1000px;margin:0 auto;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{background:var(--primary);margin:-2rem -2rem 2rem;padding:3rem 2rem;color:white;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(201,24,74,.15);border-radius:50%;}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,77,109,.1);border-radius:50%;}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;margin-bottom:.6rem;position:relative;z-index:1;}
+.hero h1 span{color:#ff8fab;}
+.hero p{color:rgba(255,255,255,.7);font-size:15px;max-width:500px;margin:0 auto 1.5rem;position:relative;z-index:1;}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+.btn{padding:10px 22px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:var(--accent);color:white;}
+.btn-primary:hover{background:#a8143d;}
+.btn-outline{background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.25);}
+.btn-outline:hover{background:rgba(255,255,255,.2);}
+.btn-teal{background:var(--teal);color:white;}
+.btn-teal:hover{background:#0a5240;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{background:var(--surface);}
+.btn-danger{background:#e24b4a;color:white;}
+.btn-danger:hover{background:#c23a39;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem;}
+.stat-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;}
+.stat-val{font-size:22px;font-weight:500;font-family:'Playfair Display',serif;color:var(--text);}
+.stat-label{font-size:12px;color:var(--text3);margin-top:3px;}
+.stat-badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-top:6px;}
+.badge-success{background:var(--teal-light);color:var(--teal);}
+.badge-warn{background:#faeeda;color:#854f0b;}
+.badge-info{background:#e6f1fb;color:#185fa5;}
+.badge-danger{background:#fcebeb;color:#a32d2d;}
+
+/* SECTION */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.section-head h2{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;}
+.section-head a{font-size:13px;color:var(--accent);cursor:pointer;text-decoration:none;}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem;}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+.card-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:20px;}
+.card-icon.red{background:#fcebeb;}
+.card-icon.teal{background:var(--teal-light);}
+.card-icon.blue{background:#e6f1fb;}
+.card-icon.amber{background:#faeeda;}
+.card h3{font-size:14px;font-weight:500;margin-bottom:4px;}
+.card p{font-size:13px;color:var(--text2);line-height:1.5;}
+.card-action{margin-top:12px;}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{text-align:left;padding:8px 12px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);font-size:12px;}
+.data-table td{padding:10px 12px;border-bottom:0.5px solid var(--border);color:var(--text);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--surface2);}
+.status-pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.s-submitted{background:#e6f1fb;color:#185fa5;}
+.s-reviewing{background:#faeeda;color:#854f0b;}
+.s-fir{background:#eeedfe;color:#3c3489;}
+.s-investigating{background:#e6f1fb;color:#185fa5;}
+.s-evidence{background:#fbeaf0;color:#72243e;}
+.s-action{background:#faeeda;color:#854f0b;}
+.s-resolved{background:var(--teal-light);color:var(--teal);}
+.s-closed{background:#f1efe8;color:#5f5e5a;}
+
+/* FORM */
+.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.form-group label{font-size:13px;font-weight:500;color:var(--text2);}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface2);color:var(--text);outline:none;transition:.15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#378add;box-shadow:0 0 0 3px rgba(55,138,221,.12);}
+.form-group textarea{resize:vertical;min-height:100px;}
+.upload-area{border:1px dashed var(--border);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;background:var(--surface2);color:var(--text3);font-size:13px;transition:.15s;}
+.upload-area:hover{border-color:#378add;color:#378add;}
+.upload-area svg{display:block;margin:0 auto 8px;}
+.form-note{font-size:12px;color:var(--text3);margin-top:4px;}
+.form-actions{display:flex;gap:10px;margin-top:1.5rem;}
+.form-section-title{font-size:13px;font-weight:500;color:var(--text2);padding-bottom:8px;border-bottom:0.5px solid var(--border);margin-bottom:14px;}
+
+/* TRACK */
+.track-box{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+.track-result{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-top:1.5rem;}
+.timeline{position:relative;padding-left:22px;margin-top:1rem;}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:16px;}
+.tl-dot{position:absolute;left:-18px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--surface);}
+.tl-dot.done{background:#1d9e75;border-color:#1d9e75;}
+.tl-dot.active{background:#378add;border-color:#378add;}
+.tl-title{font-size:13px;font-weight:500;}
+.tl-title.future{color:var(--text3);}
+.tl-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.complaint-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:1rem;}
+.meta-pair label{font-size:11px;color:var(--text3);}
+.meta-pair span{font-size:13px;display:block;margin-top:1px;}
+
+/* SOS */
+.sos-panel{background:#fcebeb;border:1px solid #f09595;border-radius:var(--radius);padding:1.5rem;text-align:center;margin-bottom:1.5rem;}
+.sos-btn-big{width:120px;height:120px;border-radius:50%;background:var(--accent);color:white;font-size:22px;font-weight:500;border:none;cursor:pointer;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;animation:sos-pulse 2s infinite;}
+.sos-panel h3{font-size:16px;font-weight:500;color:#a32d2d;margin-bottom:4px;}
+.sos-panel p{font-size:13px;color:#791f1f;}
+.emergency-contacts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1.5rem;}
+.em-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;}
+.em-num{font-size:22px;font-weight:500;font-family:'Playfair Display',serif;color:var(--accent);}
+.em-label{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* OFFICER PORTAL */
+.portal-header{background:var(--primary);color:white;padding:1.25rem 1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.portal-header h2{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;}
+.portal-header p{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px;}
+.filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.filter-btn{padding:5px 14px;border-radius:20px;border:0.5px solid var(--border);background:var(--surface);font-size:12px;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif;}
+.filter-btn.active{background:var(--primary);color:white;border-color:var(--primary);}
+.priority-high{color:#a32d2d;font-weight:500;}
+.priority-medium{color:#854f0b;}
+.priority-low{color:var(--text3);}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:12px 20px;border-radius:var(--radius-sm);font-size:13px;z-index:999;transform:translateY(80px);opacity:0;transition:.3s;pointer-events:none;max-width:300px;}
+#toast.show{transform:translateY(0);opacity:1;}
+
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;position:relative;}
+.modal h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:.5rem;}
+.modal p{font-size:14px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);}
+
+/* NOTIFICATION DOT */
+.notif-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;margin-left:4px;vertical-align:middle;}
+
+@media(max-width:640px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .cards-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .emergency-contacts{grid-template-columns:1fr;}
+}
+
+/* RAKSHAK AI CHATBOT WIDGET */
+.rakshak-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 16px rgba(201, 24, 74, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 998;
+  font-size: 24px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+.rakshak-toggle:hover {
+  transform: scale(1.08);
+  background: #a8143d;
+}
+.rakshak-chat-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 360px;
+  height: 500px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 998;
+  transition: all 0.3s;
+}
+.rakshak-chat-window.open {
+  display: flex;
+  animation: slide-up-chat 0.25s ease-out;
+}
+@keyframes slide-up-chat {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.chat-header {
+  background: var(--primary);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-bot-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-bot-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.chat-bot-name {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+}
+.chat-bot-status {
+  font-size: 11px;
+  color: #ff8fab;
+  display: block;
+}
+.chat-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface2);
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  text-align: left;
+}
+.chat-msg.bot {
+  background: var(--surface);
+  color: var(--text);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  border: 0.5px solid var(--border);
+}
+.chat-msg.user {
+  background: var(--accent);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+.chat-suggestions-container {
+  padding: 8px 12px;
+  background: var(--surface);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.chat-suggestions-container::-webkit-scrollbar {
+  display: none;
+}
+.chat-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.chat-chip:hover {
+  background: var(--accent-pale);
+  color: var(--accent);
+  border-color: var(--accent-soft);
+}
+.chat-input-area {
+  padding: 10px 16px;
+  background: var(--surface);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chat-input-area input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+.chat-send-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.chat-send-btn:hover {
+  background: #a8143d;
+}
+@keyframes mic-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.recording-pulse {
+  animation: mic-pulse 1.2s infinite;
+  color: var(--accent) !important;
+}
+
+/* Custom Gateway Screens */
+.login-gateway-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--surface2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+.login-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 480px;
+  padding: 2.25rem 2.5rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.login-subtitle {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 1.75rem;
+}
+.role-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 1.75rem;
+}
+.role-option {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text2);
+}
+.role-option:hover {
+  border-color: var(--accent-soft);
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+.role-option.active {
+  border-color: var(--accent);
+  background: var(--accent-pale);
+  color: var(--accent);
+}
+.role-icon {
+  font-size: 24px;
+}
+.role-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+.login-form-container {
+  display: none;
+  animation: login-fade-in 0.3s;
+}
+.login-form-container.active {
+  display: block;
+}
+@keyframes login-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pulsing indicators for active SOS alerts */
+@keyframes border-pulse {
+  0% { border-color: #f09595; box-shadow: 0 0 0 0 rgba(240, 149, 149, 0.4); }
+  70% { border-color: #a32d2d; box-shadow: 0 0 0 6px rgba(240, 149, 149, 0); }
+  100% { border-color: #f09595; box-shadow: 0 0 0 0 rgba(240, 149, 149, 0); }
+}
+
+/* Flex-bar visual distributions */
+.analytics-bar-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+/* Microphone visual waveform waves container */
+.mic-wave-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+  margin-left: 6px;
+}
+.mic-bar {
+  width: 2px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.recording-pulse .mic-bar:nth-child(1) { animation: voice-wave 0.5s ease-in-out infinite alternate; }
+.recording-pulse .mic-bar:nth-child(2) { animation: voice-wave 0.7s ease-in-out infinite alternate 0.1s; }
+.recording-pulse .mic-bar:nth-child(3) { animation: voice-wave 0.4s ease-in-out infinite alternate 0.2s; }
+@keyframes voice-wave {
+  from { height: 4px; }
+  to { height: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- GORGEOUS FULLSCREEN PORTAL GATEWAY -->
+<div id="login-gateway" class="login-gateway-overlay">
+  <div class="login-card">
+    <div class="login-title" style="font-family:'Playfair Display',serif; font-size:28px; font-weight:600; margin-bottom:4px; color:var(--text);">e-<span style="color:var(--accent);">Abhaya</span></div>
+    <div class="login-subtitle">Women Safety & Complaint Portal</div>
+    
+    <div class="role-selectors">
+      <div class="role-option active" id="role-btn-citizen" onclick="selectLoginRole('citizen')">
+        <span class="role-icon">👩‍💻</span>
+        <span class="role-label">Citizen Portal</span>
+      </div>
+      <div class="role-option" id="role-btn-police" onclick="selectLoginRole('police')">
+        <span class="role-icon">👮</span>
+        <span class="role-label">Police Department</span>
+      </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="login-alert" style="display:none; background:rgba(201,24,74,0.08); border:0.5px solid var(--accent); color:var(--accent); font-size:12px; padding:10px; border-radius:6px; margin-bottom:1.25rem; text-align: left;"></div>
+
+    <!-- Citizen Form -->
+    <div class="login-form-container active" id="form-citizen">
+      <div class="form-group" style="text-align: left;">
+        <label>Full name</label>
+        <input type="text" id="login-name" placeholder="As per Aadhaar card" value="Priya Sharma" onkeydown="if(event.key === 'Enter') handleLoginSubmit('citizen')" />
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label>Registered mobile number</label>
+        <input type="tel" id="login-mobile" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210" onkeydown="if(event.key === 'Enter') handleLoginSubmit('citizen')" />
+      </div>
+      <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:0.75rem;" onclick="handleLoginSubmit('citizen')">Enter Portal Gateway</button>
+    </div>
+
+    <!-- Police Form -->
+    <div class="login-form-container" id="form-police">
+      <div class="form-group" style="text-align: left;">
+        <label>Officer badge ID</label>
+        <input type="text" id="login-badge" placeholder="e.g. INS-KUMAR" onkeydown="if(event.key === 'Enter') handleLoginSubmit('police')" />
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label>Secure validation PIN</label>
+        <input type="password" id="login-pin" placeholder="••••" onkeydown="if(event.key === 'Enter') handleLoginSubmit('police')" />
+      </div>
+      <div style="font-size: 11px; color: var(--text3); margin-top: -6px; margin-bottom: 12px; text-align: left;">Demo ID: INS-KUMAR or SI-SHARMA (PIN: 1234)</div>
+      <button class="btn btn-teal" style="width:100%; padding:12px; margin-top:0.5rem;" onclick="handleLoginSubmit('police')">Validate Badge & Login</button>
+    </div>
+  </div>
+</div>
+
+<div id="main-app-nav" style="display:none; flex-direction:column; min-height:100vh;">
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    </div>
+    <span class="nav-brand-name">e-<span>Abhaya</span></span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-citizen-link active" id="nav-btn-home" onclick="showPage('home',this)">Home</button>
+    <button class="nav-citizen-link" onclick="showPage('file',this)">File complaint</button>
+    <button class="nav-citizen-link" onclick="showPage('track',this)">Track</button>
+    <button class="nav-citizen-link nav-sos" onclick="showPage('sos',this)">SOS</button>
+    <button class="nav-citizen-link" onclick="showPage('legal',this)">Legal Aid</button>
+    <button class="nav-police-link" id="nav-btn-officer" onclick="showPage('officer',this)">Officer Dashboard</button>
+  </div>
+  <div class="nav-right">
+    <button id="theme-toggle" class="btn btn-outline" style="padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; margin-right: 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.25);" onclick="toggleTheme()">
+      <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">Dark</span>
+    </button>
+    <div class="nav-user">
+      <div class="nav-avatar" id="nav-user-avatar">P</div>
+      <span id="nav-user-name">Priya S.</span>
+    </div>
+    <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.25); background:none; color:white; margin-left:8px;" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>Safe, swift & <span>accountable</span> justice</h1>
+    <p>File complaints, track real-time status, and get support — all in one secure platform built for every woman in India.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="showPage('file',document.querySelectorAll('.nav-links button')[1])">File a complaint</button>
+      <button class="btn btn-outline" onclick="showPage('track',document.querySelectorAll('.nav-links button')[2])">Track status</button>
+      <button class="btn btn-danger" onclick="showPage('sos',document.querySelectorAll('.nav-links button')[3])">Emergency SOS</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-registered">-</div>
+      <div class="stat-label">Complaints registered</div>
+      <span class="stat-badge badge-success">+12% this month</span>
+    </div>
+    <div class="stat-card" style="display: flex; align-items: center; justify-content: space-between; gap: 14px;">
+      <div style="flex: 1; text-align: left;">
+        <div class="stat-val" id="stat-resolved">-</div>
+        <div class="stat-label">Cases resolved</div>
+        <span class="stat-badge badge-success" id="stat-rate">- rate</span>
+      </div>
+      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg width="56" height="56" viewBox="0 0 56 56" style="transform: rotate(-90deg);">
+          <circle cx="28" cy="28" r="22" fill="none" stroke="var(--border)" stroke-width="4" />
+          <circle id="stat-rate-ring" cx="28" cy="28" r="22" fill="none" stroke="var(--teal)" stroke-width="4" stroke-dasharray="138.23" stroke-dashoffset="138.23" style="transition: stroke-dashoffset 1s ease-in-out;" />
+        </svg>
+        <span id="stat-rate-text" style="position: absolute; font-size: 11px; font-weight: 600; color: var(--text);">0%</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-response">-</div>
+      <div class="stat-label">Avg. first response</div>
+      <span class="stat-badge badge-warn">Target: 3 days</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-uptime">-</div>
+      <div class="stat-label">Uptime this year</div>
+      <span class="stat-badge badge-info">System healthy</span>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE CSS/SVG CASE DISTRIBUTION FLEXBARS -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <h3 style="font-family:'Playfair Display',serif; font-size:16px; font-weight:500; margin-bottom:14px; text-align: left;">Interactive Analytics & Category Distribution</h3>
+    
+    <div class="form-row" style="margin-bottom: 0; gap: 2rem;">
+      <!-- 1. Categories bars -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; text-align: left; margin-bottom:4px; font-weight: 600;">Case Category Metrics</div>
+        
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Domestic Abuse & Violence (BNS 85/86)</span><strong>35%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 35%; height: 100%; background: var(--accent); border-radius: 4px;"></div>
+          </div>
+        </div>
+        
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Stalking & Cyberstalking (BNS 78)</span><strong>25%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 25%; height: 100%; background: #3c3489; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Sexual Harassment (BNS 74/75)</span><strong>20%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 20%; height: 100%; background: var(--teal); border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Cybercrime & Privacy (IT Act)</span><strong>12%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 12%; height: 100%; background: #185fa5; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="analytics-bar-item">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+            <span>Other Incidents (Robbery/Theft/etc.)</span><strong>8%</strong>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 4px; overflow:hidden;">
+            <div style="width: 8%; height: 100%; background: var(--text3); border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. System status timeline ledger -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; text-align: left; margin-bottom:6px; font-weight: 600;">Case Status Ledger</div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-submitted" style="padding:1px 6px;">New</span>
+            <span>Submitted Complaints</span>
+          </span>
+          <strong id="ledger-submitted" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-reviewing" style="padding:1px 6px;">Review</span>
+            <span>Under Intake Review</span>
+          </span>
+          <strong id="ledger-reviewing" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-investigating" style="padding:1px 6px;">Active</span>
+            <span>Ongoing Investigations</span>
+          </span>
+          <strong id="ledger-investigating" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--surface2); border:0.5px solid var(--border); border-radius:6px; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="status-pill s-resolved" style="padding:1px 6px;">Done</span>
+            <span>Resolved / Closed Cases</span>
+          </span>
+          <strong id="ledger-resolved" style="font-size:13px; color:var(--text);">-</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>What can you do here?</h2>
+  </div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon red">🛡️</div>
+      <h3>File a complaint</h3>
+      <p>Submit a detailed complaint with evidence. Get a unique FIR ID instantly via SMS and email confirmation.</p>
+      <div class="card-action"><button class="btn btn-primary" onclick="showPage('file',document.querySelectorAll('.nav-links button')[1])">Start now →</button></div>
+    </div>
+    <div class="card">
+      <div class="card-icon teal">📍</div>
+      <h3>Real-time tracking</h3>
+      <p>Track your complaint through every stage — submitted, under review, FIR registered, investigating, and resolved.</p>
+      <div class="card-action"><button class="btn btn-teal" onclick="showPage('track',document.querySelectorAll('.nav-links button')[2])">Track complaint →</button></div>
+    </div>
+    <div class="card">
+      <div class="card-icon blue">📞</div>
+      <h3>Emergency SOS</h3>
+      <p>One-tap alert to nearest police station, trusted contacts, and emergency services with live location sharing.</p>
+      <div class="card-action"><button class="btn btn-danger" onclick="showPage('sos',document.querySelectorAll('.nav-links button')[3])">Open SOS panel →</button></div>
+    </div>
+    <div class="card">
+      <div class="card-icon amber">⚖️</div>
+      <h3>Legal aid & support</h3>
+      <p>Access free legal guidance, connect with NGOs, and find nearest women's helpdesk — all verified resources.</p>
+      <div class="card-action"><button class="btn btn-ghost" onclick="showPage('legal',document.querySelectorAll('.nav-links button')[4])">Explore resources →</button></div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Recent activity</h2>
+    <a onclick="showPage('track',document.querySelectorAll('.nav-links button')[2])">View all →</a>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="data-table">
+      <thead><tr>
+        <th>Complaint ID</th><th>Type</th><th>Filed on</th><th>Status</th><th>Officer</th>
+      </tr></thead>
+      <tbody id="recent-activity-body">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FILE COMPLAINT PAGE -->
+<div class="page" id="page-file">
+  <div class="section-head" style="margin-bottom:1.5rem;">
+    <h2>File a new complaint</h2>
+  </div>
+  <div class="form-card">
+    <div class="form-section-title">Personal information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full name</label>
+        <input type="text" id="f-name" placeholder="As per Aadhaar" value="Priya Sharma"/>
+      </div>
+      <div class="form-group">
+        <label>Mobile number</label>
+        <input type="tel" id="f-mobile" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="f-email" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label>Aadhaar / ID number</label>
+        <input type="text" id="f-aadhaar" placeholder="XXXX XXXX XXXX"/>
+      </div>
+    </div>
+
+    <div class="form-section-title">Incident details</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type of complaint</label>
+        <select id="f-type">
+          <option>Select complaint type</option>
+          <option>Domestic violence</option>
+          <option>Sexual harassment</option>
+          <option>Stalking / Cyberstalking</option>
+          <option>Theft / Robbery</option>
+          <option>Assault</option>
+          <option>Dowry harassment</option>
+          <option>Cybercrime / Morphed images</option>
+          <option>Trafficking</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of incident</label>
+        <input type="date" id="f-date"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Location of incident</label>
+      <input type="text" id="f-location" placeholder="Address / landmark / area"/>
+    </div>
+    <div class="form-group">
+      <label>Detailed description</label>
+      <textarea id="f-desc" placeholder="Describe the incident in as much detail as possible — what happened, when, who was involved, witnesses, etc."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Accused person(s) details (if known)</label>
+      <input type="text" id="f-accused" placeholder="Name, description, or any identifying information"/>
+    </div>
+
+    <div class="form-section-title">Evidence & attachments</div>
+    <input type="file" id="f-evidence" multiple style="display:none;" onchange="handleFileSelect(event)" />
+    <div class="upload-area" onclick="document.getElementById('f-evidence').click()">
+      <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 16V8m-4 4 4-4 4 4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+      Click to upload photos, videos, screenshots, or documents<br/>
+      <span style="font-size:12px;color:var(--text3);">JPG, PNG, MP4, PDF — max 10 MB each</span>
+    </div>
+    <div id="evidence-preview-list" style="margin: 10px 0; display:flex; flex-direction:column; gap:6px;"></div>
+    <p class="form-note">All evidence is encrypted and accessible only to the assigned officer and authorised personnel.</p>
+
+    <div class="form-section-title" style="margin-top:1.5rem;">Preferred police station</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>District</label>
+        <select id="f-district">
+          <option>North 24 Parganas</option>
+          <option>Kolkata</option>
+          <option>South 24 Parganas</option>
+          <option>Howrah</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Police station</label>
+        <select id="f-ps">
+          <option>Bidhannagar</option>
+          <option>New Town</option>
+          <option>Lake Town</option>
+          <option>Dum Dum</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="submitComplaint()">Submit complaint</button>
+      <button class="btn btn-ghost" onclick="clearForm()">Clear form</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK PAGE -->
+<div class="page" id="page-track">
+  <div class="section-head" style="margin-bottom:1.5rem;">
+    <h2>Track your complaint</h2>
+  </div>
+  <div class="track-box">
+    <div class="form-row" style="margin-bottom:0;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Complaint ID / FIR number</label>
+        <input type="text" id="t-id" placeholder="e.g. FIR2026-001245" value="FIR2026-001245"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Registered mobile (last 4 digits)</label>
+        <input type="text" id="t-mobile" placeholder="XXXX" value="3210" style="max-width:160px;"/>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <button class="btn btn-primary" onclick="trackComplaint()">Track now</button>
+    </div>
+  </div>
+
+  <div id="track-result" style="display:none;">
+    <div class="track-result">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
+        <div>
+          <div style="font-size:16px;font-weight:500;font-family:'Playfair Display',serif;" id="tr-id">-</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:2px;" id="tr-type">-</div>
+        </div>
+        <span class="status-pill" id="tr-status-badge">-</span>
+      </div>
+
+      <div class="complaint-meta">
+        <div class="meta-pair"><label>Last updated</label><span id="tr-updated">-</span></div>
+        <div class="meta-pair"><label>Next action</label><span id="tr-next">-</span></div>
+        <div class="meta-pair"><label>Assigned officer</label><span id="tr-officer">-</span></div>
+        <div class="meta-pair"><label>Police station</label><span id="tr-ps">-</span></div>
+      </div>
+
+      <div id="tr-attachments-section" style="display:none; border-top:0.5px solid var(--border); padding-top:1rem; margin-top:1rem;">
+        <div style="font-size:12px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Submitted Evidence</div>
+        <div id="tr-attachments-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+
+      <div style="border-top:0.5px solid var(--border);padding-top:1rem;">
+        <div style="font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Case timeline</div>
+        <div class="timeline" id="tr-timeline">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div style="background:#e6f1fb;border:0.5px solid #b5d4f4;border-radius:var(--radius-sm);padding:10px 14px;margin-top:1rem;font-size:13px;color:#185fa5;" id="tr-next-tip-box">
+        <strong>Next step:</strong> <span id="tr-next-tip">Processing...</span>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:1rem;">
+        <button class="btn btn-ghost" style="font-size:13px;" onclick="toast('Status update request sent to officer.')">Request update</button>
+        <button class="btn btn-ghost" style="font-size:13px;" onclick="generateFIRPDF(document.getElementById('tr-id').textContent)">Download FIR Receipt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOS PAGE -->
+<div class="page" id="page-sos">
+  <div class="section-head" style="margin-bottom:1rem;">
+    <h2>Emergency SOS</h2>
+  </div>
+  <div class="sos-panel">
+    <div style="margin:0 auto 1rem;display:flex;justify-content:center;">
+      <button class="sos-btn-big" onclick="triggerSOS()">SOS</button>
+    </div>
+    <h3>Tap to send emergency alert</h3>
+    <p>Your live location will be shared with the nearest police station and your trusted contacts immediately.</p>
+  </div>
+
+  <div class="emergency-contacts">
+    <div class="em-card">
+      <div class="em-num">100</div>
+      <div class="em-label">Police emergency</div>
+      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px;width:100%;" onclick="toast('Calling 100...')">Call now</button>
+    </div>
+    <div class="em-card">
+      <div class="em-num">1091</div>
+      <div class="em-label">Women's helpline</div>
+      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px;width:100%;" onclick="toast('Calling 1091...')">Call now</button>
+    </div>
+    <div class="em-card">
+      <div class="em-num">181</div>
+      <div class="em-label">Abha helpline (WB)</div>
+      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px;width:100%;" onclick="toast('Calling 181...')">Call now</button>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <div class="section-head"><h2>Trusted contacts</h2><a onclick="toast('Add contact form coming soon.')">+ Add contact</a></div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Relation</th><th>Mobile</th><th>Alert status</th></tr></thead>
+        <tbody>
+          <tr><td>Anjali Sharma</td><td>Mother</td><td>+91 98100 00001</td><td><span class="status-pill s-resolved">Active</span></td></tr>
+          <tr><td>Rohan Mehta</td><td>Brother</td><td>+91 98100 00002</td><td><span class="status-pill s-resolved">Active</span></td></tr>
+          <tr><td>Deepa Roy</td><td>Friend</td><td>+91 98100 00003</td><td><span class="status-pill badge-warn" style="padding:2px 10px;">Unverified</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL AID & LAWS PAGE -->
+<div class="page" id="page-legal">
+  <div class="section-head" style="margin-bottom:1.5rem;">
+    <h2>Legal aid & Indian laws</h2>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input type="text" id="law-search" placeholder="Search laws or rights..." onkeyup="searchLaws()" style="padding: 6px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; outline:none; background:var(--surface); color:var(--text);" />
+    </div>
+  </div>
+
+  <!-- Tabs for Category Selection -->
+  <div class="filter-bar" style="margin-bottom:1.5rem;">
+    <button class="filter-btn active" onclick="filterLaws('all', this)">All resources</button>
+    <button class="filter-btn" onclick="filterLaws('rights', this)">Your legal rights</button>
+    <button class="filter-btn" onclick="filterLaws('bns', this)">BNS / IPC protections</button>
+    <button class="filter-btn" onclick="filterLaws('acts', this)">Special safety acts</button>
+    <button class="filter-btn" onclick="filterLaws('helplines', this)">Emergency contacts</button>
+  </div>
+
+  <!-- Cards Grid for Resources -->
+  <div class="cards-grid" id="laws-container" style="grid-template-columns: 1fr; gap:16px;">
+    
+    <!-- 1. Right to Free Legal Aid -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Fundamental Right</span>
+        <span style="font-size:12px; color:var(--text3);">Right #1</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to Free Legal Aid</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Every woman in India has a fundamental right to free legal services under Article 39A of the Indian Constitution, regardless of her income. If a woman cannot afford a lawyer, the Legal Services Authority will appoint one for her free of cost.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Legal Services Authorities Act, 1987</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the Right to Free Legal Aid under Article 39A of the Indian Constitution in detail.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 2. The Night Arrest Rule -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Arrest Protection</span>
+        <span style="font-size:12px; color:var(--text3);">Right #2</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">The Night Arrest Protection</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A woman cannot be arrested after sunset (6 PM) and before sunrise (6 AM), except in exceptional circumstances. Even in such rare cases, the arrest must be made by a woman officer, and prior permission from a Judicial Magistrate must be obtained.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Section 46(4) of Criminal Procedure Code (CrPC) / BNSS</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the Night Arrest Protection rules for women under Section 46(4) of CrPC / BNSS in detail.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 3. Zero FIR -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">LODGING PROTECTION</span>
+        <span style="font-size:12px; color:var(--text3);">Right #3</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to File a Zero FIR</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A woman can lodge an FIR at *any* police station, irrespective of where the crime occurred or jurisdiction boundaries. The police station is legally bound to accept the complaint, register it under a "Zero" serial number, and immediately transfer it to the jurisdictional station.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Supreme Court Ruling & Ministry of Home Affairs Advisory</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my absolute rights to file a Zero FIR at any police station in India and what to do if refused.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 4. Right to Confidentiality -->
+    <div class="card law-card" data-category="rights" style="border-left: 4px solid var(--teal); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-resolved">Privacy Shield</span>
+        <span style="font-size:12px; color:var(--text3);">Right #4</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Right to Anonymity and Privacy</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        It is a criminal offense to publish or disclose the name or any details that reveal the identity of a victim of sexual assault or harassment. A woman has the right to record her statement privately in the presence of a woman police officer or a magistrate.
+      </p>
+      <div style="font-size:12px; color:var(--teal); font-weight:500; margin-bottom:10px;">Legal Provision: Section 72 of BNS / Section 228A of IPC</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my rights to privacy and victim anonymity under Section 72 of BNS / 228A of IPC.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 5. Cruelty & Domestic Violence -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Domestic Abuse</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 85 / 86</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Cruelty by Husband or Relatives (Section 498A IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Protects married women from physical, mental, or emotional cruelty, harassment, or torture by their husband or his relatives. This includes persistent demands for dowry, coercion, or severe mental distress. The offense is non-bailable.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Imprisonment up to 3 years and a heavy fine</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the criminal cruelty under BNS Section 85/86 (previously IPC Section 498A) for domestic abuse.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 6. Sexual Harassment -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Harassment</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 74 / 75</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Assault & Sexual Harassment (Section 354 IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Protects women against any acts of physical force, unwanted physical contact, demands for sexual favors, showing pornography against consent, or making sexually colored remarks. Outraging the modesty of a woman is heavily penalized.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Rigorous imprisonment from 1 to 5 years with fines</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the definitions and punishments for sexual harassment and modesty outrage under BNS Section 74/75.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 7. Stalking & Cyberstalking -->
+    <div class="card law-card" data-category="bns" style="border-left: 4px solid var(--accent); padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-evidence" style="background:#fcebeb; color:#a32d2d;">Monitoring & Stalking</span>
+        <span style="font-size:12px; color:var(--text3);">BNS Section 78</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Stalking and Cyberstalking (Section 354D IPC)</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        It is a crime to follow a woman, contact her repeatedly, or monitor her internet usage, social media accounts, emails, or other digital communication despite a clear indication of disinterest. This includes online harassment and digital tracking.
+      </p>
+      <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:10px;">Punishment: Up to 3 years imprisonment for first offense, 5 years for subsequent</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain my anti-stalking and cyberstalking protections under BNS Section 78 (previously IPC 354D).')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 8. Protection of Women from Domestic Violence Act -->
+    <div class="card law-card" data-category="acts" style="border-left: 4px solid #eeedfe; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-fir">Special Act</span>
+        <span style="font-size:12px; color:var(--text3);">PWDVA, 2005</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Protection of Women from Domestic Violence Act, 2005</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        A comprehensive civil act protecting women from physical, sexual, verbal, emotional, and economic abuse within a shared household. It provides rights for protection orders, residence orders, monetary relief, custody orders, and free medical care.
+      </p>
+      <div style="font-size:12px; color:#3c3489; font-weight:500; margin-bottom:10px;">Provision: Protection Orders, Monetary Relief, Free Residence Rights</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the civil remedies and protection orders under the Protection of Women from Domestic Violence Act 2005.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 9. POSH Act -->
+    <div class="card law-card" data-category="acts" style="border-left: 4px solid #eeedfe; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-fir">Special Act</span>
+        <span style="font-size:12px; color:var(--text3);">POSH Act, 2013</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:6px; text-align: left;">Sexual Harassment of Women at Workplace (POSH) Act</h3>
+      <p style="font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:10px;">
+        Mandates every organization with 10 or more employees to set up an Internal Complaints Committee (ICC) to address sexual harassment. It defines safe workspaces and provides legal resolution mechanics for working women in both formal and informal sectors.
+      </p>
+      <div style="font-size:12px; color:#3c3489; font-weight:500; margin-bottom:10px;">Provision: Internal Complaints Committee, Safe Workspace Guidelines</div>
+      <button class="btn btn-outline" style="padding:5px 12px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="askRakshakAboutSection('Explain the workplace sexual harassment protections and ICC mechanics under the POSH Act 2013.')">🔍 Ask Rakshak AI about this</button>
+    </div>
+
+    <!-- 10. Emergency Helplines Card -->
+    <div class="card law-card" data-category="helplines" style="border-left: 4px solid #faeeda; padding: 1.5rem; text-align: left;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <span class="status-pill s-reviewing">National Helplines</span>
+        <span style="font-size:12px; color:var(--text3);">24/7 Access</span>
+      </div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:8px; text-align: left;">Instant Helpline Support</h3>
+      <div class="complaint-meta" style="grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;">
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Police Emergency</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">112 / 100</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Women Helpline</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">1091</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>Domestic Abuse (NCW)</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">181</span>
+        </div>
+        <div class="meta-pair" style="background:var(--surface2); padding:10px; border-radius:var(--radius-sm);">
+          <label>NCW WhatsApp Support</label>
+          <span style="font-size:15px; font-weight:600; color:var(--accent);">7827170170</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- OFFICER PORTAL PAGE -->
+<div class="page" id="page-officer">
+  
+  <!-- LIVE EMERGENCY SOS RADAR HUB -->
+  <div id="officer-sos-alert-hub" style="display:none; background:rgba(201,24,74,0.07); border:1.5px solid var(--accent); border-radius:var(--radius); padding:1.25rem; margin-bottom:1.5rem; animation:border-pulse 1.8s infinite;">
+    <div style="display:flex; align-items:center; gap:8px; color:var(--accent); font-family:'Playfair Display',serif; font-size:15px; font-weight:600; margin-bottom:10px;">
+      <span class="recording-pulse" style="font-size:18px;">🚨</span> Active SOS Emergency Dispatches <span style="font-size:10px; font-weight:normal; background:var(--accent); color:white; padding:1px 8px; border-radius:10px; margin-left:4px; vertical-align:middle; letter-spacing: 0.05em; font-family:sans-serif;">RADAR ACTIVE</span>
+    </div>
+    <div id="officer-sos-list" style="display:flex; flex-direction:column; gap:8px;">
+      <!-- Dynamic Active SOS dispatches list -->
+    </div>
+  </div>
+
+  <div class="portal-header">
+    <div>
+      <h2>Officer dashboard</h2>
+      <p>Bidhannagar Police Station · Inspector A. Kumar</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <div style="background:rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;">
+        <div style="font-size:18px;font-weight:500;" id="officer-active-cases">-</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);">Active cases</div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;">
+        <div style="font-size:18px;font-weight:500;" id="officer-pending-review">-</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);">Pending review</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="loadOfficerCases('all',this)">All cases</button>
+    <button class="filter-btn" onclick="loadOfficerCases('submitted',this)">New / Submitted</button>
+    <button class="filter-btn" onclick="loadOfficerCases('investigating',this)">Investigating</button>
+    <button class="filter-btn" onclick="loadOfficerCases('evidence',this)">Evidence review</button>
+    <button class="filter-btn" onclick="loadOfficerCases('resolved',this)">Resolved</button>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:1.5rem;">
+    <table class="data-table" id="cases-table">
+      <thead><tr>
+        <th>Complaint ID</th><th>Complainant</th><th>Type</th><th>Filed</th><th>Priority</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody id="cases-body">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- UPDATE MODAL -->
+<div class="modal-overlay" id="update-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>Update complaint status</h3>
+    <p>Complaint ID: <strong id="modal-cid">-</strong></p>
+    
+    <!-- Render evidence files here! -->
+    <div id="modal-attachments-section" style="display:none; margin: 12px 0;">
+      <label style="font-size:12px; font-weight:500; color:var(--text3); display:block; margin-bottom:4px;">Attached Evidence:</label>
+      <div id="modal-attachments-list" style="display:flex; flex-direction:column; gap:6px; max-height: 120px; overflow-y: auto;"></div>
+    </div>
+    <div class="form-group">
+      <label>New status</label>
+      <select id="modal-status">
+        <option>Under Review</option>
+        <option>FIR Registered</option>
+        <option>Investigation Started</option>
+        <option>Evidence Verification</option>
+        <option>Action Taken</option>
+        <option>Resolved</option>
+        <option>Closed</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Remarks / update notes</label>
+      <textarea id="modal-remarks" placeholder="Add a note for the record and for the complainant..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUpdate()">Save update</button>
+    </div>
+  </div>
+</div>
+
+<!-- SOS MODAL -->
+<div class="modal-overlay" id="sos-modal">
+  <div class="modal" style="text-align:center;">
+    <h3 style="color:#a32d2d;">🚨 SOS alert sent!</h3>
+    <p>Your location has been shared with Bidhannagar Police Station and your trusted contacts. Help is on the way.</p>
+    <div style="background:#fcebeb;border-radius:var(--radius-sm);padding:12px;margin-bottom:1.25rem;">
+      <div style="font-size:13px;color:#a32d2d;font-weight:500;" id="sos-ref-code">-</div>
+      <div style="font-size:12px;color:#791f1f;margin-top:4px;" id="sos-timestamp">-</div>
+    </div>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn btn-danger" onclick="closeModal()">I'm safe now — cancel alert</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLAINT SUBMITTED MODAL -->
+<div class="modal-overlay" id="submitted-modal">
+  <div class="modal" style="text-align:center;">
+    <div style="width:56px;height:56px;background:var(--teal-light);border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:24px;">✓</div>
+    <h3>Complaint registered</h3>
+    <p>Your complaint has been successfully submitted. An SMS and email confirmation has been sent.</p>
+    <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:1.25rem;border:0.5px solid var(--border);">
+      <div style="font-size:12px;color:var(--text3);">Your complaint ID</div>
+      <div style="font-size:20px;font-weight:500;font-family:'Playfair Display',serif;color:var(--accent);margin-top:4px;" id="new-fir-id">-</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Save this ID to track your complaint status</div>
+    </div>
+    <div class="modal-actions" style="justify-content:center;gap:8px;">
+      <button class="btn btn-primary" onclick="goTrack()">Track status</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Robust Try-Catch browser storage abstraction
+const SafeStorage = {
+  getItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn('Storage read blocked, using memory fallback:', e);
+      return this._mem[key] || null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn('Storage write blocked, using memory fallback:', e);
+      this._mem[key] = value;
+    }
+  },
+  removeItem(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.warn('Storage remove blocked, using memory fallback:', e);
+      delete this._mem[key];
+    }
+  },
+  _mem: {}
+};
+
+// Format dates cleanly
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr; // fallback to original if parsing fails
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Dynamic Selection of Login Roles
+function selectLoginRole(role) {
+  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.login-form-container').forEach(el => el.classList.remove('active'));
+  
+  if (role === 'citizen') {
+    document.getElementById('role-btn-citizen').classList.add('active');
+    document.getElementById('form-citizen').classList.add('active');
+  } else {
+    document.getElementById('role-btn-police').classList.add('active');
+    document.getElementById('form-police').classList.add('active');
+  }
+  document.getElementById('login-alert').style.display = 'none';
+}
+
+let currentUser = null;
+
+function checkSession() {
+  try {
+    const sessionData = SafeStorage.getItem('abhaya_session');
+    if (sessionData) {
+      currentUser = JSON.parse(sessionData);
+      applyUserSession(currentUser);
+    } else {
+      showLoginGateway();
+    }
+  } catch (err) {
+    console.error('Session load failed:', err);
+    SafeStorage.removeItem('abhaya_session');
+    showLoginGateway();
+  }
+}
+
+function showLoginGateway() {
+  document.getElementById('login-gateway').style.display = 'flex';
+  document.getElementById('main-app-nav').style.display = 'none';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  stopSOSMonitor();
+}
+
+function applyUserSession(user) {
+  document.getElementById('login-gateway').style.display = 'none';
+  document.getElementById('main-app-nav').style.display = 'flex';
+  
+  // Set User Profile elements
+  const avatarEl = document.getElementById('nav-user-avatar');
+  const nameEl = document.getElementById('nav-user-name');
+  if (avatarEl && nameEl) {
+    avatarEl.textContent = user.name.charAt(0).toUpperCase();
+    nameEl.textContent = user.role === 'police' ? user.name : user.name.split(' ')[0] + '.';
+  }
+
+  // Route-Guarding Navigation Links
+  const citizenLinks = document.querySelectorAll('.nav-citizen-link');
+  const policeLinks = document.querySelectorAll('.nav-police-link');
+
+  if (user.role === 'police') {
+    citizenLinks.forEach(l => l.style.display = 'none');
+    policeLinks.forEach(l => l.style.display = 'inline-block');
+    
+    // Hide chat advisor icon for officers
+    const chatToggle = document.querySelector('.rakshak-toggle');
+    if (chatToggle) chatToggle.style.display = 'none';
+    
+    // Force direct entrance to Officer dashboard
+    showPage('officer', document.getElementById('nav-btn-officer'));
+    
+    // Trigger SOS feed updater radar
+    startSOSMonitor();
+  } else {
+    citizenLinks.forEach(l => l.style.display = 'inline-block');
+    policeLinks.forEach(l => l.style.display = 'none');
+    
+    // Show chat advisor icon for citizens
+    const chatToggle = document.querySelector('.rakshak-toggle');
+    if (chatToggle) chatToggle.style.display = 'flex';
+
+    // Autofill Personal Form parameters
+    const formName = document.getElementById('f-name');
+    const formMobile = document.getElementById('f-mobile');
+    if (formName) formName.value = user.name;
+    if (formMobile) formMobile.value = user.mobile;
+    
+    // Default Citizen landing page
+    showPage('home', document.getElementById('nav-btn-home'));
+    
+    // Clear SOS alarm sirens
+    stopSOSMonitor();
+  }
+}
+
+async function handleLoginSubmit(role) {
+  const alertEl = document.getElementById('login-alert');
+  alertEl.style.display = 'none';
+
+  let bodyData = { role };
+  if (role === 'police') {
+    const badgeId = document.getElementById('login-badge').value.trim();
+    const pin = document.getElementById('login-pin').value.trim();
+    if (!badgeId || !pin) {
+      showLoginError('Please enter both Badge ID and secure PIN.');
+      return;
+    }
+    bodyData.badgeId = badgeId;
+    bodyData.pin = pin;
+  } else {
+    const name = document.getElementById('login-name').value.trim();
+    const mobile = document.getElementById('login-mobile').value.trim();
+    if (!name || !mobile) {
+      showLoginError('Please enter your Full Name and Mobile.');
+      return;
+    }
+    bodyData.name = name;
+    bodyData.mobile = mobile;
+  }
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Authentication failed.');
+    }
+
+    const data = await res.json();
+    SafeStorage.setItem('abhaya_session', JSON.stringify(data.user));
+    currentUser = data.user;
+    applyUserSession(currentUser);
+    toast(`Welcome back, ${currentUser.name}.`);
+  } catch (err) {
+    showLoginError(err.message);
+  }
+}
+
+function showLoginError(msg) {
+  const alertEl = document.getElementById('login-alert');
+  alertEl.textContent = msg;
+  alertEl.style.display = 'block';
+}
+
+function logout() {
+  SafeStorage.removeItem('abhaya_session');
+  currentUser = null;
+  stopSOSMonitor();
+  
+  // Reset inputs
+  document.getElementById('login-badge').value = '';
+  document.getElementById('login-pin').value = '';
+  document.getElementById('login-alert').style.display = 'none';
+
+  showLoginGateway();
+  toast('Logged out successfully.');
+}
+
+// SOS Sirens Alarm Audio synthesis
+let sosSirenInterval = null;
+let audioCtx = null;
+
+function playSirenTone() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+    
+    // High Tone Beep
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(800, now);
+    osc1.frequency.linearRampToValueAtTime(1000, now + 0.15);
+    gain1.gain.setValueAtTime(0.06, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    
+    osc1.start(now);
+    osc1.stop(now + 0.25);
+
+    // Low Tone Beep (after 0.2s)
+    setTimeout(() => {
+      if (!currentUser || currentUser.role !== 'police') return;
+      const now2 = audioCtx.currentTime;
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(600, now2);
+      osc2.frequency.linearRampToValueAtTime(800, now2 + 0.15);
+      gain2.gain.setValueAtTime(0.06, now2);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now2 + 0.25);
+      
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      
+      osc2.start(now2);
+      osc2.stop(now2 + 0.25);
+    }, 200);
+
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+function startSirenAlarm() {
+  if (sosSirenInterval) return;
+  playSirenTone();
+  sosSirenInterval = setInterval(playSirenTone, 2500);
+}
+
+function stopSirenAlarm() {
+  if (sosSirenInterval) {
+    clearInterval(sosSirenInterval);
+    sosSirenInterval = null;
+  }
+}
+
+let sosMonitorTimer = null;
+
+function startSOSMonitor() {
+  if (sosMonitorTimer) return;
+  // Poll alerts every 4 seconds
+  updateSOSRadar();
+  sosMonitorTimer = setInterval(updateSOSRadar, 4000);
+}
+
+function stopSOSMonitor() {
+  if (sosMonitorTimer) {
+    clearInterval(sosMonitorTimer);
+    sosMonitorTimer = null;
+  }
+  stopSirenAlarm();
+  const alertHub = document.getElementById('officer-sos-alert-hub');
+  if (alertHub) alertHub.style.display = 'none';
+}
+
+async function updateSOSRadar() {
+  if (!currentUser || currentUser.role !== 'police') {
+    stopSOSMonitor();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/sos');
+    if (!res.ok) throw new Error();
+    const alerts = await res.json();
+
+    const activeAlerts = alerts.filter(a => a.status === 'active');
+    const alertHub = document.getElementById('officer-sos-alert-hub');
+    const sosList = document.getElementById('officer-sos-list');
+    
+    if (activeAlerts.length > 0) {
+      alertHub.style.display = 'block';
+      sosList.innerHTML = '';
+
+      activeAlerts.forEach(alert => {
+        const item = document.createElement('div');
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; font-size:12px;';
+        item.innerHTML = `
+          <div style="text-align: left;">
+            <strong style="color:var(--accent); font-size:13px;">🚨 ${alert.id}</strong> · Complainant: <strong>${alert.complainant_name}</strong>
+            <div style="color:var(--text2); margin-top:2px;">Location Coordinates: <strong>${alert.location}</strong></div>
+            <div style="color:var(--text3); font-size:10px; margin-top:2px;">Signal captured: ${formatDateTime(alert.created_at)}</div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline" style="font-size:11px; padding:4px 8px; border-radius:4px;" onclick="window.open('https://maps.google.com/?q=${encodeURIComponent(alert.location)}', '_blank')">🗺️ Track Map</button>
+            <button class="btn btn-primary" style="font-size:11px; padding:4px 10px; border-radius:4px;" onclick="resolveSOSAlert('${alert.id}')">🚒 Dispatch Rescue</button>
+          </div>
+        `;
+        sosList.appendChild(item);
+      });
+
+      // Sound emergency beeps
+      startSirenAlarm();
+    } else {
+      alertHub.style.display = 'none';
+      stopSirenAlarm();
+    }
+  } catch (e) {
+    console.error('SOS Radar fetch failed', e);
+  }
+}
+
+async function resolveSOSAlert(id) {
+  try {
+    const res = await fetch(`/api/sos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'resolved' })
+    });
+    if (!res.ok) throw new Error();
+    toast(`Emergency dispatcher response sent. Signal ${id} cleared.`);
+    updateSOSRadar();
+  } catch (err) {
+    toast('Error updating alert signal.');
+  }
+}
+
+// Global page load initializations
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date as default in complaint form
+  const dateInput = document.getElementById('f-date');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+  }
+  
+  // Verify active sessions
+  checkSession();
+
+  // Load dynamic data for home page stats & recent activity
+  loadStats();
+  loadRecentActivity();
+
+  // Initialize theme from local storage
+  const savedTheme = SafeStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    updateThemeUI(true);
+  } else {
+    updateThemeUI(false);
+  }
+});
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-theme');
+  SafeStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeUI(isDark);
+}
+
+function updateThemeUI(isDark) {
+  const icon = document.getElementById('theme-toggle-icon');
+  const text = document.getElementById('theme-toggle-text');
+  if (icon && text) {
+    if (isDark) {
+      icon.textContent = '☀️';
+      text.textContent = 'Light';
+    } else {
+      icon.textContent = '🌙';
+      text.textContent = 'Dark';
+    }
+  }
+}
+
+// Load statistics dynamically
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats');
+    if (!res.ok) throw new Error('Failed to fetch statistics');
+    const data = await res.json();
+    
+    document.getElementById('stat-registered').textContent = data.totalComplaints;
+    document.getElementById('stat-resolved').textContent = data.resolvedCases;
+    document.getElementById('stat-rate').textContent = `${data.resolutionRate} rate`;
+    document.getElementById('stat-response').textContent = data.avgResponse;
+    document.getElementById('stat-uptime').textContent = data.uptime;
+
+    // Animate SVG rate progress ring
+    const rateNum = parseFloat(data.resolutionRate);
+    const ring = document.getElementById('stat-rate-ring');
+    const ringText = document.getElementById('stat-rate-text');
+    if (ring && ringText) {
+      const circumference = 2 * Math.PI * 22; // ~138.23
+      const offset = circumference - (rateNum / 100) * circumference;
+      ring.style.strokeDashoffset = offset;
+      ringText.textContent = `${rateNum.toFixed(0)}%`;
+    }
+
+    // Refresh dynamic status ledgers
+    updateLedger();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function updateLedger() {
+  try {
+    const res = await fetch('/api/complaints');
+    if (!res.ok) return;
+    const complaints = await res.json();
+    const counts = { submitted: 0, reviewing: 0, investigating: 0, evidence: 0, action: 0, resolved: 0, closed: 0 };
+    complaints.forEach(c => {
+      if (counts[c.status] !== undefined) counts[c.status]++;
+    });
+    
+    const subCount = counts.submitted;
+    const revCount = counts.reviewing;
+    const invCount = counts.investigating + counts.evidence;
+    const resCount = counts.action + counts.resolved + counts.closed;
+    
+    document.getElementById('ledger-submitted').textContent = subCount;
+    document.getElementById('ledger-reviewing').textContent = revCount;
+    document.getElementById('ledger-investigating').textContent = invCount;
+    document.getElementById('ledger-resolved').textContent = resCount;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Load dynamic recent activity on home page
+async function loadRecentActivity() {
+  try {
+    const res = await fetch('/api/complaints');
+    if (!res.ok) throw new Error('Failed to fetch complaints');
+    const complaints = await res.json();
+    
+    const tbody = document.getElementById('recent-activity-body');
+    tbody.innerHTML = '';
+    
+    // Take only the top 3 recent complaints
+    const recent = complaints.slice(0, 3);
+    
+    if (recent.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">No complaints registered yet.</td></tr>`;
+      return;
+    }
+    
+    recent.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight:500;">${c.id}</td>
+        <td>${c.type}</td>
+        <td>${formatDate(c.created_at)}</td>
+        <td><span class="status-pill s-${c.status}">${getStatusLabel(c.status)}</span></td>
+        <td>${c.assigned_officer}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function getStatusLabel(status) {
+  const map = {
+    'submitted': 'Submitted',
+    'reviewing': 'Under review',
+    'fir': 'FIR registered',
+    'investigating': 'Investigating',
+    'evidence': 'Evidence check',
+    'action': 'Action taken',
+    'resolved': 'Resolved',
+    'closed': 'Closed'
+  };
+  return map[status] || status;
+}
+
+// Navigation Show Page override
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  
+  // Custom module loadings on tab change
+  if (id === 'home') {
+    loadStats();
+    loadRecentActivity();
+  } else if (id === 'officer') {
+    // Reset to "all" case filter on entrance
+    const allBtn = document.querySelector('.filter-bar button');
+    loadOfficerCases('all', allBtn);
+  } else if (id === 'legal') {
+    const searchBar = document.getElementById('law-search');
+    if (searchBar) searchBar.value = '';
+    const allBtn = document.querySelector('#page-legal .filter-bar button');
+    if (allBtn) filterLaws('all', allBtn);
+  }
+}
+
+function filterLaws(category, btn) {
+  document.querySelectorAll('#page-legal .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const query = document.getElementById('law-search').value.toLowerCase().trim();
+  document.querySelectorAll('.law-card').forEach(card => {
+    const matchesCat = (category === 'all' || card.dataset.category === category);
+    const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+    card.style.display = (matchesCat && matchesQuery) ? 'block' : 'none';
+  });
+}
+
+function searchLaws() {
+  const query = document.getElementById('law-search').value.toLowerCase().trim();
+  const activeBtn = document.querySelector('#page-legal .filter-btn.active');
+  let category = 'all';
+  if (activeBtn) {
+    const match = activeBtn.getAttribute('onclick').match(/'([^']+)'/);
+    if (match) category = match[1];
+  }
+
+  document.querySelectorAll('.law-card').forEach(card => {
+    const matchesCat = (category === 'all' || card.dataset.category === category);
+    const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+    card.style.display = (matchesCat && matchesQuery) ? 'block' : 'none';
+  });
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// 1. Submit Complaint Flow
+async function submitComplaint() {
+  const name = document.getElementById('f-name').value.trim();
+  const mobile = document.getElementById('f-mobile').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const aadhaar = document.getElementById('f-aadhaar').value.trim();
+  const type = document.getElementById('f-type').value;
+  const date = document.getElementById('f-date').value;
+  const location = document.getElementById('f-location').value.trim();
+  const description = document.getElementById('f-desc').value.trim();
+  const accused = document.getElementById('f-accused').value.trim();
+  const district = document.getElementById('f-district').value;
+  const police_station = document.getElementById('f-ps').value;
+  
+  if (!name || !mobile || !location || !description || type === 'Select complaint type' || !date) {
+    toast('Please fill in all required fields.');
+    return;
+  }
+  
+  try {
+    const res = await fetch('/api/complaints', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, mobile, email, aadhaar, type, date, location, description, accused, district, police_station,
+        attachments: selectedEvidenceFiles.length > 0 ? JSON.stringify(selectedEvidenceFiles) : null
+      })
+    });
+    
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || 'Failed to submit complaint');
+    }
+    
+    const data = await res.json();
+    
+    document.getElementById('new-fir-id').textContent = data.id;
+    document.getElementById('submitted-modal').classList.add('open');
+    clearForm();
+    toast('Complaint submitted successfully.');
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+function clearForm() {
+  ['f-name','f-mobile','f-email','f-aadhaar','f-location','f-desc','f-accused'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  
+  const select = document.getElementById('f-type');
+  if (select) select.selectedIndex = 0;
+  
+  // Reset date to today
+  const dateInput = document.getElementById('f-date');
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  // Clear attachments
+  selectedEvidenceFiles = [];
+  const previewList = document.getElementById('evidence-preview-list');
+  if (previewList) previewList.innerHTML = '';
+  const fileInput = document.getElementById('f-evidence');
+  if (fileInput) fileInput.value = '';
+
+  toast('Form cleared.');
+}
+
+// 2. Track Complaint Flow
+async function trackComplaint() {
+  const id = document.getElementById('t-id').value.trim();
+  if (!id) { toast('Enter a complaint ID.'); return; }
+  
+  try {
+    const res = await fetch(`/api/complaints/${id}`);
+    if (!res.ok) {
+      throw new Error('Complaint ID not found.');
+    }
+    
+    const { complaint, timeline } = await res.json();
+    
+    // Set text elements
+    document.getElementById('tr-id').textContent = complaint.id;
+    document.getElementById('tr-type').textContent = `${complaint.type} · Filed ${formatDate(complaint.created_at)}`;
+    
+    // Status Pill
+    const badge = document.getElementById('tr-status-badge');
+    badge.textContent = getStatusLabel(complaint.status);
+    badge.className = `status-pill s-${complaint.status}`;
+    
+    // Metadata block
+    document.getElementById('tr-updated').textContent = formatDateTime(complaint.updated_at);
+    document.getElementById('tr-officer').textContent = complaint.assigned_officer;
+    document.getElementById('tr-ps').textContent = `${complaint.police_station} P.S.`;
+
+    // Render attachments in tracking view
+    const trAttachSection = document.getElementById('tr-attachments-section');
+    const trAttachList = document.getElementById('tr-attachments-list');
+    if (complaint.attachments) {
+      const files = JSON.parse(complaint.attachments);
+      if (files && files.length > 0) {
+        trAttachList.innerHTML = '';
+        files.forEach(file => {
+          const item = document.createElement('a');
+          item.href = file.dataUrl;
+          item.download = file.name;
+          item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:8px 12px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px; text-decoration:none; color:inherit; transition:.15s;';
+          item.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>📁</span>
+              <div>
+                <strong style="color:var(--accent);">${file.name}</strong>
+                <span style="color:var(--text3); font-size:10px; display:block;">${(file.size / 1024).toFixed(1)} KB · Click to download</span>
+              </div>
+            </div>
+            <span style="font-size:14px; color:var(--text3);">⬇️</span>
+          `;
+          trAttachList.appendChild(item);
+        });
+        trAttachSection.style.display = 'block';
+      } else {
+        trAttachSection.style.display = 'none';
+      }
+    } else {
+      trAttachSection.style.display = 'none';
+    }
+    
+    // Next action mapping
+    const nextActions = {
+      'submitted': 'Under intake review',
+      'reviewing': 'FIR registration check',
+      'fir': 'Investigation allocation',
+      'investigating': 'Evidence verification',
+      'evidence': 'Action taken review',
+      'action': 'Resolution closure',
+      'resolved': 'Case fully resolved',
+      'closed': 'None (Case Closed)'
+    };
+    document.getElementById('tr-next').textContent = nextActions[complaint.status] || 'Processing';
+    document.getElementById('tr-next-tip').textContent = nextActions[complaint.status] || 'Processing';
+    
+    // Case Timeline construction
+    const trTimeline = document.getElementById('tr-timeline');
+    trTimeline.innerHTML = '';
+    
+    // Standard system milestones mapping
+    const standardMilestones = [
+      { key: 'submitted', title: 'Complaint submitted' },
+      { key: 'reviewing', title: 'Under review' },
+      { key: 'fir', title: 'FIR registered' },
+      { key: 'investigating', title: 'Investigation started' },
+      { key: 'evidence', title: 'Evidence verification' },
+      { key: 'action', title: 'Action taken / Resolved' }
+    ];
+    
+    // Separate logs inside timeline by status code
+    const logsByStatus = {};
+    timeline.forEach(log => {
+      logsByStatus[log.status] = log;
+    });
+    
+    // Determine active index based on current status code location in standard path
+    let activeIndex = standardMilestones.findIndex(m => m.key === complaint.status);
+    if (activeIndex === -1 && (complaint.status === 'resolved' || complaint.status === 'closed')) {
+      activeIndex = 5; // index of resolve
+    }
+    
+    standardMilestones.forEach((milestone, idx) => {
+      const tlItem = document.createElement('div');
+      tlItem.className = 'tl-item';
+      
+      let dotClass = '';
+      let titleClass = '';
+      let subContent = 'Pending';
+      
+      const log = logsByStatus[milestone.key];
+      
+      if (idx === activeIndex) {
+        dotClass = 'active';
+        titleClass = '';
+        subContent = log ? `${formatDateTime(log.created_at)} · ${log.remarks}` : 'In progress';
+      } else if (idx < activeIndex || (idx === 5 && (complaint.status === 'resolved' || complaint.status === 'closed'))) {
+        dotClass = 'done';
+        titleClass = '';
+        subContent = log ? `${formatDateTime(log.created_at)} · ${log.remarks}` : 'Completed';
+      } else {
+        dotClass = '';
+        titleClass = 'future';
+        subContent = 'Pending';
+      }
+      
+      tlItem.innerHTML = `
+        <div class="tl-dot ${dotClass}" ${dotClass === '' ? 'style="background:var(--surface2);border-color:var(--border);"' : ''}></div>
+        <div class="tl-title ${titleClass}">${milestone.title}</div>
+        <div class="tl-sub">${subContent}</div>
+      `;
+      trTimeline.appendChild(tlItem);
+    });
+    
+    document.getElementById('track-result').style.display = 'block';
+    toast('Complaint details loaded.');
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+// 3. SOS Trigger
+function triggerSOS() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc = `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
+        sendSOSRequest(loc);
+      },
+      (err) => {
+        console.warn('Geolocation failed, falling back to mock GPS coordinates.');
+        sendSOSRequest('Lat: 22.5726, Lng: 88.3639 (Kolkata City Center)');
+      }
+    );
+  } else {
+    sendSOSRequest('Lat: 22.5726, Lng: 88.3639 (Kolkata City Center)');
+  }
+}
+
+async function sendSOSRequest(location) {
+  try {
+    const res = await fetch('/api/sos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ complainant_name: 'Priya Sharma', location })
+    });
+    
+    if (!res.ok) throw new Error('SOS log failed on server');
+    const data = await res.json();
+    
+    document.getElementById('sos-ref-code').textContent = `Reference: ${data.id}`;
+    document.getElementById('sos-timestamp').textContent = `Sent at ${formatDateTime(new Date())}`;
+    document.getElementById('sos-modal').classList.add('open');
+  } catch (err) {
+    toast('Alert failed to send: ' + err.message);
+  }
+}
+
+// 4. Officer Dashboard Portal Functions
+async function loadOfficerCases(filterStatus = 'all', btn) {
+  if (btn) {
+    document.querySelectorAll('#page-officer .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  
+  try {
+    // 1. Fetch case list from API
+    const res = await fetch(`/api/complaints?status=${filterStatus}`);
+    if (!res.ok) throw new Error('Failed to fetch dashboard cases');
+    const cases = await res.json();
+    
+    // 2. Fetch full stats to update counters
+    const statsRes = await fetch('/api/stats');
+    if (statsRes.ok) {
+      const stats = await statsRes.json();
+      document.getElementById('officer-active-cases').textContent = stats.totalComplaints - stats.resolvedCases;
+    }
+    
+    // Calculate pending review dynamically from fetched cases
+    const reviewRes = await fetch('/api/complaints?status=submitted');
+    if (reviewRes.ok) {
+      const pendingCases = await reviewRes.json();
+      document.getElementById('officer-pending-review').textContent = pendingCases.length;
+    }
+    
+    const tbody = document.getElementById('cases-body');
+    tbody.innerHTML = '';
+    
+    if (cases.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">No complaints found in this category.</td></tr>`;
+      return;
+    }
+    
+    cases.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-status', c.status);
+      
+      const priorityClass = `priority-${c.priority.toLowerCase()}`;
+      const statusPill = `status-pill s-${c.status}`;
+      
+      tr.innerHTML = `
+        <td style="font-weight:500;">${c.id}</td>
+        <td>${c.name}</td>
+        <td>${c.type}</td>
+        <td>${formatDate(c.created_at).split(' ')[0] + ' ' + formatDate(c.created_at).split(' ')[1]}</td>
+        <td><span class="${priorityClass}">${c.priority}</span></td>
+        <td><span class="${statusPill}">${getStatusLabel(c.status)}</span></td>
+        <td><button class="btn btn-ghost" style="font-size:12px;padding:4px 10px;" onclick="openUpdateModal('${c.id}')">Update</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+// Global variable to store active file attachments
+let selectedEvidenceFiles = [];
+
+function handleFileSelect(event) {
+  const files = Array.from(event.target.files);
+  selectedEvidenceFiles = []; // reset selection list for new selection batch if desired, or push to it
+  
+  files.forEach(file => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast(`File "${file.name}" exceeds the 10MB limit.`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const fileData = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        dataUrl: e.target.result
+      };
+      selectedEvidenceFiles.push(fileData);
+      renderEvidencePreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderEvidencePreviews() {
+  const previewList = document.getElementById('evidence-preview-list');
+  if (!previewList) return;
+  previewList.innerHTML = '';
+
+  selectedEvidenceFiles.forEach((file, index) => {
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:8px 12px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px;';
+    item.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:16px;">📄</span>
+        <div style="text-align: left;">
+          <strong style="color:var(--text);">${file.name}</strong>
+          <span style="color:var(--text3); font-size:10px; display:block;">${sizeKB} KB · ${file.type}</span>
+        </div>
+      </div>
+      <button class="modal-close" style="position:static; font-size:18px; line-height:1; cursor:pointer;" onclick="removeEvidenceFile(${index})">×</button>
+    `;
+    previewList.appendChild(item);
+  });
+}
+
+function removeEvidenceFile(index) {
+  selectedEvidenceFiles.splice(index, 1);
+  renderEvidencePreviews();
+  toast('Attachment removed.');
+}
+
+// 5. Update Status Modal Flows
+function openUpdateModal(cid) {
+  document.getElementById('modal-cid').textContent = cid;
+  document.getElementById('modal-remarks').value = '';
+  
+  // Prefill the status select if case exists
+  fetch(`/api/complaints/${cid}`)
+    .then(r => r.json())
+    .then(({ complaint }) => {
+      const select = document.getElementById('modal-status');
+      const label = getStatusLabel(complaint.status);
+      
+      // Match current status index in selection options
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].text.toLowerCase().includes(label.toLowerCase())) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+
+      // Render attachments in modal
+      const modalAttachSection = document.getElementById('modal-attachments-section');
+      const modalAttachList = document.getElementById('modal-attachments-list');
+      if (complaint.attachments) {
+        const files = JSON.parse(complaint.attachments);
+        if (files && files.length > 0) {
+          modalAttachList.innerHTML = '';
+          files.forEach(file => {
+            const item = document.createElement('a');
+            item.href = file.dataUrl;
+            item.download = file.name;
+            item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:6px 10px; border:0.5px solid var(--border); border-radius:var(--radius-sm); font-size:11px; text-decoration:none; color:inherit;';
+            item.innerHTML = `
+              <span style="color:var(--accent); font-weight:500; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:200px; text-align: left;">${file.name}</span>
+              <span style="font-size:11px; color:var(--text3);">⬇️ Download</span>
+            `;
+            modalAttachList.appendChild(item);
+          });
+          modalAttachSection.style.display = 'block';
+        } else {
+          modalAttachSection.style.display = 'none';
+        }
+      } else {
+        modalAttachSection.style.display = 'none';
+      }
+    })
+    .catch(err => console.error(err));
+    
+  document.getElementById('update-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+}
+
+async function saveUpdate() {
+  const cid = document.getElementById('modal-cid').textContent;
+  const status = document.getElementById('modal-status').value;
+  const remarks = document.getElementById('modal-remarks').value.trim();
+  
+  if (!remarks) {
+    toast('Please add a remark.');
+    return;
+  }
+  
+  try {
+    const res = await fetch(`/api/complaints/${cid}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, remarks })
+    });
+    
+    if (!res.ok) throw new Error('Failed to save status update');
+    const data = await res.json();
+    
+    closeModal();
+    toast(`Status updated to "${data.title}". Complainant notified via SMS.`);
+    
+    // Refresh cases inside Officer dashboard
+    const activeBtn = document.querySelector('.filter-bar button.active');
+    loadOfficerCases(activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all', activeBtn);
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+// Link helper for registration submission
+function goTrack() {
+  closeModal();
+  document.getElementById('t-id').value = document.getElementById('new-fir-id').textContent;
+  showPage('track', document.querySelectorAll('.nav-links button')[2]);
+  trackComplaint();
+}
+
+// Modal overlay outer-clicks dismissal
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+});
+
+// 6. RAKSHAK AI CHATBOT LOGIC
+function toggleRakshakChat() {
+  const windowEl = document.getElementById('rakshak-chat');
+  if (windowEl) {
+    windowEl.classList.toggle('open');
+    scrollToBottom();
+  }
+}
+
+function scrollToBottom() {
+  const body = document.getElementById('chat-body');
+  if (body) body.scrollTop = body.scrollHeight;
+}
+
+function triggerSuggestion(text) {
+  sendUserMessage(text);
+}
+
+function handleChatKeyPress(event) {
+  if (event.key === 'Enter') {
+    const input = document.getElementById('chat-input');
+    if (input && input.value.trim()) {
+      sendUserMessage(input.value.trim());
+      input.value = '';
+    }
+  }
+}
+
+function triggerChatSend() {
+  const input = document.getElementById('chat-input');
+  if (input && input.value.trim()) {
+    sendUserMessage(input.value.trim());
+    input.value = '';
+  }
+}
+
+// Global memory state variables for Rakshak AI
+let rakshakChatHistory = [];
+let isVoiceRecording = false;
+let speechRecognitionInstance = null;
+
+async function sendUserMessage(text) {
+  const chatBody = document.getElementById('chat-body');
+  if (!chatBody) return;
+
+  // Append user bubble
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = text;
+  chatBody.appendChild(userMsg);
+  scrollToBottom();
+
+  // Append typing indicator
+  const typingIndicator = document.createElement('div');
+  typingIndicator.className = 'chat-msg bot';
+  typingIndicator.id = 'chat-typing-indicator';
+  typingIndicator.innerHTML = '🛡️ <em>Rakshak AI is typing...</em>';
+  chatBody.appendChild(typingIndicator);
+  scrollToBottom();
+
+  // Construct Context if User is currently tracking a complaint
+  let context = "";
+  const trackResult = document.getElementById('track-result');
+  if (trackResult && trackResult.style.display === 'block') {
+    const cid = document.getElementById('tr-id').textContent;
+    const typeDate = document.getElementById('tr-type').textContent;
+    const status = document.getElementById('tr-status-badge').textContent;
+    const officer = document.getElementById('tr-officer').textContent;
+    const ps = document.getElementById('tr-ps').textContent;
+    context = `The user is currently tracking their case. Case details: ID: ${cid}, Type: ${typeDate}, Current Status: ${status}, Assigned Officer: ${officer}, Police Station: ${ps}. Explain their current stage and next actions if they ask about their status.`;
+  }
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        history: rakshakChatHistory,
+        context: context
+      })
+    });
+    
+    // Remove typing indicator
+    const indicator = document.getElementById('chat-typing-indicator');
+    if (indicator) indicator.remove();
+
+    if (!res.ok) throw new Error('API query failed');
+    const data = await res.json();
+
+    // Save turn to history (Gemini style)
+    rakshakChatHistory.push({ role: 'user', parts: [{ text: text }] });
+    rakshakChatHistory.push({ role: 'model', parts: [{ text: data.reply }] });
+
+    // Limit conversation history to last 10 turns to stay within bounds
+    if (rakshakChatHistory.length > 20) {
+      rakshakChatHistory = rakshakChatHistory.slice(-20);
+    }
+
+    // Render formatted response
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg bot';
+    botMsg.innerHTML = formatMarkdown(data.reply);
+    chatBody.appendChild(botMsg);
+    scrollToBottom();
+  } catch (err) {
+    console.error(err);
+    const indicator = document.getElementById('chat-typing-indicator');
+    if (indicator) indicator.remove();
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg bot';
+    botMsg.innerHTML = '🛡️ Sorry, I am having trouble connecting to my service. Please try again.';
+    chatBody.appendChild(botMsg);
+    scrollToBottom();
+  }
+}
+
+// Advanced client-side parser converting markdown & legal draft envelopes
+function formatMarkdown(text) {
+  if (!text) return '';
+  
+  let html = text;
+
+  // 1. Extract and format AI legal draft envelopes
+  const draftRegex = /--- COMPLAINT DRAFT START ---([\s\S]*?)--- COMPLAINT DRAFT END ---/g;
+  html = html.replace(draftRegex, (match, draftText) => {
+    const trimmedDraft = draftText.trim().replace(/'/g, "\\'");
+    return `
+      <div style="background:var(--surface2); border:1px dashed var(--accent); border-radius:var(--radius-sm); padding:12px; margin:10px 0; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+        <span style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px; text-align: left;">📋 Rakshak AI Legal Complaint Draft</span>
+        <textarea style="width:100%; min-height:100px; font-family:inherit; font-size:12px; border:0.5px solid var(--border); border-radius:4px; padding:6px; background:var(--surface); color:var(--text); resize:vertical; outline:none;" readonly>${draftText.trim()}</textarea>
+        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; margin-top:8px; border-radius:4px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="copyDraftToForm('${trimmedDraft.replace(/\n/g, '\\n')}')">
+          📝 Copy Draft to Complaint Form
+        </button>
+      </div>
+    `;
+  });
+
+  // 2. Format standard Markdown elements
+  html = html
+    // Bolding (converts **text** to <strong>text</strong>)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Line breaks
+    .replace(/\n\n/g, '<br/><br/>')
+    .replace(/\n/g, '<br/>')
+    // Bullet lists (converts - list to list items)
+    .replace(/<br\/>-\s(.*?)(?=<br\/>|$)/g, '<div style="margin-left: 10px; display: flex; gap: 6px; margin-top: 4px;"><span>•</span><span>$1</span></div>')
+    .replace(/<br\/>\*\s(.*?)(?=<br\/>|$)/g, '<div style="margin-left: 10px; display: flex; gap: 6px; margin-top: 4px;"><span>•</span><span>$1</span></div>');
+    
+  return html;
+}
+
+// Copy AI legal draft to form and navigate
+function copyDraftToForm(draftText) {
+  const descArea = document.getElementById('f-desc');
+  if (descArea) {
+    descArea.value = draftText;
+    toast('AI Draft successfully copied to complaint description.');
+    
+    // Switch to file complaint tab
+    const fileBtn = document.querySelectorAll('.nav-links button')[1];
+    showPage('file', fileBtn);
+    
+    // Close chat panel
+    toggleRakshakChat();
+  } else {
+    toast('Error pre-filling description form.');
+  }
+}
+
+// Speech recognition voice input (Web Speech API)
+function toggleVoiceInput(event) {
+  event.stopPropagation();
+  
+  const micBtn = document.getElementById('chat-mic-btn');
+  const chatInput = document.getElementById('chat-input');
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    toast('Voice recognition is not supported on this browser. Try Chrome.');
+    return;
+  }
+
+  if (isVoiceRecording) {
+    // Stop recording
+    if (speechRecognitionInstance) {
+      speechRecognitionInstance.stop();
+    }
+    return;
+  }
+
+  // Start recording
+  isVoiceRecording = true;
+  micBtn.style.color = 'var(--accent)';
+  micBtn.classList.add('recording-pulse');
+  toast('Voice Input active. Speak now...');
+
+  speechRecognitionInstance = new SpeechRecognition();
+  speechRecognitionInstance.continuous = false;
+  speechRecognitionInstance.interimResults = false;
+  speechRecognitionInstance.lang = 'en-IN'; // Optimized for Indian English/Accent
+
+  speechRecognitionInstance.onresult = function(e) {
+    const transcript = e.results[0][0].transcript;
+    if (chatInput) {
+      chatInput.value = transcript;
+    }
+    toast('Speech transcribed successfully.');
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.onerror = function(err) {
+    console.error(err);
+    toast('Voice recording failed. Try again.');
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.onend = function() {
+    stopRecordingUI();
+  };
+
+  speechRecognitionInstance.start();
+}
+
+function stopRecordingUI() {
+  isVoiceRecording = false;
+  const micBtn = document.getElementById('chat-mic-btn');
+  if (micBtn) {
+    micBtn.style.color = 'var(--text3)';
+    micBtn.classList.remove('recording-pulse');
+  }
+  speechRecognitionInstance = null;
+}
+
+function generateFIRPDF(cid) {
+  fetch(`/api/complaints/${cid}`)
+    .then(r => {
+      if (!r.ok) throw new Error('Complaint ID not found');
+      return r.json();
+    })
+    .then(({ complaint, timeline }) => {
+      const newWin = window.open('', '_blank');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>FIR_Receipt_${cid}</title>
+          <style>
+            body { font-family: 'Times New Roman', Times, serif; padding: 40px; color: #111; line-height: 1.5; background: #fff; text-align: left; }
+            .header-title { text-align: center; font-size: 20px; font-weight: bold; text-transform: uppercase; font-family: 'Times New Roman', serif; }
+            .gov-subtitle { text-align: center; font-size: 13px; font-style: italic; margin-bottom: 24px; letter-spacing: 0.05em; }
+            .section-title { font-size: 15px; font-weight: bold; text-transform: uppercase; border-bottom: 1.5px solid #222; padding-bottom: 4px; margin: 24px 0 12px 0; text-align: left; }
+            .field-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
+            .field-table th { text-align: left; width: 30%; font-weight: bold; border: 1px solid #ddd; padding: 6px 10px; background: #f9f9f9; }
+            .field-table td { text-align: left; border: 1px solid #ddd; padding: 6px 10px; }
+            .timeline-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+            .timeline-table th { background: #eaeaea; font-weight: bold; border: 1px solid #ccc; padding: 6px; text-align: left; }
+            .timeline-table td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            .footer { margin-top: 50px; display: flex; justify-content: space-between; font-size: 12px; }
+            .stamp-placeholder { border: 2px dashed #999; border-radius: 8px; width: 120px; height: 80px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+            @media print {
+              body { padding: 20px; }
+              button { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div style="text-align:center; margin-bottom: 4px; font-size: 24px;">⚖️</div>
+          <div class="header-title">Government of West Bengal - Police Department</div>
+          <div class="gov-subtitle">Office of the Commissioner of Police, Bidhannagar Division</div>
+          <div style="text-align: center; font-weight: bold; font-size: 16px; text-decoration: underline; margin-bottom: 20px;">FIRST INFORMATION REPORT (FIR) RECEIPT</div>
+
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:15px; border:1px solid #ddd; padding:8px 12px; background:#f5f5f5;">
+            <div>COMPLAINT ID: ${complaint.id}</div>
+            <div>DATE FILED: ${new Date(complaint.created_at).toLocaleString()}</div>
+          </div>
+
+          <div class="section-title">1. Complainant Personal Parameters</div>
+          <table class="field-table">
+            <tr><th>Full Name</th><td>${complaint.name}</td></tr>
+            <tr><th>Mobile Number</th><td>${complaint.mobile}</td></tr>
+            <tr><th>Email Address</th><td>${complaint.email || 'N/A'}</td></tr>
+            <tr><th>Aadhaar Identification</th><td>${complaint.aadhaar || 'CONFIDENTIAL'}</td></tr>
+          </table>
+
+          <div class="section-title">2. Incident Chronicle Details</div>
+          <table class="field-table">
+            <tr><th>Offense Category</th><td>${complaint.type}</td></tr>
+            <tr><th>Incident Occurrence Date</th><td>${complaint.date}</td></tr>
+            <tr><th>Incident Geo Location</th><td>${complaint.location}</td></tr>
+            <tr><th>Accused Person(s) Profile</th><td>${complaint.accused || 'Unknown / Unidentified'}</td></tr>
+          </table>
+
+          <div class="section-title">3. Detailed Narrative Deposition</div>
+          <div style="font-size: 13px; border: 1px solid #ddd; padding: 12px; background: #fafafa; font-family: monospace; white-space: pre-wrap; margin-bottom: 14px; text-align: left;">${complaint.description}</div>
+
+          <div class="section-title">4. Law Enforcement Allocation</div>
+          <table class="field-table">
+            <tr><th>Preferred District</th><td>${complaint.district}</td></tr>
+            <tr><th>Jurisdictional Station</th><td>${complaint.police_station} P.S.</td></tr>
+            <tr><th>Assigned Investigating Officer</th><td>${complaint.assigned_officer}</td></tr>
+            <tr><th>FIR Priority Code</th><td>${complaint.priority} Severity</td></tr>
+          </table>
+
+          <div class="section-title">5. Official Timeline Logs & Status</div>
+          <table class="timeline-table">
+            <thead>
+              <tr><th>Milestone Title</th><th>Logged Remarks</th><th>Timestamp</th></tr>
+            </thead>
+            <tbody>
+              ${timeline.map(t => `
+                <tr>
+                  <td style="font-weight:bold;">${t.title}</td>
+                  <td>${t.remarks}</td>
+                  <td>${new Date(t.created_at).toLocaleString()}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="footer">
+            <div>
+              <div class="stamp-placeholder">OFFICIAL RECORD STAMP</div>
+              <div style="font-size:10px; color:#555; margin-top:4px;">Portal Verification Signature: MOCK-SECAMP-STAMP</div>
+            </div>
+            <div style="text-align: right; margin-top:20px;">
+              <div style="border-bottom: 1px solid #000; width: 180px; margin-bottom: 4px;"></div>
+              <div style="font-weight:bold; font-size:11px;">Signed, Assigned intake Officer</div>
+              <div style="font-size: 10px; color: #555;">${complaint.assigned_officer}</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; text-align: center;">
+            <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; font-weight: bold; background: #c9184a; color: white; border: none; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">🖨️ Print / Save FIR Document</button>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      newWin.document.write(htmlContent);
+      newWin.document.close();
+    })
+    .catch(err => toast(err.message));
+}
+
+function askRakshakAboutSection(query) {
+  // Ensure chat window is open
+  const chatWindow = document.getElementById('rakshak-chat');
+  if (chatWindow && !chatWindow.classList.contains('open')) {
+    toggleRakshakChat();
+  }
+  
+  // Send user message
+  sendUserMessage(query);
+  toast('Grounded legal context queried to Rakshak AI.');
+}
+</script>
+
+</div>
+
+<!-- RAKSHAK AI CHATBOT INTERFACE -->
+<div class="rakshak-toggle" onclick="toggleRakshakChat()">
+  🛡️
+</div>
+
+<div class="rakshak-chat-window" id="rakshak-chat">
+  <div class="chat-header">
+    <div class="chat-bot-info">
+      <div class="chat-bot-avatar">🛡️</div>
+      <div>
+        <span class="chat-bot-name">Rakshak AI</span>
+        <span class="chat-bot-status">Legal Safety Advisor</span>
+      </div>
+    </div>
+    <button class="modal-close" style="position:static; color:white; font-size:24px;" onclick="toggleRakshakChat()">×</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">
+      Hello! I am <strong>Rakshak AI</strong>, your secure legal safety advisor. 🛡️<br/><br/>
+      I can help you understand your legal rights, interpret BNS / IPC protections, explain Zero FIR procedures, and assist you in filing complaints.<br/><br/>
+      How can I assist you today? Feel free to tap a quick suggestion chip below!
+    </div>
+  </div>
+  <div class="chat-suggestions-container">
+    <div class="chat-chip" onclick="triggerSuggestion('Tell me about Zero FIR')">Zero FIR</div>
+    <div class="chat-chip" onclick="triggerSuggestion('Rights during police arrest?')">Arrest Rights</div>
+    <div class="chat-chip" onclick="triggerSuggestion('How to report cyberstalking?')">Cyberstalking</div>
+    <div class="chat-chip" onclick="triggerSuggestion('Domestic abuse protections?')">Domestic Violence</div>
+    <div class="chat-chip" onclick="triggerSuggestion('What is the POSH Act?')">POSH Act</div>
+  </div>
+  <div class="chat-input-area" style="position: relative; display: flex; align-items: center; gap: 8px;">
+    <input type="text" id="chat-input" placeholder="Ask Rakshak AI..." onkeypress="handleChatKeyPress(event)" style="padding-right: 36px;" />
+    <button id="chat-mic-btn" style="position: absolute; right: 54px; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text3); padding: 4px; transition: color 0.15s; outline:none;" onclick="toggleVoiceInput(event)">🎙️</button>
+    <button class="chat-send-btn" onclick="triggerChatSend()">➔</button>
+  </div>
+</div>
+
+</body>
+</html>
