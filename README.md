@@ -1,0 +1,2 @@
+e-Abhaya is an AI-powered Women Safety and Emergency Response Platform designed to provide immediate assistance during emergencies and enhance personal safety through smart technology.
+The platform integrates emergency alerts, location tracking, evidence collection, AI-assisted support, and rapid communication with trusted contacts and authorities, creating a comprehensive digital safety ecosystem.
