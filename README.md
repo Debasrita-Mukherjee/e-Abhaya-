@@ -1,190 +1,92 @@
-# 🛡️ e-Abhaya – AI-Powered Women Safety & Emergency Response Platform
+# 🛡️ e-Abhaya – AI-Powered Women's Safety & Emergency Response System
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Backend-Node.js-green?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Database-SQLite-blue?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini-orange?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Node.js-Backend-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Express.js-Framework-black?style=for-the-badge">
+  <img src="https://img.shields.io/badge/SQLite-Database-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Google%20Gemini-AI-orange?style=for-the-badge">
+  <img src="https://img.shields.io/badge/License-MIT-success?style=for-the-badge">
 </p>
 
 ---
 
-## 📌 Overview
+## 📖 Overview
 
-**e-Abhaya** is an AI-powered Women Safety and Emergency Response Platform designed to provide rapid assistance during emergencies while simplifying complaint registration and communication with law enforcement.
+**e-Abhaya** is an AI-powered Women's Safety and Emergency Response System designed to provide quick assistance during emergencies.
 
-The platform combines **Artificial Intelligence**, **Emergency Response**, **Digital FIR Management**, and **Location-based Police Station Mapping** into one unified solution, enabling citizens to report incidents quickly and securely.
-
----
-
-## 🎯 Problem Statement
-
-Women often face difficulties in reporting crimes due to:
-
-* Delayed emergency response
-* Lack of awareness about nearby police stations
-* Complicated FIR filing process
-* Difficulty tracking complaint status
-* Limited access to immediate assistance
-
-e-Abhaya aims to solve these challenges through an intelligent digital platform.
+The platform integrates **Google Gemini AI**, **Digital FIR Registration**, **SOS Alert System**, and **Police Complaint Management** into a single solution, making it easier for citizens to seek help and report incidents securely.
 
 ---
 
-# ✨ Key Features
+## ✨ Features
 
-### 🚨 Smart SOS Alert System
-
-* One-click emergency alerts
-* Generates unique SOS IDs
-* Rapid emergency response workflow
-
-### 📝 Digital FIR Registration
-
-* Register complaints online
-* Auto-generated FIR IDs
-* Secure complaint storage
-* Complaint status tracking
-
-### 🤖 AI Assistant
-
-Powered by **Google Gemini AI**
-
-* Provides guidance during emergencies
-* Assists users while filing complaints
-* Answers safety-related queries
-* Offers legal and procedural assistance
-
-### 📍 Smart Police Station Mapping
-
-Automatically determines:
-
-* District
-* Police Station
-* Station Email
-
-using the user's **Pincode**.
-
-### 📂 Complaint Tracking
-
-Track every complaint through multiple stages:
-
-* Submitted
-* Under Review
-* FIR Registered
-* Investigation Started
-* Evidence Verification
-* Action Taken
-* Resolved
-* Closed
-
-### 👮 Police Dashboard
-
-Police officers can
-
-* Login securely
-* View assigned complaints
-* Update investigation status
-* Add remarks
-* Manage emergency cases
-
-### 📎 Evidence Management
-
-Supports attachment handling for:
-
-* Images
-* Documents
-* Evidence records
+- 🚨 One-click SOS Emergency Alert
+- 🤖 AI Assistant powered by Google Gemini
+- 📝 Online FIR/Complaint Registration
+- 📍 Police Station Mapping
+- 📂 Complaint Tracking System
+- 👮 Police Dashboard
+- 📎 Evidence Upload Support
+- 💾 SQLite Database Integration
 
 ---
 
-# 🏗️ System Architecture
+## 🏗️ Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- SQLite3
+
+### AI Integration
+- Google Gemini API
+
+### Other Packages
+- CORS
+- Dotenv
+
+---
+
+## 📁 Project Structure
 
 ```
-Citizen
-     │
-     ▼
-Frontend (HTML/CSS/JavaScript)
-     │
-     ▼
-Express.js REST API
-     │
- ┌───────────────┐
- │               │
- ▼               ▼
-SQLite DB    Google Gemini AI
- │
- ▼
-Police Dashboard
-```
-
----
-
-# 🛠️ Tech Stack
-
-## Frontend
-
-* HTML5
-* CSS3
-* JavaScript
-
-## Backend
-
-* Node.js
-* Express.js
-
-## Database
-
-* SQLite3
-
-## AI Integration
-
-* Google Gemini API
-
-## Other Packages
-
-* dotenv
-* cors
-
----
-
-# 📂 Project Structure
-
-```
-e-Abhaya
+e-Abhaya/
 │
-├── public/
-│   ├── index.html
+├── public/                 # Frontend files
+│   └── index.html
 │
-├── police_stations/
+├── police_stations/        # Police station related data
 │
-├── database.js
-├── server.js
+├── db.json                 # Sample data
 ├── package.json
-├── .env
-├── e-abhaya.db
-│
-└── README.md
+├── README.md
+└── node_modules/
 ```
 
 ---
 
-# ⚙️ Installation
+## ⚙️ Installation
 
-## Clone Repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/Debasrita-Mukherjee/e-Abhaya-.git
 ```
 
-Move into the project
+### Move into the project folder
 
 ```bash
 cd e-Abhaya-
 ```
 
-Install dependencies
+### Install dependencies
 
 ```bash
 npm install
@@ -192,24 +94,30 @@ npm install
 
 ---
 
-# 🔑 Environment Variables
+## 🔑 Environment Variables
 
-Create a `.env` file.
+Create a `.env` file in the root directory.
 
 ```env
-PORT=3000
 GEMINI_API_KEY=YOUR_API_KEY
+PORT=3000
 ```
 
 ---
 
-# ▶️ Run the Project
+## ▶️ Running the Project
 
 ```bash
-node server.js
+npm start
 ```
 
-The server will start at
+or
+
+```bash
+node index.js
+```
+
+The application will run at:
 
 ```
 http://localhost:3000
@@ -217,143 +125,44 @@ http://localhost:3000
 
 ---
 
-# 📡 Main Functionalities
+## 🚀 Future Improvements
 
-## Citizen Portal
-
-* Register Complaint
-* Send SOS Alert
-* Upload Evidence
-* Track FIR Status
-* Chat with AI Assistant
-
----
-
-## Police Portal
-
-* Officer Login
-* View Assigned Cases
-* Update Complaint Status
-* Investigation Timeline
-* Remarks Management
+- Live GPS Tracking
+- Emergency Contact Notification
+- Voice Activated SOS
+- Mobile Application
+- Secure Authentication
+- Real-time Police Dashboard
+- Push Notifications
 
 ---
 
-# 🗃️ Database
+## 🤝 Contributing
 
-The application uses **SQLite**.
+Contributions are welcome!
 
-Major tables include:
-
-* complaints
-* timeline
-* sos_alerts
-
-The database initializes automatically when the server starts.
+1. Fork the repository.
+2. Create a new branch.
+3. Commit your changes.
+4. Push to your branch.
+5. Open a Pull Request.
 
 ---
 
-# 🔄 Complaint Workflow
+## 📄 License
 
-```
-Complaint Submitted
-        │
-        ▼
-Under Review
-        │
-        ▼
-FIR Registered
-        │
-        ▼
-Investigation Started
-        │
-        ▼
-Evidence Verification
-        │
-        ▼
-Action Taken
-        │
-        ▼
-Resolved
-        │
-        ▼
-Closed
-```
+This project is licensed under the MIT License.
 
 ---
 
-# 🚀 Future Enhancements
+## 👩‍💻 Author
 
-* 📱 Android & iOS Mobile Application
-* 📍 Live GPS Tracking
-* 📞 Automatic Emergency Calling
-* 🔔 Push Notifications
-* 🎤 Voice-based Complaint Filing
-* 🌐 Multi-language Support
-* ☁ Cloud Database Integration
-* 🧠 Predictive Crime Analytics
-* 📹 Live Video Evidence Upload
+**Debasrita Mukherjee**
+
+GitHub: https://github.com/Debasrita-Mukherjee
 
 ---
 
-# 📸 Screenshots
+## ⭐ Support
 
-Add screenshots here.
-
-```
-screenshots/
-
-Home Page
-
-SOS Page
-
-Complaint Registration
-
-Police Dashboard
-
-AI Chatbot
-```
-
----
-
-# 🤝 Contributors
-
-* Debasrita Mukherjee
-* Contributors are welcome through Pull Requests.
-
----
-
-# 💡 Why e-Abhaya?
-
-✔ AI-assisted emergency support
-
-✔ Digital FIR system
-
-✔ Smart police station allocation
-
-✔ Complaint lifecycle tracking
-
-✔ Secure evidence management
-
-✔ Fast emergency response
-
----
-
-# 📄 License
-
-This project is released under the **MIT License**.
-
----
-
-# ⭐ Support the Project
-
-If you found this project useful, consider giving it a ⭐ on GitHub.
-
-Your support motivates us to build more impactful open-source projects.
-
----
-
-<p align="center">
-Made with ❤️ to empower safer communities through technology.
-</p>
-
+If you found this project useful, please consider giving it a ⭐ on GitHub.
