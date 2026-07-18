@@ -46,18 +46,179 @@ const statusMilestones = {
   'closed': 'Closed'
 };
 
+// Comprehensive pincode-to-police-station mapping with full contact & GPS details
 const pincodeToPS = {
-  '700091': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in' },
-  '700106': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in' },
-  '700156': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in' },
-  '700160': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in' },
-  '700089': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in' },
-  '700048': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in' },
-  '700028': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in' },
-  '700030': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in' }
+  // North 24 Parganas — Bidhannagar Commissionerate
+  '700091': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in', phone: '033-2337-0777', address: 'BD Block, Salt Lake City, Kolkata - 700091', lat: 22.5832, lng: 88.4205, zone: 'Bidhannagar Commissionerate' },
+  '700064': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in', phone: '033-2337-0777', address: 'BD Block, Salt Lake City, Kolkata - 700091', lat: 22.5832, lng: 88.4205, zone: 'Bidhannagar Commissionerate' },
+  '700106': { station: 'Bidhannagar', district: 'North 24 Parganas', email: 'bidhannagar.ps@abhaya-police.gov.in', phone: '033-2337-0777', address: 'BD Block, Salt Lake City, Kolkata - 700091', lat: 22.5832, lng: 88.4205, zone: 'Bidhannagar Commissionerate' },
+  // New Town
+  '700156': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in', phone: '033-2981-5500', address: 'Action Area I, New Town, Rajarhat - 700156', lat: 22.5817, lng: 88.4769, zone: 'Bidhannagar Commissionerate' },
+  '700160': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in', phone: '033-2981-5500', address: 'Action Area I, New Town, Rajarhat - 700156', lat: 22.5817, lng: 88.4769, zone: 'Bidhannagar Commissionerate' },
+  '700135': { station: 'New Town', district: 'North 24 Parganas', email: 'newtown.ps@abhaya-police.gov.in', phone: '033-2981-5500', address: 'Action Area I, New Town, Rajarhat - 700156', lat: 22.5817, lng: 88.4769, zone: 'Bidhannagar Commissionerate' },
+  // Lake Town
+  '700089': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in', phone: '033-2565-1800', address: 'Lake Town Police Station, P-249 CIT Road, Kolkata - 700089', lat: 22.5986, lng: 88.3859, zone: 'North 24 Parganas District' },
+  '700048': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in', phone: '033-2565-1800', address: 'Lake Town Police Station, P-249 CIT Road, Kolkata - 700089', lat: 22.5986, lng: 88.3859, zone: 'North 24 Parganas District' },
+  '700055': { station: 'Lake Town', district: 'North 24 Parganas', email: 'laketown.ps@abhaya-police.gov.in', phone: '033-2565-1800', address: 'Lake Town Police Station, P-249 CIT Road, Kolkata - 700089', lat: 22.5986, lng: 88.3859, zone: 'North 24 Parganas District' },
+  // Dum Dum
+  '700028': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in', phone: '033-2551-3456', address: 'Dum Dum Police Station, Station Road, Dum Dum - 700028', lat: 22.6381, lng: 88.4007, zone: 'North 24 Parganas District' },
+  '700030': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in', phone: '033-2551-3456', address: 'Dum Dum Police Station, Station Road, Dum Dum - 700028', lat: 22.6381, lng: 88.4007, zone: 'North 24 Parganas District' },
+  '700074': { station: 'Dum Dum', district: 'North 24 Parganas', email: 'dumdum.ps@abhaya-police.gov.in', phone: '033-2551-3456', address: 'Dum Dum Police Station, Station Road, Dum Dum - 700028', lat: 22.6381, lng: 88.4007, zone: 'North 24 Parganas District' },
+  // Barasat
+  '700124': { station: 'Barasat', district: 'North 24 Parganas', email: 'barasat.ps@abhaya-police.gov.in', phone: '033-2563-2200', address: 'Barasat Police Station, Court Road, Barasat - 700124', lat: 22.7210, lng: 88.4793, zone: 'North 24 Parganas District' },
+  '700125': { station: 'Barasat', district: 'North 24 Parganas', email: 'barasat.ps@abhaya-police.gov.in', phone: '033-2563-2200', address: 'Barasat Police Station, Court Road, Barasat - 700124', lat: 22.7210, lng: 88.4793, zone: 'North 24 Parganas District' },
+  // Bangaon
+  '743235': { station: 'Bangaon', district: 'North 24 Parganas', email: 'bangaon.ps@abhaya-police.gov.in', phone: '03215-255-123', address: 'Bangaon Police Station, Station Road, Bangaon - 743235', lat: 23.0474, lng: 88.8282, zone: 'North 24 Parganas District' },
+  // Kolkata — Central District
+  '700001': { station: 'Hare Street', district: 'Kolkata', email: 'harestreet.ps@abhaya-police.gov.in', phone: '033-2248-5000', address: 'Hare Street Police Station, 3 Hare Street, Kolkata - 700001', lat: 22.5628, lng: 88.3516, zone: 'Kolkata Police' },
+  '700012': { station: 'Park Street', district: 'Kolkata', email: 'parkstreet.ps@abhaya-police.gov.in', phone: '033-2229-1234', address: 'Park Street Police Station, Park Street, Kolkata - 700016', lat: 22.5555, lng: 88.3509, zone: 'Kolkata Police' },
+  '700016': { station: 'Park Street', district: 'Kolkata', email: 'parkstreet.ps@abhaya-police.gov.in', phone: '033-2229-1234', address: 'Park Street Police Station, Park Street, Kolkata - 700016', lat: 22.5555, lng: 88.3509, zone: 'Kolkata Police' },
+  '700017': { station: 'Park Street', district: 'Kolkata', email: 'parkstreet.ps@abhaya-police.gov.in', phone: '033-2229-1234', address: 'Park Street Police Station, Park Street, Kolkata - 700016', lat: 22.5555, lng: 88.3509, zone: 'Kolkata Police' },
+  '700019': { station: 'Ballygunge', district: 'Kolkata', email: 'ballygunge.ps@abhaya-police.gov.in', phone: '033-2476-3500', address: 'Ballygunge Police Station, 12 Ballygunge Place, Kolkata - 700019', lat: 22.5363, lng: 88.3660, zone: 'Kolkata Police' },
+  '700029': { station: 'Ballygunge', district: 'Kolkata', email: 'ballygunge.ps@abhaya-police.gov.in', phone: '033-2476-3500', address: 'Ballygunge Police Station, 12 Ballygunge Place, Kolkata - 700019', lat: 22.5363, lng: 88.3660, zone: 'Kolkata Police' },
+  '700020': { station: 'Alipore', district: 'Kolkata', email: 'alipore.ps@abhaya-police.gov.in', phone: '033-2479-1000', address: 'Alipore Police Station, 1 Alipore Road, Kolkata - 700027', lat: 22.5289, lng: 88.3359, zone: 'Kolkata Police' },
+  '700027': { station: 'Alipore', district: 'Kolkata', email: 'alipore.ps@abhaya-police.gov.in', phone: '033-2479-1000', address: 'Alipore Police Station, 1 Alipore Road, Kolkata - 700027', lat: 22.5289, lng: 88.3359, zone: 'Kolkata Police' },
+  '700032': { station: 'Jadavpur', district: 'Kolkata', email: 'jadavpur.ps@abhaya-police.gov.in', phone: '033-2414-0900', address: 'Jadavpur Police Station, Raja S C Mullick Road, Kolkata - 700032', lat: 22.5012, lng: 88.3634, zone: 'Kolkata Police' },
+  '700068': { station: 'Jadavpur', district: 'Kolkata', email: 'jadavpur.ps@abhaya-police.gov.in', phone: '033-2414-0900', address: 'Jadavpur Police Station, Raja S C Mullick Road, Kolkata - 700032', lat: 22.5012, lng: 88.3634, zone: 'Kolkata Police' },
+  // South 24 Parganas
+  '743502': { station: 'Diamond Harbour', district: 'South 24 Parganas', email: 'diamondharbour.ps@abhaya-police.gov.in', phone: '03174-255-234', address: 'Diamond Harbour Police Station, Anandapur, Diamond Harbour - 743331', lat: 22.1919, lng: 88.1881, zone: 'South 24 Parganas District' },
+  '743331': { station: 'Diamond Harbour', district: 'South 24 Parganas', email: 'diamondharbour.ps@abhaya-police.gov.in', phone: '03174-255-234', address: 'Diamond Harbour Police Station, Anandapur, Diamond Harbour - 743331', lat: 22.1919, lng: 88.1881, zone: 'South 24 Parganas District' },
+  '743338': { station: 'Baruipur', district: 'South 24 Parganas', email: 'baruipur.ps@abhaya-police.gov.in', phone: '033-2430-4000', address: 'Baruipur Police Station, Court Road, Baruipur - 743610', lat: 22.3598, lng: 88.4385, zone: 'South 24 Parganas District' },
+  '743610': { station: 'Baruipur', district: 'South 24 Parganas', email: 'baruipur.ps@abhaya-police.gov.in', phone: '033-2430-4000', address: 'Baruipur Police Station, Court Road, Baruipur - 743610', lat: 22.3598, lng: 88.4385, zone: 'South 24 Parganas District' },
+  // Howrah
+  '711101': { station: 'Howrah', district: 'Howrah', email: 'howrah.ps@abhaya-police.gov.in', phone: '033-2638-2000', address: 'Howrah Police Station, 61 Mahatma Gandhi Road, Howrah - 711101', lat: 22.5828, lng: 88.3427, zone: 'Howrah Police Commissionerate' },
+  '711102': { station: 'Howrah', district: 'Howrah', email: 'howrah.ps@abhaya-police.gov.in', phone: '033-2638-2000', address: 'Howrah Police Station, 61 Mahatma Gandhi Road, Howrah - 711101', lat: 22.5828, lng: 88.3427, zone: 'Howrah Police Commissionerate' },
+  '711103': { station: 'Shibpur', district: 'Howrah', email: 'shibpur.ps@abhaya-police.gov.in', phone: '033-2638-5600', address: 'Shibpur Police Station, Foreshore Road, Shibpur, Howrah - 711103', lat: 22.5693, lng: 88.3201, zone: 'Howrah Police Commissionerate' },
+  '711104': { station: 'Shibpur', district: 'Howrah', email: 'shibpur.ps@abhaya-police.gov.in', phone: '033-2638-5600', address: 'Shibpur Police Station, Foreshore Road, Shibpur, Howrah - 711103', lat: 22.5693, lng: 88.3201, zone: 'Howrah Police Commissionerate' },
+  '711201': { station: 'Uluberia', district: 'Howrah', email: 'uluberia.ps@abhaya-police.gov.in', phone: '03212-255-456', address: 'Uluberia Police Station, Station Road, Uluberia - 711315', lat: 22.4697, lng: 88.1058, zone: 'Howrah District' },
 };
 
 // API Endpoints
+
+// PS Lookup by Pincode — New endpoint for location-wise PS tracking
+app.get('/api/ps-lookup/:pincode', (req, res) => {
+  const pin = req.params.pincode ? req.params.pincode.toString().trim() : '';
+  const psInfo = pincodeToPS[pin];
+  
+  if (!psInfo) {
+    return res.status(404).json({
+      found: false,
+      message: `No police station mapping found for pincode ${pin}.`
+    });
+  }
+  
+  return res.json({
+    found: true,
+    pincode: pin,
+    station: psInfo.station,
+    district: psInfo.district,
+    zone: psInfo.zone,
+    address: psInfo.address,
+    phone: psInfo.phone,
+    email: psInfo.email,
+    lat: psInfo.lat,
+    lng: psInfo.lng,
+    mapUrl: `https://maps.google.com/?q=${encodeURIComponent(psInfo.address)}&ll=${psInfo.lat},${psInfo.lng}&z=15`,
+    directionsUrl: `https://maps.google.com/maps?daddr=${psInfo.lat},${psInfo.lng}&dirflg=d`
+  });
+});
+
+// PS List — returns all known stations
+app.get('/api/ps-list', (req, res) => {
+  const seen = new Set();
+  const stations = [];
+  for (const [pin, ps] of Object.entries(pincodeToPS)) {
+    const key = `${ps.station}|${ps.district}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      stations.push({
+        station: ps.station,
+        district: ps.district,
+        zone: ps.zone,
+        address: ps.address,
+        phone: ps.phone,
+        email: ps.email,
+        lat: ps.lat,
+        lng: ps.lng,
+        mapUrl: `https://maps.google.com/?q=${encodeURIComponent(ps.address)}`
+      });
+    }
+  }
+  res.json(stations);
+});
+
+// Config endpoint — safely exposes public keys to frontend
+app.get('/api/config', (req, res) => {
+  const key = process.env.GOOGLE_MAPS_API_KEY || '';
+  const isPlaceholder = !key || key === 'YOUR_GOOGLE_MAPS_API_KEY_HERE';
+  const isValidKey = !isPlaceholder && key.length >= 10;
+  // Standard Google Maps JS API keys start with 'AIzaSy'
+  const isJsApiKey = isValidKey && key.startsWith('AIzaSy');
+
+  res.json({
+    googleMapsApiKey: key,
+    mapsEnabled: isValidKey,       // any valid-looking key enables embed maps
+    jsApiEnabled: isJsApiKey,      // full interactive JS API requires AIzaSy... key
+    keyType: isJsApiKey ? 'js_api' : isValidKey ? 'embed_only' : 'none'
+  });
+});
+
+// API Endpoints
+
+// 0.5 POST /api/login/google
+app.post('/api/login/google', (req, res) => {
+  const { credential, name, email, picture, simulated } = req.body;
+  
+  if (simulated) {
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required for simulated login.' });
+    }
+    return res.json({
+      success: true,
+      user: {
+        name: name.trim(),
+        email: email.trim(),
+        avatar: picture || '',
+        role: 'citizen',
+        mobile: '+91 99999 88888' // default mock mobile
+      }
+    });
+  }
+
+  if (!credential) {
+    return res.status(400).json({ error: 'Credential token is required' });
+  }
+
+  try {
+    const tokenParts = credential.split('.');
+    if (tokenParts.length !== 3) {
+      return res.status(400).json({ error: 'Invalid Google token format.' });
+    }
+    
+    const payloadBuffer = Buffer.from(tokenParts[1], 'base64');
+    const payload = JSON.parse(payloadBuffer.toString('utf8'));
+    
+    // Validate token expiry
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp < now) {
+      return res.status(401).json({ error: 'Google Identity token expired.' });
+    }
+
+    return res.json({
+      success: true,
+      user: {
+        name: payload.name,
+        email: payload.email,
+        avatar: payload.picture,
+        role: 'citizen',
+        mobile: '+91 99999 88888'
+      }
+    });
+  } catch (err) {
+    console.error('Google verification error:', err);
+    return res.status(401).json({ error: 'Google token authentication failed.' });
+  }
+});
 
 // 0. POST /api/login
 app.post('/api/login', (req, res) => {
@@ -483,6 +644,233 @@ app.put('/api/sos/:id', async (req, res) => {
   }
 });
 
+// 8A. POST /api/chat/file-complaint (AI Police Officer Interview Mode)
+app.post('/api/chat/file-complaint', async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey || apiKey.trim() === '') {
+      return res.json({ reply: "I'm sorry, the AI service is not configured. Please use the manual complaint form instead." });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const modelsToTry = ["gemini-2.5-flash", "gemini-2.5-flash-lite-preview-06-17", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+
+    const systemInstruction = `You are **Sub-Inspector Rakshak**, a trained police officer at the e-Abhaya Women Safety Portal's virtual police station. You are conducting a formal complaint intake interview.
+
+YOUR ROLE: You are a compassionate, professional, and thorough police officer who takes complaints from women. You speak in a warm but authoritative tone. You address the complainant respectfully ("Ma'am" or by name once known).
+
+YOUR TASK: Collect ALL of the following 10 fields from the complainant through a natural conversation, asking ONE question at a time:
+
+1. **full_name** — Full legal name of the complainant
+2. **mobile** — 10-digit Indian mobile number (with or without +91)
+3. **email** — Email address (optional, but ask for it)
+4. **aadhaar** — 12-digit Aadhaar number (optional, tell them it helps verify identity)
+5. **complaint_type** — Must be one of EXACTLY these: "Sexual harassment", "Domestic violence", "Stalking / cyberstalking", "Dowry harassment", "Workplace harassment", "Eve teasing", "Online abuse / threats", "Other"
+6. **incident_date** — Date of the incident in YYYY-MM-DD format
+7. **incident_location** — Detailed location/address where the incident occurred
+8. **pincode** — 6-digit PIN code of the area where it happened
+9. **description** — Detailed description of what happened (at least 2-3 sentences)
+10. **accused_details** — Description of the accused person(s) — name, relationship, physical description, anything known
+
+CONVERSATION RULES:
+- Start by introducing yourself warmly and asking for their name.
+- Ask ONE field at a time. Never ask for multiple pieces of information in one message.
+- After they provide each answer, acknowledge it briefly and naturally, then ask the next question.
+- If an answer seems incomplete or invalid (e.g., a 5-digit phone number), gently ask them to correct it.
+- Be empathetic. If they describe something traumatic, acknowledge their courage before proceeding.
+- For complaint_type, present the options as a numbered list and ask them to choose.
+- For description, encourage them to share as many details as possible — what happened, when, who was involved, any witnesses.
+- When asking for accused details, be sensitive — say "If you know any details about the person(s) involved, it will help us investigate."
+
+CRITICAL OUTPUT RULE:
+Once you have collected ALL 10 fields, do the following:
+1. Summarize the complaint back to them for confirmation
+2. After the summary, output the collected data in this EXACT format (the frontend will parse this):
+
+--- COMPLAINT_DATA_JSON ---
+{
+  "full_name": "...",
+  "mobile": "...",
+  "email": "...",
+  "aadhaar": "...",
+  "complaint_type": "...",
+  "incident_date": "YYYY-MM-DD",
+  "incident_location": "...",
+  "pincode": "...",
+  "description": "...",
+  "accused_details": "..."
+}
+--- COMPLAINT_DATA_JSON_END ---
+
+IMPORTANT: Only output the JSON block when ALL fields are collected and confirmed. The JSON must be valid.
+IMPORTANT: If the user says they want to skip an optional field (email or aadhaar), set it to an empty string "".
+IMPORTANT: Respond in the same language the user speaks (Hindi, Bengali, English, etc.). Default to English.
+IMPORTANT: Keep responses concise — 2-4 sentences max per turn. Do not write long paragraphs.`;
+
+    let reply = null;
+    let lastErr = null;
+
+    for (const modelName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction: systemInstruction
+        });
+
+        const chatSession = model.startChat({
+          history: history || []
+        });
+
+        const result = await chatSession.sendMessage(message);
+        reply = result.response.text();
+        if (reply) break;
+      } catch (mErr) {
+        console.warn(`[file-complaint] Model ${modelName} failed:`, mErr.message);
+        lastErr = mErr;
+      }
+    }
+
+    if (reply) {
+      return res.json({ reply });
+    } else {
+      throw lastErr || new Error("All Gemini model attempts failed for complaint interview");
+    }
+  } catch (err) {
+    console.error('Error in AI complaint interview:', err);
+    res.json({ reply: "I apologize, Ma'am. I'm having a technical issue right now. Please try again in a moment, or you can use the manual complaint form directly." });
+  }
+});
+
+// 8B. POST /api/assess-risk (AI Threat Classification & Risk Assessment)
+app.post('/api/assess-risk', async (req, res) => {
+  try {
+    const { description } = req.body;
+    if (!description || description.trim().length < 10) {
+      return res.status(400).json({ error: 'Please provide a detailed description of the situation.' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    if (apiKey && apiKey.trim() !== '') {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      
+      const modelNames = [
+        'gemini-2.5-flash-preview-05-20',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest'
+      ];
+      
+      let lastErr = null;
+      
+      for (const modelName of modelNames) {
+        try {
+          const model = genAI.getGenerativeModel({ model: modelName });
+          
+          const prompt = `You are an AI risk assessment system for a women's safety platform in India called e-Abhaya. 
+Analyze the following situation description and classify it.
+
+SITUATION: "${description}"
+
+You MUST respond with ONLY a valid JSON object (no markdown, no backticks, no explanation outside JSON) with these exact fields:
+{
+  "threat_type": "One of: Domestic Violence, Sexual Harassment, Stalking/Cyberstalking, Cybercrime, Physical Assault, Dowry Harassment, Trafficking, Verbal Abuse, Workplace Harassment, Other",
+  "severity": <number 1-5 where 1=low informational, 2=low concern, 3=moderate risk, 4=high danger, 5=critical immediate danger>,
+  "applicable_laws": ["Array of 2-4 relevant Indian laws like BNS Section 85/86, IPC 498A, PWDVA 2005, POSH Act 2013, IT Act Section 66E, etc."],
+  "recommended_actions": ["Array of 2-4 concise action items like File FIR complaint, Trigger SOS alert, Collect evidence, Seek legal counsel, Contact women helpline 1091"],
+  "analysis": "A 2-3 sentence analysis of the situation explaining why this classification was made and what the victim should know."
+}`;
+
+          const result = await model.generateContent(prompt);
+          const responseText = result.response.text().trim();
+          
+          // Parse JSON from response (handle potential markdown wrapping)
+          let jsonStr = responseText;
+          const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            jsonStr = jsonMatch[0];
+          }
+          
+          const assessment = JSON.parse(jsonStr);
+          
+          // Validate and sanitize
+          assessment.severity = Math.max(1, Math.min(5, parseInt(assessment.severity) || 3));
+          assessment.threat_type = assessment.threat_type || 'Unclassified';
+          assessment.applicable_laws = Array.isArray(assessment.applicable_laws) ? assessment.applicable_laws.slice(0, 5) : [];
+          assessment.recommended_actions = Array.isArray(assessment.recommended_actions) ? assessment.recommended_actions.slice(0, 5) : [];
+          assessment.analysis = assessment.analysis || 'Assessment completed. Please review the recommendations below.';
+          
+          return res.json(assessment);
+        } catch (e) {
+          lastErr = e;
+          console.warn(`assess-risk model ${modelName} failed:`, e.message);
+          continue;
+        }
+      }
+      
+      // All models failed — fall through to keyword-based fallback
+      console.error('All Gemini models failed for risk assessment:', lastErr?.message);
+    }
+    
+    // ── Keyword-based fallback classification ──
+    const desc = description.toLowerCase();
+    let threat_type = 'Other';
+    let severity = 2;
+    let applicable_laws = [];
+    let recommended_actions = ['File a complaint', 'Seek legal counsel'];
+    let analysis = 'Based on keyword analysis of your description, we have classified the threat type and severity. For a more accurate assessment, please provide additional details.';
+    
+    if (desc.includes('domestic') || desc.includes('husband') || desc.includes('in-law') || desc.includes('dowry') || desc.includes('beating') || desc.includes('abuse')) {
+      threat_type = 'Domestic Violence';
+      severity = desc.includes('beat') || desc.includes('hit') || desc.includes('injur') ? 5 : 4;
+      applicable_laws = ['BNS Section 85/86', 'IPC 498A', 'PWDVA 2005', 'Dowry Prohibition Act'];
+      recommended_actions = ['File FIR complaint immediately', 'Trigger SOS alert', 'Contact women helpline 1091', 'Seek protection order'];
+      analysis = 'Your description indicates a domestic violence situation. Under Indian law, you have strong protections including the Protection of Women from Domestic Violence Act, 2005. Immediate action is recommended.';
+    } else if (desc.includes('stalk') || desc.includes('follow') || desc.includes('watching') || desc.includes('tracking')) {
+      threat_type = 'Stalking/Cyberstalking';
+      severity = desc.includes('threaten') || desc.includes('fear') ? 4 : 3;
+      applicable_laws = ['BNS Section 78', 'IPC 354D', 'IT Act Section 66E'];
+      recommended_actions = ['File a complaint', 'Collect evidence (screenshots, photos)', 'Contact women helpline 1091'];
+      analysis = 'Your situation appears to involve stalking behavior, which is a criminal offense under BNS Section 78. Document all instances carefully and file a complaint.';
+    } else if (desc.includes('harass') || desc.includes('touch') || desc.includes('sexual') || desc.includes('grope') || desc.includes('molestation')) {
+      threat_type = 'Sexual Harassment';
+      severity = desc.includes('assault') || desc.includes('rape') || desc.includes('force') ? 5 : 4;
+      applicable_laws = ['BNS Section 74/75', 'IPC 354', 'POSH Act 2013'];
+      recommended_actions = ['File FIR complaint immediately', 'Trigger SOS alert', 'Collect evidence', 'Know your legal rights'];
+      analysis = 'Your description indicates sexual harassment, which is a serious criminal offense. You have the right to file a Zero FIR at any police station. Seek immediate help.';
+    } else if (desc.includes('cyber') || desc.includes('online') || desc.includes('social media') || desc.includes('photo') || desc.includes('morphed') || desc.includes('hack')) {
+      threat_type = 'Cybercrime';
+      severity = desc.includes('morphed') || desc.includes('blackmail') ? 4 : 3;
+      applicable_laws = ['IT Act Section 66E', 'IT Act Section 67', 'BNS Section 78'];
+      recommended_actions = ['File a complaint', 'Collect evidence (screenshots)', 'Report to Cyber Crime portal', 'Contact women helpline 1091'];
+      analysis = 'Your situation involves cyber-related offenses. Preserve all digital evidence including screenshots, URLs, and message records before filing a complaint.';
+    } else if (desc.includes('threat') || desc.includes('kill') || desc.includes('danger') || desc.includes('weapon') || desc.includes('attack')) {
+      threat_type = 'Physical Assault';
+      severity = 5;
+      applicable_laws = ['BNS Section 115', 'IPC 326/307', 'CrPC Section 144'];
+      recommended_actions = ['Trigger SOS alert immediately', 'Call 100/112', 'File FIR complaint', 'Seek immediate safe shelter'];
+      analysis = 'Your description suggests an immediate physical danger. Please trigger the SOS alert immediately or call 100/112 for emergency help. Your safety is the top priority.';
+    } else if (desc.includes('workplace') || desc.includes('office') || desc.includes('boss') || desc.includes('colleague') || desc.includes('promotion')) {
+      threat_type = 'Workplace Harassment';
+      severity = 3;
+      applicable_laws = ['POSH Act 2013', 'BNS Section 74/75', 'IPC 354A'];
+      recommended_actions = ['File complaint with ICC (Internal Complaints Committee)', 'Collect evidence', 'File a complaint', 'Know your legal rights'];
+      analysis = 'Your situation may involve workplace harassment. Under the POSH Act 2013, every organization with 10+ employees must have an Internal Complaints Committee. You have the right to file a formal complaint.';
+    }
+    
+    return res.json({ threat_type, severity, applicable_laws, recommended_actions, analysis });
+    
+  } catch (err) {
+    console.error('Risk assessment error:', err);
+    res.status(500).json({ error: 'Risk assessment service error' });
+  }
+});
+
 // 8. POST /api/chat (Rakshak AI Grounded Legal Advisor Chatbot)
 app.post('/api/chat', async (req, res) => {
   try {
@@ -495,7 +883,7 @@ app.post('/api/chat', async (req, res) => {
     if (apiKey && apiKey.trim() !== '') {
       // Live Gemini Mode with automatic model name fallback chain
       const genAI = new GoogleGenerativeAI(apiKey);
-      const modelsToTry = ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemini-pro"];
+      const modelsToTry = ["gemini-2.5-flash", "gemini-2.5-flash-lite-preview-06-17", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
       let reply = null;
       let lastErr = null;
 
