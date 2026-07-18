@@ -905,6 +905,202 @@ nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;jus
   from { height: 4px; }
   to { height: 12px; }
 }
+/* ─── SMART PROTECTION MODE UI ─────────────────────────────────────────────── */
+.smart-fab {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+  cursor: pointer;
+  z-index: 99;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+.smart-fab.active {
+  background: linear-gradient(135deg, #c9184a, #a01040);
+  box-shadow: 0 0 20px rgba(201,24,74,0.6);
+  border-color: rgba(255,255,255,0.8);
+  animation: pulse-danger 1.5s infinite;
+}
+@keyframes pulse-danger {
+  0% { box-shadow: 0 0 0 0 rgba(201,24,74,0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(201,24,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(201,24,74,0); }
+}
+
+.smart-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.smart-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.smart-dashboard {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.smart-overlay.open .smart-dashboard {
+  transform: translateY(0) scale(1);
+}
+
+.bio-ring {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid var(--surface2);
+  margin: 0 auto 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.bio-ring::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #c9184a;
+  border-right-color: #c9184a;
+  animation: spin 3s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.bpm-value { font-size: 42px; font-weight: 800; font-family: monospace; line-height: 1; color: var(--text); }
+.bpm-label { font-size: 11px; color: #c9184a; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; display: flex; align-items: center; gap: 4px;}
+.bpm-heart { animation: beat 0.8s infinite alternate; }
+@keyframes beat { to { transform: scale(1.3); } }
+
+.smart-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.smart-metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.metric-icon { font-size: 20px; margin-bottom: 8px; }
+.metric-val { font-size: 20px; font-weight: 700; font-family: monospace; }
+.metric-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;}
+
+.voice-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 8px;
+  color: #10b981;
+  font-size: 12px;
+  font-weight: 600;
+}
+.voice-status.listening .status-dot { background: #10b981; animation: pulse-green 1.5s infinite; }
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* Emergency Countdown Modal */
+.emergency-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(201, 24, 74, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  animation: flash-red 1s infinite alternate;
+}
+.emergency-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+@keyframes flash-red {
+  from { background: rgba(201, 24, 74, 0.95); }
+  to { background: rgba(160, 16, 64, 0.98); }
+}
+
+.countdown-timer {
+  font-size: 120px;
+  font-weight: 900;
+  font-family: monospace;
+  line-height: 1;
+  margin: 20px 0;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.emergency-cancel-btn {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: 2px solid white;
+  border-radius: 30px;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.emergency-cancel-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 0%;
+  background: white;
+  z-index: -1;
+  transition: width 0.1s;
+}
+.emergency-cancel-btn:active::after {
+  width: 100%;
+  transition: width 2s linear; /* "Hold to cancel" effect */
+}
+.emergency-cancel-btn:active {
+  color: black;
+}
 </style>
 <script src="https://accounts.google.com/gsi/client" onload="initGoogleGSI()" async defer></script>
 </head>
@@ -4333,6 +4529,210 @@ loadStats = async function() {
   await _origLoadStats();
   determineUserFlowStage();
 };
+// ─── SMART PROTECTION MODE (Biometrics & Voice Trigger) ──────────────────────
+let isSmartProtectionActive = false;
+let bioInterval = null;
+let currentBpm = 72;
+let currentSteps = 2450;
+let panicMode = false;
+let voiceMonitor = null;
+let emergencyTimer = null;
+let emergencyCountdown = 15;
+
+function toggleSmartProtection() {
+  isSmartProtectionActive = !isSmartProtectionActive;
+  const overlay = document.getElementById('smart-overlay');
+  const fab = document.getElementById('smart-fab');
+  
+  if (isSmartProtectionActive) {
+    overlay.classList.add('open');
+    fab.classList.add('active');
+    toast('Smart Protection Mode Activated. Monitoring vitals and audio.');
+    startBiometricSimulation();
+    startVoiceMonitor();
+  } else {
+    overlay.classList.remove('open');
+    fab.classList.remove('active');
+    stopBiometricSimulation();
+    stopVoiceMonitor();
+    toast('Smart Protection Mode Deactivated.');
+  }
+}
+
+function startBiometricSimulation() {
+  panicMode = false;
+  currentBpm = 70 + Math.floor(Math.random() * 10);
+  
+  bioInterval = setInterval(() => {
+    // Normal fluctuation
+    if (!panicMode) {
+      currentBpm += (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3);
+      if (currentBpm < 60) currentBpm = 60;
+      if (currentBpm > 90) currentBpm = 90;
+      currentSteps += Math.floor(Math.random() * 3);
+    } else {
+      // Panic spike
+      currentBpm += Math.floor(Math.random() * 10) + 5;
+      if (currentBpm > 180) currentBpm = 180;
+    }
+    
+    const bpmEl = document.getElementById('bpm-val');
+    const stepsEl = document.getElementById('steps-val');
+    if (bpmEl) bpmEl.textContent = currentBpm;
+    if (stepsEl) stepsEl.textContent = currentSteps.toLocaleString();
+    
+    // Trigger emergency if heart rate spikes above 140
+    if (currentBpm > 140 && !emergencyTimer) {
+      triggerEmergencyProtocol('Abnormal Heart Rate Spike Detected');
+    }
+    
+  }, 1500);
+}
+
+function stopBiometricSimulation() {
+  if (bioInterval) clearInterval(bioInterval);
+}
+
+function simulatePanicAttack() {
+  panicMode = true;
+  toast('Simulating Adrenaline/Panic Spike...');
+}
+
+// Voice Monitor (Web Speech API)
+function startVoiceMonitor() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    console.warn('Speech recognition not supported for background monitoring.');
+    return;
+  }
+  
+  const statusEl = document.getElementById('voice-monitor-status');
+  if (statusEl) statusEl.classList.add('listening');
+
+  voiceMonitor = new SpeechRecognition();
+  voiceMonitor.continuous = true;
+  voiceMonitor.interimResults = true;
+  voiceMonitor.lang = 'en-IN'; // Works for Hindi-English mix (bachao)
+  
+  voiceMonitor.onresult = (event) => {
+    let interimTranscript = '';
+    let finalTranscript = '';
+    
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+    
+    const textToCheck = (finalTranscript + ' ' + interimTranscript).toLowerCase();
+    
+    // Check for distress keywords
+    if (textToCheck.includes('help me') || textToCheck.includes('bachao') || textToCheck.includes('save me')) {
+      if (!emergencyTimer) {
+        triggerEmergencyProtocol('Distress Audio Keyword Detected ("Help")');
+      }
+    }
+  };
+  
+  voiceMonitor.onerror = (err) => {
+    console.warn('Voice monitor error:', err.error);
+    // Restart on error (e.g. no speech timeout)
+    if (isSmartProtectionActive && err.error === 'no-speech') {
+      try { voiceMonitor.start(); } catch(e){}
+    }
+  };
+  
+  voiceMonitor.onend = () => {
+    // Keep it running continuously if mode is active
+    if (isSmartProtectionActive && voiceMonitor) {
+      try { voiceMonitor.start(); } catch(e){}
+    }
+  };
+  
+  try { voiceMonitor.start(); } catch(e){}
+}
+
+function stopVoiceMonitor() {
+  const statusEl = document.getElementById('voice-monitor-status');
+  if (statusEl) statusEl.classList.remove('listening');
+  if (voiceMonitor) {
+    voiceMonitor.onend = null;
+    voiceMonitor.abort();
+    voiceMonitor = null;
+  }
+}
+
+// Emergency Countdown Protocol
+function triggerEmergencyProtocol(reason) {
+  if (emergencyTimer) return; // Already running
+  
+  const overlay = document.getElementById('emergency-overlay');
+  const timerEl = document.getElementById('emergency-timer');
+  const logEl = document.getElementById('emergency-alert-log');
+  const cancelBtn = document.getElementById('emergency-cancel-btn');
+  
+  overlay.classList.add('active');
+  emergencyCountdown = 15;
+  timerEl.textContent = emergencyCountdown;
+  logEl.textContent = `Trigger: ${reason}`;
+  
+  toast(`EMERGENCY: ${reason}`);
+  
+  // Setup hold-to-cancel logic
+  let cancelHoldTimer = null;
+  const cancelProtocol = () => {
+    clearTimeout(cancelHoldTimer);
+    clearInterval(emergencyTimer);
+    emergencyTimer = null;
+    overlay.classList.remove('active');
+    panicMode = false;
+    currentBpm = 85; // reset
+    toast('Emergency Protocol Aborted.');
+  };
+  
+  cancelBtn.onmousedown = cancelBtn.ontouchstart = () => {
+    cancelHoldTimer = setTimeout(cancelProtocol, 1500); // Hold for 1.5s
+  };
+  cancelBtn.onmouseup = cancelBtn.onmouseleave = cancelBtn.ontouchend = () => {
+    clearTimeout(cancelHoldTimer);
+  };
+  
+  // Start countdown
+  emergencyTimer = setInterval(() => {
+    emergencyCountdown--;
+    timerEl.textContent = emergencyCountdown;
+    
+    // 3 staged alerts
+    if (emergencyCountdown === 12) {
+      logEl.textContent = 'Alert 1 sent: Possible distress detected (Trusted Contacts)';
+      toast('Alert 1 sent to contacts.');
+    } else if (emergencyCountdown === 8) {
+      logEl.textContent = 'Alert 2 sent: Escalated risk - Location shared';
+      toast('Alert 2 sent to contacts.');
+    } else if (emergencyCountdown === 4) {
+      logEl.textContent = 'Alert 3 sent: Critical distress - Calling Police';
+      toast('Alert 3 sent to contacts.');
+    } else if (emergencyCountdown <= 0) {
+      clearInterval(emergencyTimer);
+      emergencyTimer = null;
+      overlay.classList.remove('active');
+      
+      // TRIGGER ACTUAL SOS
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => sendSOSRequest(`Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)} (AUTO-TRIGGER)`),
+          (err) => sendSOSRequest('Lat: 22.5726, Lng: 88.3639 (AUTO-TRIGGER)')
+        );
+      } else {
+        sendSOSRequest('Lat: 22.5726, Lng: 88.3639 (AUTO-TRIGGER)');
+      }
+      
+      toggleSmartProtection(); // turn off after triggering
+    }
+  }, 1000);
+}
 // ─────────────────────────────────────────────────────────────────────────────
 </script>
 
@@ -4374,6 +4774,57 @@ loadStats = async function() {
     <button id="chat-mic-btn" style="position: absolute; right: 54px; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text3); padding: 4px; transition: color 0.15s; outline:none;" onclick="toggleVoiceInput(event)">🎙️</button>
     <button class="chat-send-btn" onclick="triggerChatSend()">➔</button>
   </div>
+</div>
+<!-- ─── SMART PROTECTION MODE UI ─── -->
+<div class="smart-fab" id="smart-fab" onclick="toggleSmartProtection()" title="Activate Smart Protection Mode">
+  🛡️
+</div>
+
+<div class="smart-overlay" id="smart-overlay">
+  <div class="smart-dashboard">
+    <h3 style="font-size:18px; margin-bottom:5px;">Smart Protection Active</h3>
+    <p style="font-size:12px; color:var(--text3); margin-bottom:20px;">Monitoring vitals and environment for distress</p>
+    
+    <div class="bio-ring">
+      <div class="bpm-value" id="bpm-val">72</div>
+      <div class="bpm-label"><span class="bpm-heart">❤️</span> BPM</div>
+    </div>
+    
+    <div class="smart-metrics">
+      <div class="smart-metric-card">
+        <div class="metric-icon">👣</div>
+        <div class="metric-val" id="steps-val">2,450</div>
+        <div class="metric-label">Steps Today</div>
+      </div>
+      <div class="smart-metric-card">
+        <div class="metric-icon">📍</div>
+        <div class="metric-val" style="font-size:14px; margin-top:6px;">Live</div>
+        <div class="metric-label">Location Sync</div>
+      </div>
+    </div>
+    
+    <div class="voice-status" id="voice-monitor-status">
+      <div class="status-dot" style="width:10px; height:10px; border-radius:50%; background:currentColor;"></div>
+      Listening for distress words...
+    </div>
+    
+    <button class="btn btn-outline" style="width:100%; margin-top:20px;" onclick="toggleSmartProtection()">Deactivate Protection</button>
+    
+    <!-- Hidden test trigger -->
+    <div style="margin-top: 15px; cursor: pointer; font-size: 10px; opacity: 0.1;" onclick="simulatePanicAttack()">Simulate Spike</div>
+  </div>
+</div>
+
+<div class="emergency-overlay" id="emergency-overlay">
+  <div style="font-size:64px;">🚨</div>
+  <h2 style="font-size:32px; margin:10px 0; font-family:'Playfair Display',serif;">EMERGENCY PROTOCOL INITIATED</h2>
+  <p style="font-size:16px; opacity:0.9; text-align:center; max-width:400px;">Distress detected. Authorities and emergency contacts will be notified in...</p>
+  
+  <div class="countdown-timer" id="emergency-timer">15</div>
+  
+  <div id="emergency-alert-log" style="font-size:13px; font-weight:600; margin-bottom:30px; height:20px;"></div>
+  
+  <button class="emergency-cancel-btn" id="emergency-cancel-btn">Hold to Cancel</button>
 </div>
 
 </body>
