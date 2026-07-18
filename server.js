@@ -746,6 +746,131 @@ IMPORTANT: Keep responses concise — 2-4 sentences max per turn. Do not write l
   }
 });
 
+// 8B. POST /api/assess-risk (AI Threat Classification & Risk Assessment)
+app.post('/api/assess-risk', async (req, res) => {
+  try {
+    const { description } = req.body;
+    if (!description || description.trim().length < 10) {
+      return res.status(400).json({ error: 'Please provide a detailed description of the situation.' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    if (apiKey && apiKey.trim() !== '') {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      
+      const modelNames = [
+        'gemini-2.5-flash-preview-05-20',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest'
+      ];
+      
+      let lastErr = null;
+      
+      for (const modelName of modelNames) {
+        try {
+          const model = genAI.getGenerativeModel({ model: modelName });
+          
+          const prompt = `You are an AI risk assessment system for a women's safety platform in India called e-Abhaya. 
+Analyze the following situation description and classify it.
+
+SITUATION: "${description}"
+
+You MUST respond with ONLY a valid JSON object (no markdown, no backticks, no explanation outside JSON) with these exact fields:
+{
+  "threat_type": "One of: Domestic Violence, Sexual Harassment, Stalking/Cyberstalking, Cybercrime, Physical Assault, Dowry Harassment, Trafficking, Verbal Abuse, Workplace Harassment, Other",
+  "severity": <number 1-5 where 1=low informational, 2=low concern, 3=moderate risk, 4=high danger, 5=critical immediate danger>,
+  "applicable_laws": ["Array of 2-4 relevant Indian laws like BNS Section 85/86, IPC 498A, PWDVA 2005, POSH Act 2013, IT Act Section 66E, etc."],
+  "recommended_actions": ["Array of 2-4 concise action items like File FIR complaint, Trigger SOS alert, Collect evidence, Seek legal counsel, Contact women helpline 1091"],
+  "analysis": "A 2-3 sentence analysis of the situation explaining why this classification was made and what the victim should know."
+}`;
+
+          const result = await model.generateContent(prompt);
+          const responseText = result.response.text().trim();
+          
+          // Parse JSON from response (handle potential markdown wrapping)
+          let jsonStr = responseText;
+          const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            jsonStr = jsonMatch[0];
+          }
+          
+          const assessment = JSON.parse(jsonStr);
+          
+          // Validate and sanitize
+          assessment.severity = Math.max(1, Math.min(5, parseInt(assessment.severity) || 3));
+          assessment.threat_type = assessment.threat_type || 'Unclassified';
+          assessment.applicable_laws = Array.isArray(assessment.applicable_laws) ? assessment.applicable_laws.slice(0, 5) : [];
+          assessment.recommended_actions = Array.isArray(assessment.recommended_actions) ? assessment.recommended_actions.slice(0, 5) : [];
+          assessment.analysis = assessment.analysis || 'Assessment completed. Please review the recommendations below.';
+          
+          return res.json(assessment);
+        } catch (e) {
+          lastErr = e;
+          console.warn(`assess-risk model ${modelName} failed:`, e.message);
+          continue;
+        }
+      }
+      
+      // All models failed — fall through to keyword-based fallback
+      console.error('All Gemini models failed for risk assessment:', lastErr?.message);
+    }
+    
+    // ── Keyword-based fallback classification ──
+    const desc = description.toLowerCase();
+    let threat_type = 'Other';
+    let severity = 2;
+    let applicable_laws = [];
+    let recommended_actions = ['File a complaint', 'Seek legal counsel'];
+    let analysis = 'Based on keyword analysis of your description, we have classified the threat type and severity. For a more accurate assessment, please provide additional details.';
+    
+    if (desc.includes('domestic') || desc.includes('husband') || desc.includes('in-law') || desc.includes('dowry') || desc.includes('beating') || desc.includes('abuse')) {
+      threat_type = 'Domestic Violence';
+      severity = desc.includes('beat') || desc.includes('hit') || desc.includes('injur') ? 5 : 4;
+      applicable_laws = ['BNS Section 85/86', 'IPC 498A', 'PWDVA 2005', 'Dowry Prohibition Act'];
+      recommended_actions = ['File FIR complaint immediately', 'Trigger SOS alert', 'Contact women helpline 1091', 'Seek protection order'];
+      analysis = 'Your description indicates a domestic violence situation. Under Indian law, you have strong protections including the Protection of Women from Domestic Violence Act, 2005. Immediate action is recommended.';
+    } else if (desc.includes('stalk') || desc.includes('follow') || desc.includes('watching') || desc.includes('tracking')) {
+      threat_type = 'Stalking/Cyberstalking';
+      severity = desc.includes('threaten') || desc.includes('fear') ? 4 : 3;
+      applicable_laws = ['BNS Section 78', 'IPC 354D', 'IT Act Section 66E'];
+      recommended_actions = ['File a complaint', 'Collect evidence (screenshots, photos)', 'Contact women helpline 1091'];
+      analysis = 'Your situation appears to involve stalking behavior, which is a criminal offense under BNS Section 78. Document all instances carefully and file a complaint.';
+    } else if (desc.includes('harass') || desc.includes('touch') || desc.includes('sexual') || desc.includes('grope') || desc.includes('molestation')) {
+      threat_type = 'Sexual Harassment';
+      severity = desc.includes('assault') || desc.includes('rape') || desc.includes('force') ? 5 : 4;
+      applicable_laws = ['BNS Section 74/75', 'IPC 354', 'POSH Act 2013'];
+      recommended_actions = ['File FIR complaint immediately', 'Trigger SOS alert', 'Collect evidence', 'Know your legal rights'];
+      analysis = 'Your description indicates sexual harassment, which is a serious criminal offense. You have the right to file a Zero FIR at any police station. Seek immediate help.';
+    } else if (desc.includes('cyber') || desc.includes('online') || desc.includes('social media') || desc.includes('photo') || desc.includes('morphed') || desc.includes('hack')) {
+      threat_type = 'Cybercrime';
+      severity = desc.includes('morphed') || desc.includes('blackmail') ? 4 : 3;
+      applicable_laws = ['IT Act Section 66E', 'IT Act Section 67', 'BNS Section 78'];
+      recommended_actions = ['File a complaint', 'Collect evidence (screenshots)', 'Report to Cyber Crime portal', 'Contact women helpline 1091'];
+      analysis = 'Your situation involves cyber-related offenses. Preserve all digital evidence including screenshots, URLs, and message records before filing a complaint.';
+    } else if (desc.includes('threat') || desc.includes('kill') || desc.includes('danger') || desc.includes('weapon') || desc.includes('attack')) {
+      threat_type = 'Physical Assault';
+      severity = 5;
+      applicable_laws = ['BNS Section 115', 'IPC 326/307', 'CrPC Section 144'];
+      recommended_actions = ['Trigger SOS alert immediately', 'Call 100/112', 'File FIR complaint', 'Seek immediate safe shelter'];
+      analysis = 'Your description suggests an immediate physical danger. Please trigger the SOS alert immediately or call 100/112 for emergency help. Your safety is the top priority.';
+    } else if (desc.includes('workplace') || desc.includes('office') || desc.includes('boss') || desc.includes('colleague') || desc.includes('promotion')) {
+      threat_type = 'Workplace Harassment';
+      severity = 3;
+      applicable_laws = ['POSH Act 2013', 'BNS Section 74/75', 'IPC 354A'];
+      recommended_actions = ['File complaint with ICC (Internal Complaints Committee)', 'Collect evidence', 'File a complaint', 'Know your legal rights'];
+      analysis = 'Your situation may involve workplace harassment. Under the POSH Act 2013, every organization with 10+ employees must have an Internal Complaints Committee. You have the right to file a formal complaint.';
+    }
+    
+    return res.json({ threat_type, severity, applicable_laws, recommended_actions, analysis });
+    
+  } catch (err) {
+    console.error('Risk assessment error:', err);
+    res.status(500).json({ error: 'Risk assessment service error' });
+  }
+});
+
 // 8. POST /api/chat (Rakshak AI Grounded Legal Advisor Chatbot)
 app.post('/api/chat', async (req, res) => {
   try {
